@@ -3,11 +3,11 @@ name: Import Family Lab
 on:
   push:
     branches: [main]
-    paths: ['.import/ready.json']
+    paths: ['family-lab.zip']
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: family-lab-initial-import
@@ -15,87 +15,61 @@ concurrency:
 
 jobs:
   import:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 25
+    permissions:
+      contents: write
+      actions: write
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: main
+          persist-credentials: false
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.13'
+          python-version: '3.12'
+      - name: Verify and unpack the original delivery
+        run: python .github/scripts/import_archive.py extract
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
-      - name: Restore checksum-verified source archive
-        run: |
-          python - <<'PY'
-          import hashlib, io, json, lzma, pathlib, tarfile, urllib.request
-          root = pathlib.Path.cwd()
-          manifest = json.loads((root / '.import/ready.json').read_text())
-          chunks = []
-          for item in manifest['parts']:
-              path = root / '.import' / item['name']
-              if path.resolve().parent != (root / '.import').resolve():
-                  raise RuntimeError('Invalid part path')
-              data = path.read_bytes()
-              if hashlib.sha256(data).hexdigest() != item['sha256']:
-                  raise RuntimeError('Part checksum mismatch: ' + item['name'])
-              chunks.append(data)
-          archive = b''.join(chunks)
-          if hashlib.sha256(archive).hexdigest() != manifest['archive_sha256']:
-              raise RuntimeError('Archive checksum mismatch')
-          with tarfile.open(fileobj=io.BytesIO(lzma.decompress(archive)), mode='r:') as tar:
-              for member in tar.getmembers():
-                  name = pathlib.PurePosixPath(member.name)
-                  if name.is_absolute() or '..' in name.parts or name.parts[0] in ('.git', '.github', '.import') or not member.isfile():
-                      raise RuntimeError('Unsafe archive entry: ' + member.name)
-              tar.extractall(root, filter='data')
-          for item in manifest['upstream']:
-              request = urllib.request.Request(item['url'], headers={'User-Agent': 'Family-Lab-Import'})
-              with urllib.request.urlopen(request, timeout=60) as response:
-                  data = response.read()
-              if hashlib.sha256(data).hexdigest() != item['sha256']:
-                  raise RuntimeError('Upstream checksum mismatch: ' + item['path'])
-              target = root / item['path']
-              target.parent.mkdir(parents=True, exist_ok=True)
-              target.write_bytes(data)
-          print('Original source restored and upstream vendor checksums verified.')
-          PY
-      - name: Install pinned data-generation dependencies
-        run: python -m pip install --disable-pip-version-check numpy==2.3.5 scipy==1.17.0 Pillow==12.3.0 pyswisseph==2.10.3.2
-      - name: Recreate bundled astronomy data and textures
-        run: |
-          python projects/astronomy/tools/generate_ephemeris.py
-          python projects/astronomy/tools/generate_textures.py
-      - name: Build offline applications
+      - name: Build all five offline projects and the homepage
         run: npm run build
-      - name: Verify imported code and regenerated runtime files
-        run: |
-          python - <<'PY'
-          import hashlib, json, pathlib
-          root = pathlib.Path.cwd()
-          manifest = json.loads((root / '.import/ready.json').read_text())
-          for name, expected in manifest['checksums'].items():
-              path = root / name
-              if not path.is_file() or hashlib.sha256(path.read_bytes()).hexdigest() != expected:
-                  raise RuntimeError('Original-file verification failed: ' + name)
-          print('Verified', len(manifest['checksums']), 'original source and runtime files.')
-          PY
-      - name: Install locked history test dependencies
+      - name: Require the rebuilt files to match the delivery
+        run: python .github/scripts/import_archive.py verify
+      - name: Install locked test-only dependencies
         run: npm --prefix projects/history ci --ignore-scripts --no-audit --no-fund
-      - name: Test all five projects and homepage
+      - name: Run model, data and DOM tests
         run: npm test
-      - name: Commit the complete offline project
+      - name: Install browser test tools
         run: |
-          python - <<'PY'
-          import shutil
-          shutil.rmtree('.import')
-          PY
+          python -m pip install playwright==1.57.0
+          python -m playwright install --with-deps chromium
+      - name: Test actual local-file navigation and interactions
+        run: python tests/browser-smoke.py --out .qa/import-browser
+      - name: Stage only verified project files
+        run: python .github/scripts/import_archive.py finalize
+      - name: Commit and push the complete project
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add --all
           git commit -m 'feat: import five offline projects and unified homepage'
+          gh auth setup-git
           git push origin HEAD:main
-          echo '### Complete offline project committed' >> "$GITHUB_STEP_SUMMARY"
+          echo '### Complete project committed' >> "$GITHUB_STEP_SUMMARY"
           git rev-parse HEAD >> "$GITHUB_STEP_SUMMARY"
+          echo 'The import ZIP was removed from the current tree; it remains in Git history.' >> "$GITHUB_STEP_SUMMARY"
+      - name: Start verification and optional Pages deployment
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run pages.yml --ref main
+      - name: Preserve browser-test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: import-browser-results
+          path: .qa/import-browser
+          if-no-files-found: ignore
+          retention-days: 7
