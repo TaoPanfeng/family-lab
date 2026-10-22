@@ -3,7 +3,10 @@ name: Import Family Lab
 on:
   push:
     branches: [main]
-    paths: ['family-lab.zip']
+    paths:
+      - 'family-lab.zip'
+      - '.github/workflows/import-family-lab.yml'
+      - '.github/scripts/import_archive.py'
   workflow_dispatch:
 
 permissions:
@@ -14,9 +17,29 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  inspect:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    outputs:
+      pending: ${{ steps.archive.outputs.pending }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - id: archive
+        run: |
+          if test -f family-lab.zip && ! test -f catalog.json; then
+            echo 'pending=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'pending=false' >> "$GITHUB_OUTPUT"
+            echo 'Initial import is not needed; existing projects will not be overwritten.' >> "$GITHUB_STEP_SUMMARY"
+          fi
+
   import:
-    if: github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
+    needs: inspect
+    if: github.ref == 'refs/heads/main' && needs.inspect.outputs.pending == 'true'
+    # Match the operating system supported by the pinned Playwright release.
+    runs-on: ubuntu-24.04
     timeout-minutes: 25
     permissions:
       contents: write
@@ -55,7 +78,7 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git commit -m 'feat: import five offline projects and unified homepage'
+          git commit -m 'feat: 解压导入日月地、物理、化学、历史、坐卧及公共首页，仅保留最新版'
           gh auth setup-git
           git push origin HEAD:main
           echo '### Complete project committed' >> "$GITHUB_STEP_SUMMARY"
