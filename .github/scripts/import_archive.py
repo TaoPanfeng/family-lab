@@ -14,6 +14,11 @@ import zipfile
 EXPECTED_SHA256 = "29b7456e5f4f5b27dff37015faf512186e5a381f43075b6918273c2b4928ec9a"
 STATE_NAME = ".family-lab-import-state.json"
 SKIP_PATH = ".github/workflows/pages.yml"
+# These two test runners intentionally rewrite timestamps and runtime metadata.
+GENERATED_REPORTS = {
+    "projects/astronomy/tests/test-report.json": 52,
+    "projects/astronomy/tests/v2-report.json": 50,
+}
 
 
 def sha256(data: bytes) -> str:
@@ -87,7 +92,27 @@ def verify(root: Path) -> dict:
     return state
 
 
+def preserve_current_reports(root: Path) -> None:
+    """Keep fresh evidence separately, then restore only known baseline reports."""
+    archive = root / "family-lab.zip"
+    if sha256(archive.read_bytes()) != EXPECTED_SHA256:
+        raise RuntimeError("ZIP checksum changed before final verification.")
+    evidence = root / ".qa/import-browser"
+    evidence.mkdir(parents=True, exist_ok=True)
+    with zipfile.ZipFile(archive) as bundle:
+        for name, expected_count in GENERATED_REPORTS.items():
+            current = (root / name).read_bytes()
+            result = json.loads(current)
+            if result.get("passed") != expected_count or result.get("total") != expected_count or result.get("failed", 0) != 0:
+                raise RuntimeError("The latest model test report is not passing: " + name)
+            (evidence / ("astronomy-" + Path(name).name)).write_bytes(current)
+            # Every source and runtime asset is still checked byte-for-byte below.
+            (root / name).write_bytes(bundle.read("family-lab/" + name))
+    print("Preserved the two fresh model reports; restored their original baseline copies.")
+
+
 def finalize(root: Path) -> None:
+    preserve_current_reports(root)
     state = verify(root)
     readme = root / "README.md"
     text = readme.read_text(encoding="utf-8")
@@ -100,9 +125,11 @@ def finalize(root: Path) -> None:
     report.write_text(
         "# GitHub 首次导入记录\n\n"
         f"原始归档 SHA-256：`{EXPECTED_SHA256}`。\n\n"
-        f"{len(state['files'])} 个原始文件在构建和测试后逐一校验通过；随后仅更新根 README 的交付状态。"
+        f"{len(state['files'])} 个原始文件在构建后逐一校验通过。模型、数据、DOM 及真实 file:// 浏览器测试通过后，"
+        "将两份带时间戳的天文测试报告单独存入本次 Actions artifact，再恢复原始基线报告并对全部原始文件重新校验。"
+        "随后仅更新根 README 的交付状态。没有跳过源码、数据或离线成品校验。\n\n"
         "五个子项目的源码、离线成品、图片、数据、许可和原测试材料均保留，不建立第二套版本目录。\n\n"
-        "原归档中的 Pages 工作流未覆盖远端预先配置的工作流。上传用 ZIP 从当前工作树删除，仍保留在 Git 历史中。\n\n"
+        "原归档中的 Pages 工作流未覆盖远端工作流。上传用 ZIP 从当前工作树删除，仍保留在 Git 历史中。\n\n"
         f"本次运行记录：{run_url}\n\n"
         "此记录只证明代码导入、构建和测试；网站是否上线以 Pages 部署结果为准。\n",
         encoding="utf-8")
