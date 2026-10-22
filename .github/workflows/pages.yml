@@ -15,12 +15,12 @@ permissions:
   contents: read
 
 concurrency:
-  group: family-lab-${{ github.workflow }}-${{ github.ref }}
+  group: family-lab-publish-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
   inspect:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 3
     outputs:
       ready: ${{ steps.project.outputs.ready }}
@@ -35,19 +35,14 @@ jobs:
             echo 'ready=true' >> "$GITHUB_OUTPUT"
           else
             echo 'ready=false' >> "$GITHUB_OUTPUT"
-            echo 'Project ZIP has not been imported. No application tests or deployment ran.' >> "$GITHUB_STEP_SUMMARY"
+            echo 'Initial ZIP import is incomplete. Application checks and deployment did not run.' >> "$GITHUB_STEP_SUMMARY"
           fi
 
   verify:
     needs: inspect
     if: needs.inspect.outputs.ready == 'true'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
-    permissions:
-      contents: read
-      pages: read
-    outputs:
-      pages_enabled: ${{ steps.pages.outputs.enabled }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -55,63 +50,99 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
-      - name: Install locked test-only dependency
-        run: npm --prefix projects/history ci --ignore-scripts --no-audit --no-fund
-      - name: Build offline applications and homepage
-        run: npm run build
-      - name: Require committed offline builds to match source
-        run: git diff --exit-code -- index.html source.html projects/astronomy/日月地实验室.html projects/physics/index.html projects/posture/index.html projects/chemistry/chemistry-explorer.html
-      - name: Run model, data and DOM tests
-        run: npm test
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Install browser test tools
+      - name: Install locked test-only dependencies
+        run: npm --prefix projects/history ci --ignore-scripts --no-audit --no-fund
+      - name: Build all offline applications and homepage
+        run: npm run build
+      - name: Run model, data and DOM tests
+        run: npm test
+      - name: Install pinned browser test environment
         run: |
           python -m pip install playwright==1.57.0
           python -m playwright install --with-deps chromium
-      - name: Check local-file navigation and interactions
+      - name: Verify actual local-file navigation and interactions
         run: python tests/browser-smoke.py --out .qa/browser
-      - name: Prepare static website and corresponding source
+      - name: Prepare website with corresponding source and licenses
         run: python tools/prepare-site.py
-      - id: pages
-        name: Check Pages without changing visibility or repository settings
-        if: github.event_name != 'pull_request'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          python - <<'PY'
-          import json, os, urllib.error, urllib.request
-          url = 'https://api.github.com/repos/' + os.environ['GITHUB_REPOSITORY'] + '/pages'
-          request = urllib.request.Request(url, headers={
-              'Authorization': 'Bearer ' + os.environ['GH_TOKEN'],
-              'Accept': 'application/vnd.github+json',
-              'X-GitHub-Api-Version': '2022-11-28',
-              'User-Agent': 'Family-Lab-CI'})
-          enabled = False
-          try:
-              with urllib.request.urlopen(request, timeout=30) as response:
-                  site = json.load(response)
-              enabled = site.get('build_type') == 'workflow'
-          except urllib.error.HTTPError as error:
-              if error.code != 404:
-                  raise
-          with open(os.environ['GITHUB_OUTPUT'], 'a') as out:
-              out.write('enabled=' + str(enabled).lower() + '\n')
-          if not enabled:
-              with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as out:
-                  out.write('Code verification passed. Website NOT published: Pages is unavailable or not configured with GitHub Actions as its source. No visibility or account-plan changes were made.\n')
-          PY
-      - name: Upload Pages artifact
-        if: steps.pages.outputs.enabled == 'true'
+      - name: Verify HTTP subpaths, project entry links and mobile layout
+        run: python tests/site-smoke.py --out .qa/site
+      - name: Preserve tested offline outputs
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: offline-generated
+          retention-days: 7
+          if-no-files-found: error
+          path: |
+            index.html
+            source.html
+            projects/astronomy/日月地实验室.html
+            projects/physics/index.html
+            projects/posture/index.html
+            projects/chemistry/chemistry-explorer.html
+      - name: Upload tested static website
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v4
         with:
           path: _site
+      - name: Preserve browser test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-test-results
+          path: .qa
+          include-hidden-files: true
+          if-no-files-found: ignore
+          retention-days: 7
+
+  sync-offline:
+    needs: verify
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    outputs:
+      current: ${{ steps.sync.outputs.current }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: offline-generated
+          path: .
+      - id: sync
+        name: Commit tested offline builds without overwriting newer work
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh auth setup-git
+          git fetch origin main
+          if test "$(git rev-parse origin/main)" != "$GITHUB_SHA"; then
+            echo 'current=false' >> "$GITHUB_OUTPUT"
+            echo 'Newer source is already on main; this older run will not commit or deploy.' >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          git add -- index.html source.html projects/astronomy/日月地实验室.html projects/physics/index.html projects/posture/index.html projects/chemistry/chemistry-explorer.html
+          if ! git diff --cached --quiet; then
+            subject="$(git show -s --format=%s "$GITHUB_SHA")"
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git commit -m "build: 同步已通过测试的离线成品（${GITHUB_SHA:0:7}）" -m "对应功能提交：$subject"
+            git push origin HEAD:main
+          fi
+          echo 'current=true' >> "$GITHUB_OUTPUT"
+          echo 'Offline outputs match the tested source and are committed to main.' >> "$GITHUB_STEP_SUMMARY"
+          git rev-parse HEAD >> "$GITHUB_STEP_SUMMARY"
 
   deploy:
-    needs: verify
-    if: needs.verify.outputs.pages_enabled == 'true'
-    runs-on: ubuntu-latest
+    needs: sync-offline
+    if: needs.sync-offline.outputs.current == 'true'
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
       contents: read
@@ -121,7 +152,47 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - uses: actions/configure-pages@v5
-      - name: Deploy verified site
+      # Enabling a new site may require the owner's one-time Pages setting.
+      # Never change repository visibility or account billing automatically.
+      - name: Configure or attempt to enable GitHub Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+      - name: Deploy the tested website
         id: deployment
         uses: actions/deploy-pages@v4
+      - name: Verify published homepage and all five project URLs
+        env:
+          SITE_URL: ${{ steps.deployment.outputs.page_url }}
+        run: |
+          python - <<'PY'
+          import json, os, time
+          from urllib.parse import urljoin, quote
+          from urllib.request import urlopen
+          base = os.environ['SITE_URL'].rstrip('/') + '/'
+          def get(path):
+              url = urljoin(base, quote(path, safe='/'))
+              for attempt in range(6):
+                  try:
+                      with urlopen(url, timeout=30) as response:
+                          if response.status != 200:
+                              raise RuntimeError('Unexpected HTTP status')
+                          return response.read()
+                  except Exception:
+                      if attempt == 5:
+                          raise
+                      time.sleep(5)
+          home = get('index.html').decode('utf-8')
+          if 'data-project="astronomy"' not in home or 'data-project="posture"' not in home:
+              raise RuntimeError('Published homepage does not match Family Lab')
+          catalog = json.loads(get('catalog.json'))
+          if len(catalog) != 5:
+              raise RuntimeError('Expected exactly five projects')
+          for project in catalog:
+              content = get(project['entry'])
+              if b'<html' not in content[:2000].lower():
+                  raise RuntimeError('Project did not return HTML: ' + project['id'])
+              print('HTTP 200:', project['name'])
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as output:
+              output.write('### Published and HTTP-verified\n\n' + base + '\n')
+          PY
