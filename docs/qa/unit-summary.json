@@ -1,0 +1,85 @@
+[
+  {
+    "name": "astronomy-core",
+    "command": [
+      "node",
+      "tests/test.cjs"
+    ],
+    "exitCode": 0,
+    "elapsedSeconds": 0.59,
+    "tail": "PASS 星历长度、元数据与小端浮点一致\nPASS 1900 与 2100 边界能计算\nPASS 超出底层星历与非数字时间拒绝\nPASS 同一时间重复计算完全相同\nPASS 先前进再后退回到相同状态\nPASS UTC 与北京时间表示同一瞬间\nPASS 半小时时区正确转换\nPASS 固定负时区正确跨日\nPASS 2000 闰年合法\nPASS 1900、2100 不是闰年\nPASS 无效日期与秒数不悄悄滚动\nPASS 日期输入支持范围严格按 UTC\nPASS 闰日按年跳转钳制到 2 月末\nPASS 1 月 31 日按月跳到 2 月末\nPASS 时间步进不会越过用户边界\nPASS 赤道/黄道/三维坐标变换保持距离并可逆\nPASS 地球自转随真实恒星时推进\nPASS WGS84 观测点：赤道半径和极半径\nPASS 地平坐标：天顶是 +Y，北方是 −Z\nPASS 极昼、极夜与赤道近 12 小时\nPASS 南北半球白昼随季节反转\nPASS 圆面重叠：不相交、全遮、环食、部分\nPASS 2026 年二分二至黄经达标并有序\nPASS 2026 年至日太阳赤纬约 ±23.4°\nPASS 四种主月相按真实黄经差求根\nPASS 满月受光接近 100%，新月接近 0%\nPASS 普通新月不会每月制造日食\nPASS 普通满月不会每月制造月食\nPASS NASA 独立样本：2009-07-22 日全食\nPASS NASA 独立样本：2023-10-14 日环食\nPASS NASA 独立样本：2024-04-08 日全食\nPASS NASA 独立样本：2025-03-14 月全食\nPASS NASA 独立样本：2025-09-07 月全食\nPASS 达拉斯全食、当地可见、遮挡率 100%\nPASS 地方食甚与全球食甚不混用\nPASS 地方五次接触顺序正确\nPASS 食前无食、食中全食、食后无食\nPASS 同场日食上海不能看见\nPASS 2009 年上海在全食带内\nPASS 2023 年阿尔伯克基为日环食而非全食\nPASS 2024 年半影月食与月偏食可区分\nPASS 2025 年 3 月月食在洛杉矶可见、上海不可见\nPASS 月全食接触顺序与阴影面积正确\nPASS 太阳中心食带标记落在地表且经纬度有效\nPASS 扶正地轴：太阳赤纬随季节变化基本消失\nPASS 压平月轨：黄纬归零且不改变月球距离\nPASS 实验开关关闭后恢复同一真实天象\nPASS 显示尺度没有进入天文计算依赖\nPASS 200 年范围随机 2000 个时刻数值合理\nPASS 随机分段边界没有可见位置跳变\nPASS 范围末端搜索正常返回空值\nPASS 编译 HTML 无外部 script 或样式依赖\n\n52/52 passed. Report: tests/test-report.json\n"
+  },
+  {
+    "name": "astronomy-extension",
+    "command": [
+      "node",
+      "tests/v2-test.cjs"
+    ],
+    "exitCode": 0,
+    "elapsedSeconds": 0.13,
+    "tail": "PASS 45° 太阳高度：1 米杆投 1 米影\nPASS 杆高加倍：影长严格加倍\nPASS 太阳在天顶：影长为零\nPASS 正午太阳在地平线下：不输出伪影长\nPASS 正午高度等于 0：无有限地面日影\nPASS 同一杆高：太阳升高影子变短\nPASS 南北纬正午影子方向正确\nPASS 非法纬度、赤纬、杆高拒绝\nPASS 同日钟点不同：正午几何不直接使用时角\nPASS 对照实验共享同一 UTC 时刻\nPASS 扶正后的赤纬基本为零\nPASS 上海夏季左右白昼不同\nPASS 相同倾角的对照：日照一致\nPASS 对照不会篡改真实星历\nPASS 对照后日期前进再返回，结果可复现\nPASS 假设与真实状态标记隔离\nPASS 对照倾角越界被拒绝\nPASS 月相时间轴包含前后 15 天\nPASS 日食时间轴使用事件全过程加边距\nPASS 四季时间轴按所选时区确定年界\nPASS 影子模式每步 7 天\nPASS 范围起点不越过星历边界\nPASS 范围终点不越过星历边界\nPASS 拖动范围两端与中点准确\nPASS 时间轴越界钳制，无效数字拒绝\nPASS 学习模式只接受三个入口\nPASS 学习参数的非法取值拒绝\nPASS 记录保留原场景与用户文字\nPASS 记录通过调用方的场景验证器\nPASS 用户输入长度有上限\nPASS 外部缩略图 URL 不被接受\nPASS 危险图片 data 类型不被接受\nPASS 备份版本与数组结构严格校验\nPASS 完整手记可 JSON 往返\nPASS 同一个备份不能有重复标识\nPASS 重复导入不覆盖已有文字\nPASS 合并仅增加新记录\nPASS 40 条容量限制：失败不修改原列表\nPASS 存储可用时成功保存并读取（适配器测试）\nPASS 再次创建适配器可读取同一后端数据\nPASS 浏览器禁止存储：降为内存且明确返回未持久化\nPASS 配额耗尽不谎称保存成功\nPASS 损坏的本地 JSON 可安全降级\nPASS 动态月食上下文可保存恢复\nPASS 同一民用日期只改钟点，正午赤纬与时刻相同\nPASS 正午求解落在太阳上中天附近\nPASS 正午不是固定的钟表 12 点\nPASS 正午求解的星历边界受保护\nPASS 非法正午经度及时区被拒绝\nPASS V2 所有源码可单独语法检查\n50/50 passed\n"
+  },
+  {
+    "name": "physics",
+    "command": [
+      "node",
+      "--test",
+      "tests/physics.test.cjs",
+      "tests/server.test.cjs"
+    ],
+    "exitCode": 0,
+    "elapsedSeconds": 4.42,
+    "tail": "rmatting normalizes negative zero and nonfinite values\n  ---\n  duration_ms: 14.888723\n  type: 'test'\n  ...\n# Subtest: Local server returns complete HTML and security headers\nok 53 - Local server returns complete HTML and security headers\n  ---\n  duration_ms: 4055.63274\n  type: 'test'\n  ...\n# Subtest: HEAD has correct length and no response body\nok 54 - HEAD has correct length and no response body\n  ---\n  duration_ms: 10.066717\n  type: 'test'\n  ...\n# Subtest: Server rejects mutation methods\nok 55 - Server rejects mutation methods\n  ---\n  duration_ms: 10.815877\n  type: 'test'\n  ...\n# Subtest: Missing and directory requests return 404\nok 56 - Missing and directory requests return 404\n  ---\n  duration_ms: 6.835342\n  type: 'test'\n  ...\n# Subtest: Encoded traversal and malformed paths cannot escape root\nok 57 - Encoded traversal and malformed paths cannot escape root\n  ---\n  duration_ms: 5.477781\n  type: 'test'\n  ...\n# Subtest: Built HTML is dependency-free and deterministic\nok 58 - Built HTML is dependency-free and deterministic\n  ---\n  duration_ms: 36.229271\n  type: 'test'\n  ...\n1..58\n# tests 58\n# suites 0\n# pass 58\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 4282.174349\n"
+  },
+  {
+    "name": "posture",
+    "command": [
+      "node",
+      "--test",
+      "tests/core.test.cjs",
+      "tests/server.test.cjs"
+    ],
+    "exitCode": 0,
+    "elapsedSeconds": 0.56,
+    "tail": "  # Subtest: 主页返回独立应用\n    ok 1 - 主页返回独立应用\n      ---\n      duration_ms: 80.003429\n      type: 'test'\n      ...\n    # Subtest: HEAD 只返回响应头\n    ok 2 - HEAD 只返回响应头\n      ---\n      duration_ms: 11.822465\n      type: 'test'\n      ...\n    # Subtest: 可读源码返回正确类型\n    ok 3 - 可读源码返回正确类型\n      ---\n      duration_ms: 14.84002\n      type: 'test'\n      ...\n    # Subtest: 未知路径返回404\n    ok 4 - 未知路径返回404\n      ---\n      duration_ms: 2.991956\n      type: 'test'\n      ...\n    # Subtest: 不暴露目录列表\n    ok 5 - 不暴露目录列表\n      ---\n      duration_ms: 5.01759\n      type: 'test'\n      ...\n    # Subtest: 不允许上传或任意写入\n    ok 6 - 不允许上传或任意写入\n      ---\n      duration_ms: 1.314976\n      type: 'test'\n      ...\n    # Subtest: 畸形URL安全拒绝\n    ok 7 - 畸形URL安全拒绝\n      ---\n      duration_ms: 2.066805\n      type: 'test'\n      ...\n    # Subtest: 目录穿越安全拒绝\n    ok 8 - 目录穿越安全拒绝\n      ---\n      duration_ms: 9.265243\n      type: 'test'\n      ...\n    # Subtest: 不接受非法端口\n    ok 9 - 不接受非法端口\n      ---\n      duration_ms: 122.225465\n      type: 'test'\n      ...\n    1..9\nok 38 - 可选本机静态服务\n  ---\n  duration_ms: 361.379007\n  type: 'test'\n  ...\n1..38\n# tests 47\n# suites 0\n# pass 47\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 518.898017\n"
+  },
+  {
+    "name": "chemistry",
+    "command": [
+      "node",
+      "--test",
+      "--test-concurrency=1",
+      "tests/app.test.cjs",
+      "tests/core.test.cjs",
+      "tests/cross-module.test.cjs",
+      "tests/explore.test.cjs",
+      "tests/integration.test.cjs",
+      "tests/lab.test.cjs",
+      "tests/offline.test.cjs"
+    ],
+    "exitCode": 0,
+    "elapsedSeconds": 5.43,
+    "tail": "221 - reset empties the workbench and switching recipes cannot leak previous materials or controls\n  ---\n  duration_ms: 0.243065\n  type: 'test'\n  ...\n# Subtest: reducer transitions work with deeply frozen inputs and undo does not alias restored contents\nok 222 - reducer transitions work with deeply frozen inputs and undo does not alias restored contents\n  ---\n  duration_ms: 0.344508\n  type: 'test'\n  ...\n# Subtest: the phosphorus scenario exposes conceptual oxygen choice and no quantitative product recipe\nok 223 - the phosphorus scenario exposes conceptual oxygen choice and no quantitative product recipe\n  ---\n  duration_ms: 0.214352\n  type: 'test'\n  ...\n# Subtest: 单文件包无外链脚本、样式或本地图片依赖\nok 224 - 单文件包无外链脚本、样式或本地图片依赖\n  ---\n  duration_ms: 48.942074\n  type: 'test'\n  ...\n# Subtest: 单文件版本全部12路由正常切换\nok 225 - 单文件版本全部12路由正常切换\n  ---\n  duration_ms: 89.200094\n  type: 'test'\n  ...\n# Subtest: 单文件版本的计算与交互没有因打包丢失\nok 226 - 单文件版本的计算与交互没有因打包丢失\n  ---\n  duration_ms: 22.543506\n  type: 'test'\n  ...\n# Subtest: 静态站入口顺序与本地资源完整\nok 227 - 静态站入口顺序与本地资源完整\n  ---\n  duration_ms: 0.939682\n  type: 'test'\n  ...\n1..227\n# tests 227\n# suites 0\n# pass 227\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 5335.378617\n"
+  },
+  {
+    "name": "history-data",
+    "command": [
+      "node",
+      "--test",
+      "tests/core-data.test.cjs"
+    ],
+    "exitCode": 0,
+    "elapsedSeconds": 0.54,
+    "tail": " to China’s slider\nok 21 - world references preserve their real ranges rather than being clipped to China’s slider\n  ---\n  duration_ms: 0.689135\n  type: 'test'\n  ...\n# Subtest: atlas snapshots are distinct chronological frames with dated, valid dynasty references\nok 22 - atlas snapshots are distinct chronological frames with dated, valid dynasty references\n  ---\n  duration_ms: 0.603908\n  type: 'test'\n  ...\n# Subtest: schematic map polygons have finite coordinates, area and no crossing edges\nok 23 - schematic map polygons have finite coordinates, area and no crossing edges\n  ---\n  duration_ms: 1.292523\n  type: 'test'\n  ...\n# Subtest: city/river layers and the bundled natural-land GeoJSON are geographic and complete\nok 24 - city/river layers and the bundled natural-land GeoJSON are geographic and complete\n  ---\n  duration_ms: 10.417795\n  type: 'test'\n  ...\n# Subtest: learning journeys and questions resolve to real eras and usable answer choices\nok 25 - learning journeys and questions resolve to real eras and usable answer choices\n  ---\n  duration_ms: 1.2445\n  type: 'test'\n  ...\n1..25\n# tests 25\n# suites 0\n# pass 25\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 419.020058\n"
+  },
+  {
+    "name": "history-package",
+    "command": [
+      "node",
+      "tests/verify-package.cjs"
+    ],
+    "exitCode": 0,
+    "elapsedSeconds": 0.19,
+    "tail": "{\n  \"result\": \"PASS\",\n  \"entry\": \"index.html\",\n  \"localReferences\": 10,\n  \"javascriptSyntaxChecked\": 8,\n  \"networkRuntimeDependencies\": 0,\n  \"documentation\": \"present\",\n  \"testDependency\": \"jsdom 26.1.0 (dev only)\"\n}\n"
+  }
+]

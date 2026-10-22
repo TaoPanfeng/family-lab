@@ -1,0 +1,63 @@
+PASS Initial lab and four live readouts
+PASS speed: prediction → single-variable A/B → explanation
+PASS speed: all formula steps, chart axes and sources
+PASS speed: rendered numeric extrema and all select options
+PASS acceleration: prediction → single-variable A/B → explanation
+PASS acceleration: all formula steps, chart axes and sources
+PASS acceleration: rendered numeric extrema and all select options
+PASS force: prediction → single-variable A/B → explanation
+PASS force: all formula steps, chart axes and sources
+PASS force: rendered numeric extrema and all select options
+PASS work: prediction → single-variable A/B → explanation
+PASS work: all formula steps, chart axes and sources
+PASS work: rendered numeric extrema and all select options
+PASS fall: prediction → single-variable A/B → explanation
+PASS fall: all formula steps, chart axes and sources
+PASS fall: rendered numeric extrema and all select options
+PASS jet: prediction → single-variable A/B → explanation
+PASS jet: all formula steps, chart axes and sources
+PASS jet: rendered numeric extrema and all select options
+PASS pressure: prediction → single-variable A/B → explanation
+PASS pressure: all formula steps, chart axes and sources
+PASS pressure: rendered numeric extrema and all select options
+PASS atmosphere: prediction → single-variable A/B → explanation
+PASS atmosphere: all formula steps, chart axes and sources
+PASS atmosphere: rendered numeric extrema and all select options
+PASS boiling: prediction → single-variable A/B → explanation
+PASS boiling: all formula steps, chart axes and sources
+PASS boiling: rendered numeric extrema and all select options
+PASS barometer: prediction → single-variable A/B → explanation
+PASS barometer: all formula steps, chart axes and sources
+PASS barometer: rendered numeric extrema and all select options
+PASS buoyancy: prediction → single-variable A/B → explanation
+PASS buoyancy: all formula steps, chart axes and sources
+PASS buoyancy: rendered numeric extrema and all select options
+PASS lever: prediction → single-variable A/B → explanation
+PASS lever: all formula steps, chart axes and sources
+PASS lever: rendered numeric extrema and all select options
+PASS pulley: prediction → single-variable A/B → explanation
+PASS pulley: all formula steps, chart axes and sources
+PASS pulley: rendered numeric extrema and all select options
+PASS spring: prediction → single-variable A/B → explanation
+PASS spring: all formula steps, chart axes and sources
+PASS spring: rendered numeric extrema and all select options
+PASS pendulum: prediction → single-variable A/B → explanation
+PASS pendulum: all formula steps, chart axes and sources
+PASS pendulum: rendered numeric extrema and all select options
+PASS circuit: prediction → single-variable A/B → explanation
+PASS circuit: all formula steps, chart axes and sources
+PASS circuit: rendered numeric extrema and all select options
+PASS A/B isolation, multi-variable warning, reset and mercury warning
+PASS Play/pause, scrubbing, speed, parameter restart and keyboard
+PASS Direct manipulation of water-height handle
+PASS Actual CSV download: 61 samples, headers and correct values
+PASS Note create/edit, XSS text escaping, A/B and time restoration
+PASS Actual JSON export/import, duplicate merge, atomic reject, delete/cancel/undo
+PASS Actual PNG scene export with A/B
+PASS Formula-map routing, library search, modes, roles, help and keyboard tabs
+PASS Rendered preview set and every Canvas scene at nonzero time
+PASS Tablet/mobile: 12 viewport-page combinations and library controls
+PASS Explicit mocked-storage contract: autosave and paused restoration
+PASS No uncaught browser errors
+PASS Offline interactions trigger no external HTTP requests
+SUMMARY 62 passed 0 failed

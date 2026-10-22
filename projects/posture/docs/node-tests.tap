@@ -1,0 +1,293 @@
+TAP version 13
+# Subtest: 15 个唯一姿势，覆盖行住坐卧
+ok 1 - 15 个唯一姿势，覆盖行住坐卧
+  ---
+  duration_ms: 1.590611
+  type: 'test'
+  ...
+# Subtest: 条目内容完整：office
+ok 2 - 条目内容完整：office
+  ---
+  duration_ms: 0.254674
+  type: 'test'
+  ...
+# Subtest: 条目内容完整：bench
+ok 3 - 条目内容完整：bench
+  ---
+  duration_ms: 0.075524
+  type: 'test'
+  ...
+# Subtest: 条目内容完整：upright
+ok 4 - 条目内容完整：upright
+  ---
+  duration_ms: 0.111949
+  type: 'test'
+  ...
+# Subtest: 条目内容完整：seiza
+ok 5 - 条目内容完整：seiza
+  ---
+  duration_ms: 0.068554
+  type: 'test'
+  ...
+# Subtest: 条目内容完整：cross
+ok 6 - 条目内容完整：cross
+  ---
+  duration_ms: 0.054582
+  type: 'test'
+  ...
+# Subtest: 条目内容完整：stand
+ok 7 - 条目内容完整：stand
+  ---
+  duration_ms: 0.210218
+  type: 'test'
+  ...
+# Subtest: 条目内容完整：standdesk
+ok 8 - 条目内容完整：standdesk
+  ---
+  duration_ms: 0.066671
+  type: 'test'
+  ...
+# Subtest: 条目内容完整：quiet
+ok 9 - 条目内容完整：quiet
+  ---
+  duration_ms: 0.264589
+  type: 'test'
+  ...
+# Subtest: 条目内容完整：walk
+ok 10 - 条目内容完整：walk
+  ---
+  duration_ms: 0.27178
+  type: 'test'
+  ...
+# Subtest: 条目内容完整：left
+ok 11 - 条目内容完整：left
+  ---
+  duration_ms: 0.111378
+  type: 'test'
+  ...
+# Subtest: 条目内容完整：right
+ok 12 - 条目内容完整：right
+  ---
+  duration_ms: 0.050045
+  type: 'test'
+  ...
+# Subtest: 条目内容完整：supine
+ok 13 - 条目内容完整：supine
+  ---
+  duration_ms: 0.071287
+  type: 'test'
+  ...
+# Subtest: 条目内容完整：prone
+ok 14 - 条目内容完整：prone
+  ---
+  duration_ms: 0.035704
+  type: 'test'
+  ...
+# Subtest: 条目内容完整：fetal
+ok 15 - 条目内容完整：fetal
+  ---
+  duration_ms: 0.032108
+  type: 'test'
+  ...
+# Subtest: 条目内容完整：auspicious
+ok 16 - 条目内容完整：auspicious
+  ---
+  duration_ms: 0.027872
+  type: 'test'
+  ...
+# Subtest: 身高比例计算透明且可重复
+ok 17 - 身高比例计算透明且可重复
+  ---
+  duration_ms: 0.09274
+  type: 'test'
+  ...
+# Subtest: 实测优先于身高比例
+ok 18 - 实测优先于身高比例
+  ---
+  duration_ms: 0.311169
+  type: 'test'
+  ...
+# Subtest: 参数边界与非数字值
+ok 19 - 参数边界与非数字值
+  ---
+  duration_ms: 0.131038
+  type: 'test'
+  ...
+# Subtest: 脚踏影响悬空差值
+ok 20 - 脚踏影响悬空差值
+  ---
+  duration_ms: 0.117577
+  type: 'test'
+  ...
+# Subtest: 显示器几何角与方向
+ok 21 - 显示器几何角与方向
+  ---
+  duration_ms: 0.109075
+  type: 'test'
+  ...
+# Subtest: 明显失配会出现提醒，而非健康评分
+ok 22 - 明显失配会出现提醒，而非健康评分
+  ---
+  duration_ms: 0.252541
+  type: 'test'
+  ...
+# Subtest: 睡眠参数不伪造压力数值
+ok 23 - 睡眠参数不伪造压力数值
+  ---
+  duration_ms: 0.130357
+  type: 'test'
+  ...
+# Subtest: HTML 转义阻止用户备注注入
+ok 24 - HTML 转义阻止用户备注注入
+  ---
+  duration_ms: 0.193512
+  type: 'test'
+  ...
+# Subtest: 方案副本不会被随后调整污染
+ok 25 - 方案副本不会被随后调整污染
+  ---
+  duration_ms: 0.435156
+  type: 'test'
+  ...
+# Subtest: 备份 round-trip 保留内容、实测与时间
+ok 26 - 备份 round-trip 保留内容、实测与时间
+  ---
+  duration_ms: 0.434126
+  type: 'test'
+  ...
+# Subtest: 重复与未知收藏被清理
+ok 27 - 重复与未知收藏被清理
+  ---
+  duration_ms: 0.137707
+  type: 'test'
+  ...
+# Subtest: JSON 语法无效时拒绝导入
+ok 28 - JSON 语法无效时拒绝导入
+  ---
+  duration_ms: 0.331992
+  type: 'test'
+  ...
+# Subtest: 未知版本拒绝导入
+ok 29 - 未知版本拒绝导入
+  ---
+  duration_ms: 0.096796
+  type: 'test'
+  ...
+# Subtest: 未知姿势拒绝整批导入
+ok 30 - 未知姿势拒绝整批导入
+  ---
+  duration_ms: 0.189586
+  type: 'test'
+  ...
+# Subtest: 超过 100 个方案拒绝导入
+ok 31 - 超过 100 个方案拒绝导入
+  ---
+  duration_ms: 0.12608
+  type: 'test'
+  ...
+# Subtest: 参数越界、无限值和字符串拒绝导入
+ok 32 - 参数越界、无限值和字符串拒绝导入
+  ---
+  duration_ms: 0.285702
+  type: 'test'
+  ...
+# Subtest: 实测参数非法时拒绝导入
+ok 33 - 实测参数非法时拒绝导入
+  ---
+  duration_ms: 0.146922
+  type: 'test'
+  ...
+# Subtest: 大文件拒绝导入
+ok 34 - 大文件拒绝导入
+  ---
+  duration_ms: 0.128454
+  type: 'test'
+  ...
+# Subtest: 未知字段不会污染对象原型
+ok 35 - 未知字段不会污染对象原型
+  ---
+  duration_ms: 0.249437
+  type: 'test'
+  ...
+# Subtest: 名称与备注限制长度
+ok 36 - 名称与备注限制长度
+  ---
+  duration_ms: 0.15221
+  type: 'test'
+  ...
+# Subtest: 独立入口没有外部脚本、样式、字体或 fetch
+ok 37 - 独立入口没有外部脚本、样式、字体或 fetch
+  ---
+  duration_ms: 1.142595
+  type: 'test'
+  ...
+# Subtest: 可选本机静态服务
+    # Subtest: 主页返回独立应用
+    ok 1 - 主页返回独立应用
+      ---
+      duration_ms: 13.828346
+      type: 'test'
+      ...
+    # Subtest: HEAD 只返回响应头
+    ok 2 - HEAD 只返回响应头
+      ---
+      duration_ms: 2.108203
+      type: 'test'
+      ...
+    # Subtest: 可读源码返回正确类型
+    ok 3 - 可读源码返回正确类型
+      ---
+      duration_ms: 1.891896
+      type: 'test'
+      ...
+    # Subtest: 未知路径返回404
+    ok 4 - 未知路径返回404
+      ---
+      duration_ms: 1.529369
+      type: 'test'
+      ...
+    # Subtest: 不暴露目录列表
+    ok 5 - 不暴露目录列表
+      ---
+      duration_ms: 1.091908
+      type: 'test'
+      ...
+    # Subtest: 不允许上传或任意写入
+    ok 6 - 不允许上传或任意写入
+      ---
+      duration_ms: 0.769472
+      type: 'test'
+      ...
+    # Subtest: 畸形URL安全拒绝
+    ok 7 - 畸形URL安全拒绝
+      ---
+      duration_ms: 2.998306
+      type: 'test'
+      ...
+    # Subtest: 目录穿越安全拒绝
+    ok 8 - 目录穿越安全拒绝
+      ---
+      duration_ms: 1.627136
+      type: 'test'
+      ...
+    # Subtest: 不接受非法端口
+    ok 9 - 不接受非法端口
+      ---
+      duration_ms: 23.703672
+      type: 'test'
+      ...
+    1..9
+ok 38 - 可选本机静态服务
+  ---
+  duration_ms: 98.029805
+  type: 'test'
+  ...
+1..38
+# tests 47
+# suites 0
+# pass 47
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 144.511948

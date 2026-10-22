@@ -1,0 +1,12 @@
+{
+  "name": "little-matter-chemistry",
+  "version": "1.0.0",
+  "private": true,
+  "description": "万物化学 — 可离线运行的亲子交互化学探索馆",
+  "scripts": {
+    "test": "node tests/run-report.cjs",
+    "test:report": "node tests/run-report.cjs",
+    "check": "node tests/check-files.cjs"
+  },
+  "engines": { "node": ">=22.17" }
+}

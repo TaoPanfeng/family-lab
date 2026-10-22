@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="观史：和孩子一起探索中国历史。可缩放的朝代时间轴、帝王档案、历史地图、重大战役与同期世界，完全离线可用。">
+  <meta name="theme-color" content="#244c3d">
+  <title>观史 · 和孩子一起，看见历史</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="data/content.js"></script>
+  <script defer src="data/rulers-early.js"></script>
+  <script defer src="data/rulers-late.js"></script>
+  <script defer src="data/land.js"></script>
+  <script defer src="data/atlas.js"></script>
+  <script defer src="data/learning.js"></script>
+  <script defer src="core.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到主要内容</a>
+  <aside class="sidebar" aria-label="主要导航">
+    <a class="brand" href="#overview" aria-label="观史首页"><span class="seal">史</span><span><b>观史</b><small>一家人的历史探索馆</small></span></a>
+    <div class="sidebar-label">沿着时间，打开世界</div>
+    <nav id="navigation"></nav>
+    <div class="sidebar-bottom">
+      <div class="journey-teaser"><span class="tiny-caps">A LITTLE EVERY DAY</span><h3>每天一小步<br>穿过几千年</h3><p>和孩子一起问一个<br>“为什么”。</p><button data-action="nav" data-view="learn" class="text-button">开始亲子探索 <span>↗</span></button></div>
+      <button class="sidebar-source" data-action="nav" data-view="sources">ⓘ 史料与阅读说明</button>
+      <small>无需登录 · 支持离线阅读</small>
+    </div>
+  </aside>
+  <div class="workspace">
+    <header class="topbar">
+      <div class="breadcrumb"><span>观史</span><span>/</span><b id="view-title">历史长河</b></div>
+      <div class="header-actions">
+        <div class="global-search-wrap"><label class="global-search"><span aria-hidden="true">⌕</span><input id="global-search" type="search" placeholder="搜索朝代、帝王、事件…" aria-label="全站搜索" autocomplete="off"><kbd>/</kbd></label><div id="search-results" class="search-results" hidden></div></div>
+        <div class="mode-switch" role="group" aria-label="阅读模式"><button data-action="mode" data-mode="child" aria-pressed="true">亲子探索</button><button data-action="mode" data-mode="deep" aria-pressed="false">成人深读</button></div>
+      </div>
+    </header>
+    <main id="main" tabindex="-1"><div class="loading-state">正在展开历史长卷…</div></main>
+    <footer class="page-footer"><span>观史 GUANSHI <i>·</i> 带着问题读历史</span><span>时间有刻度，理解有深度。</span></footer>
+  </div>
+  <dialog id="detail-dialog" aria-label="详细档案"><div id="detail-content"></div></dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  <noscript><p class="noscript">请启用浏览器 JavaScript 以操作时间轴与地图；纯文字说明可阅读 docs 文件夹。</p></noscript>
+</body>
+</html>

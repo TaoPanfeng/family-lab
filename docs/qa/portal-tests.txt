@@ -1,0 +1,94 @@
+TAP version 13
+# Subtest: five independent current projects, unique identifiers and entries
+ok 1 - five independent current projects, unique identifiers and entries
+  ---
+  duration_ms: 1.213574
+  type: 'test'
+  ...
+# Subtest: each homepage card opens the original entry in a separate tab
+ok 2 - each homepage card opens the original entry in a separate tab
+  ---
+  duration_ms: 0.52585
+  type: 'test'
+  ...
+# Subtest: home has no iframe or runtime external dependency
+ok 3 - home has no iframe or runtime external dependency
+  ---
+  duration_ms: 1.767585
+  type: 'test'
+  ...
+# Subtest: home entry and footer links resolve inside the repository
+ok 4 - home entry and footer links resolve inside the repository
+  ---
+  duration_ms: 0.607522
+  type: 'test'
+  ...
+# Subtest: all source index file links exist
+ok 5 - all source index file links exist
+  ---
+  duration_ms: 3.316633
+  type: 'test'
+  ...
+# Subtest: nested GitHub Pages paths do not require a root-path rewrite
+ok 6 - nested GitHub Pages paths do not require a root-path rewrite
+  ---
+  duration_ms: 0.270957
+  type: 'test'
+  ...
+# Subtest: compiled application entry files and direct local assets exist
+ok 7 - compiled application entry files and direct local assets exist
+  ---
+  duration_ms: 44.892261
+  type: 'test'
+  ...
+# Subtest: only one application folder per project; no nested original archives
+ok 8 - only one application folder per project; no nested original archives
+  ---
+  duration_ms: 1.41779
+  type: 'test'
+  ...
+# Subtest: all original project licenses remain present
+ok 9 - all original project licenses remain present
+  ---
+  duration_ms: 0.501273
+  type: 'test'
+  ...
+# Subtest: source code, build tools and imported data are retained
+ok 10 - source code, build tools and imported data are retained
+  ---
+  duration_ms: 0.502034
+  type: 'test'
+  ...
+# Subtest: homepage accessibility basics and responsive breakpoints exist
+ok 11 - homepage accessibility basics and responsive breakpoints exist
+  ---
+  duration_ms: 0.840173
+  type: 'test'
+  ...
+# Subtest: homepage contains no unresolved build placeholders
+ok 12 - homepage contains no unresolved build placeholders
+  ---
+  duration_ms: 0.11972
+  type: 'test'
+  ...
+# Subtest: source links do not pretend an uncreated remote repository exists
+ok 13 - source links do not pretend an uncreated remote repository exists
+  ---
+  duration_ms: 0.330246
+  type: 'test'
+  ...
+# Subtest: update launcher never discards changes or force-pushes
+ok 14 - update launcher never discards changes or force-pushes
+  ---
+  duration_ms: 0.317668
+  type: 'test'
+  ...
+1..14
+# tests 14
+# suites 0
+# pass 14
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 119.252277

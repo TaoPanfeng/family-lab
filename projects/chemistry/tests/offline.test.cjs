@@ -1,0 +1,10 @@
+'use strict';
+const fs=require('node:fs');
+const path=require('node:path');
+const test=require('node:test');
+const assert=require('node:assert/strict');
+const {createApp}=require('./dom-harness.cjs');
+test('单文件包无外链脚本、样式或本地图片依赖',async()=>{const a=await createApp({offline:true});assert.equal(a.all('script[src]').length,0);assert.equal(a.all('link[rel="stylesheet"]').length,0);for(const img of a.all('img'))assert.match(img.getAttribute('src'),/^data:/);assert.equal(a.document.querySelector('.app-error'),null);assert.deepEqual(a.errors,[]);a.close();});
+test('单文件版本全部12路由正常切换',async()=>{const a=await createApp({offline:true});for(const [route]of a.window.ChemAppTesting.routes){a.go(route);assert.equal(a.document.querySelector('.app-error'),null,route+':'+a.errors.join('\n'));assert.ok(a.text().length>100,route);}a.close();});
+test('单文件版本的计算与交互没有因打包丢失',async()=>{const a=await createApp({offline:true,route:'atom'});a.click('[data-atom-preset="C-14"]');assert.match(a.el('#cx-atom-identity').textContent,/碳-14/);a.go('stoich?reaction=peroxide');a.input('#amount-0',2);assert.match(a.el('#stoich-result').textContent,/31\.998 g/);a.go('lab');a.click('[data-lab-action="place"][data-id="flask"]');assert.equal(a.all('[data-draggable-gear]').length,1);assert.deepEqual(a.errors,[]);a.close();});
+test('静态站入口顺序与本地资源完整',()=>{const root=path.resolve(__dirname,'..','dist'),html=fs.readFileSync(path.join(root,'index.html'),'utf8');const refs=[...html.matchAll(/(?:src|href)="([^"#]+)"/g)].map(x=>x[1]).filter(x=>!/^https?:|^data:/.test(x));for(const ref of refs)assert.ok(fs.statSync(path.join(root,ref)).size>0,ref);const scripts=[...html.matchAll(/<script src="([^"]+)"/g)].map(x=>x[1]);assert.deepEqual(scripts,['data.js','core.js','lab.js','explore.js','app.js']);});

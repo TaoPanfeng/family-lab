@@ -1,0 +1,358 @@
+TAP version 13
+# Subtest: Catalog: exactly sixteen unique, fully connected labs
+ok 1 - Catalog: exactly sixteen unique, fully connected labs
+  ---
+  duration_ms: 2.482401
+  type: 'test'
+  ...
+# Subtest: speed: defaults, all extremes/options, deterministic results and every numerical chart
+ok 2 - speed: defaults, all extremes/options, deterministic results and every numerical chart
+  ---
+  duration_ms: 3.701383
+  type: 'test'
+  ...
+# Subtest: acceleration: defaults, all extremes/options, deterministic results and every numerical chart
+ok 3 - acceleration: defaults, all extremes/options, deterministic results and every numerical chart
+  ---
+  duration_ms: 3.511826
+  type: 'test'
+  ...
+# Subtest: force: defaults, all extremes/options, deterministic results and every numerical chart
+ok 4 - force: defaults, all extremes/options, deterministic results and every numerical chart
+  ---
+  duration_ms: 4.095499
+  type: 'test'
+  ...
+# Subtest: work: defaults, all extremes/options, deterministic results and every numerical chart
+ok 5 - work: defaults, all extremes/options, deterministic results and every numerical chart
+  ---
+  duration_ms: 5.968959
+  type: 'test'
+  ...
+# Subtest: fall: defaults, all extremes/options, deterministic results and every numerical chart
+ok 6 - fall: defaults, all extremes/options, deterministic results and every numerical chart
+  ---
+  duration_ms: 7.425841
+  type: 'test'
+  ...
+# Subtest: jet: defaults, all extremes/options, deterministic results and every numerical chart
+ok 7 - jet: defaults, all extremes/options, deterministic results and every numerical chart
+  ---
+  duration_ms: 5.290715
+  type: 'test'
+  ...
+# Subtest: pressure: defaults, all extremes/options, deterministic results and every numerical chart
+ok 8 - pressure: defaults, all extremes/options, deterministic results and every numerical chart
+  ---
+  duration_ms: 1.985701
+  type: 'test'
+  ...
+# Subtest: atmosphere: defaults, all extremes/options, deterministic results and every numerical chart
+ok 9 - atmosphere: defaults, all extremes/options, deterministic results and every numerical chart
+  ---
+  duration_ms: 1.589201
+  type: 'test'
+  ...
+# Subtest: boiling: defaults, all extremes/options, deterministic results and every numerical chart
+ok 10 - boiling: defaults, all extremes/options, deterministic results and every numerical chart
+  ---
+  duration_ms: 64.715373
+  type: 'test'
+  ...
+# Subtest: barometer: defaults, all extremes/options, deterministic results and every numerical chart
+ok 11 - barometer: defaults, all extremes/options, deterministic results and every numerical chart
+  ---
+  duration_ms: 1.417802
+  type: 'test'
+  ...
+# Subtest: buoyancy: defaults, all extremes/options, deterministic results and every numerical chart
+ok 12 - buoyancy: defaults, all extremes/options, deterministic results and every numerical chart
+  ---
+  duration_ms: 1.616413
+  type: 'test'
+  ...
+# Subtest: lever: defaults, all extremes/options, deterministic results and every numerical chart
+ok 13 - lever: defaults, all extremes/options, deterministic results and every numerical chart
+  ---
+  duration_ms: 2.305404
+  type: 'test'
+  ...
+# Subtest: pulley: defaults, all extremes/options, deterministic results and every numerical chart
+ok 14 - pulley: defaults, all extremes/options, deterministic results and every numerical chart
+  ---
+  duration_ms: 2.697957
+  type: 'test'
+  ...
+# Subtest: spring: defaults, all extremes/options, deterministic results and every numerical chart
+ok 15 - spring: defaults, all extremes/options, deterministic results and every numerical chart
+  ---
+  duration_ms: 1.919241
+  type: 'test'
+  ...
+# Subtest: pendulum: defaults, all extremes/options, deterministic results and every numerical chart
+ok 16 - pendulum: defaults, all extremes/options, deterministic results and every numerical chart
+  ---
+  duration_ms: 2.435711
+  type: 'test'
+  ...
+# Subtest: circuit: defaults, all extremes/options, deterministic results and every numerical chart
+ok 17 - circuit: defaults, all extremes/options, deterministic results and every numerical chart
+  ---
+  duration_ms: 2.349711
+  type: 'test'
+  ...
+# Subtest: Uniform motion: velocity, distance and km/h conversion
+ok 18 - Uniform motion: velocity, distance and km/h conversion
+  ---
+  duration_ms: 0.168314
+  type: 'test'
+  ...
+# Subtest: Acceleration includes initial velocity and signed displacement
+ok 19 - Acceleration includes initial velocity and signed displacement
+  ---
+  duration_ms: 0.084799
+  type: 'test'
+  ...
+# Subtest: Newton: doubling mass halves acceleration when frictionless
+ok 20 - Newton: doubling mass halves acceleration when frictionless
+  ---
+  duration_ms: 0.112971
+  type: 'test'
+  ...
+# Subtest: Friction: insufficient push stays still, no reverse acceleration
+ok 21 - Friction: insufficient push stays still, no reverse acceleration
+  ---
+  duration_ms: 0.080501
+  type: 'test'
+  ...
+# Subtest: Kinetic friction subtracts from net force after motion begins
+ok 22 - Kinetic friction subtracts from net force after motion begins
+  ---
+  duration_ms: 0.06579
+  type: 'test'
+  ...
+# Subtest: Work: zero at ninety degrees, negative against displacement
+ok 23 - Work: zero at ninety degrees, negative against displacement
+  ---
+  duration_ms: 0.083096
+  type: 'test'
+  ...
+# Subtest: Ideal freefall: mass cancels, impact and energy agree
+ok 24 - Ideal freefall: mass cancels, impact and energy agree
+  ---
+  duration_ms: 0.094994
+  type: 'test'
+  ...
+# Subtest: Quadratic drag: equal shape, heavier ball faster, energy dissipates
+ok 25 - Quadratic drag: equal shape, heavier ball faster, energy dissipates
+  ---
+  duration_ms: 0.094793
+  type: 'test'
+  ...
+# Subtest: Torricelli: h=10m gives 14.007m/s, equal to ideal falling impact
+ok 26 - Torricelli: h=10m gives 14.007m/s, equal to ideal falling impact
+  ---
+  duration_ms: 0.080371
+  type: 'test'
+  ...
+# Subtest: Jet: doubling diameter quadruples flow, not speed
+ok 27 - Jet: doubling diameter quadruples flow, not speed
+  ---
+  duration_ms: 0.081123
+  type: 'test'
+  ...
+# Subtest: Jet: quadrupling head doubles speed
+ok 28 - Jet: quadrupling head doubles speed
+  ---
+  duration_ms: 0.400065
+  type: 'test'
+  ...
+# Subtest: Jet: liquid density and external object mass do not change ideal speed
+ok 29 - Jet: liquid density and external object mass do not change ideal speed
+  ---
+  duration_ms: 0.339903
+  type: 'test'
+  ...
+# Subtest: Jet losses distinguish Cv, Cc and Cd
+ok 30 - Jet losses distinguish Cv, Cc and Cd
+  ---
+  duration_ms: 0.096927
+  type: 'test'
+  ...
+# Subtest: Draining tank: analytic height, volume conservation and dry state
+ok 31 - Draining tank: analytic height, volume conservation and dry state
+  ---
+  duration_ms: 0.125259
+  type: 'test'
+  ...
+# Subtest: Hydrostatics: rho gh, absolute/gauge, area conversion
+ok 32 - Hydrostatics: rho gh, absolute/gauge, area conversion
+  ---
+  duration_ms: 0.09908
+  type: 'test'
+  ...
+# Subtest: Standard atmosphere: surface, 5km and 9km reference behavior
+ok 33 - Standard atmosphere: surface, 5km and 9km reference behavior
+  ---
+  duration_ms: 0.344441
+  type: 'test'
+  ...
+# Subtest: IAPWS: published triple point, standard boiling, critical point
+ok 34 - IAPWS: published triple point, standard boiling, critical point
+  ---
+  duration_ms: 0.192782
+  type: 'test'
+  ...
+# Subtest: IAPWS inverse and domain checks
+ok 35 - IAPWS inverse and domain checks
+  ---
+  duration_ms: 0.305973
+  type: 'test'
+  ...
+# Subtest: Altitude lowers boiling temperature; 90°C case switches condition
+ok 36 - Altitude lowers boiling temperature; 90°C case switches condition
+  ---
+  duration_ms: 0.365682
+  type: 'test'
+  ...
+# Subtest: Bubble needs include hydrostatic and surface-tension terms
+ok 37 - Bubble needs include hydrostatic and surface-tension terms
+  ---
+  duration_ms: 0.215877
+  type: 'test'
+  ...
+# Subtest: Barometer: water/mercury height ratio and equal pressure collapse
+ok 38 - Barometer: water/mercury height ratio and equal pressure collapse
+  ---
+  duration_ms: 0.116045
+  type: 'test'
+  ...
+# Subtest: Buoyancy: floating, neutral and sinking use actual vs maximal force
+ok 39 - Buoyancy: floating, neutral and sinking use actual vs maximal force
+  ---
+  duration_ms: 0.09226
+  type: 'test'
+  ...
+# Subtest: Lever: torque balance and required mass
+ok 40 - Lever: torque balance and required mass
+  ---
+  duration_ms: 0.06614
+  type: 'test'
+  ...
+# Subtest: Pulleys: force-distance exchange and efficiency energy accounting
+ok 41 - Pulleys: force-distance exchange and efficiency energy accounting
+  ---
+  duration_ms: 0.120732
+  type: 'test'
+  ...
+# Subtest: Spring: period, energy conservation and mass dependence
+ok 42 - Spring: period, energy conservation and mass dependence
+  ---
+  duration_ms: 0.135594
+  type: 'test'
+  ...
+# Subtest: Pendulum: small-angle period independent of mass, energy consistent
+ok 43 - Pendulum: small-angle period independent of mass, energy consistent
+  ---
+  duration_ms: 0.130457
+  type: 'test'
+  ...
+# Subtest: Circuit: series, parallel Kirchhoff and switch
+ok 44 - Circuit: series, parallel Kirchhoff and switch
+  ---
+  duration_ms: 0.095875
+  type: 'test'
+  ...
+# Subtest: Parameter validation: defaults, clamp, strict rejects NaN and options
+ok 45 - Parameter validation: defaults, clamp, strict rejects NaN and options
+  ---
+  duration_ms: 0.371792
+  type: 'test'
+  ...
+# Subtest: Scan count normalizes 0,1,fraction,huge and NaN without bad endpoints
+ok 46 - Scan count normalizes 0,1,fraction,huge and NaN without bad endpoints
+  ---
+  duration_ms: 2.556503
+  type: 'test'
+  ...
+# Subtest: A/B scene preserves shared time when A lasts longer than B
+ok 47 - A/B scene preserves shared time when A lasts longer than B
+  ---
+  duration_ms: 0.206843
+  type: 'test'
+  ...
+# Subtest: Scene validation and defensive copy
+ok 48 - Scene validation and defensive copy
+  ---
+  duration_ms: 0.244199
+  type: 'test'
+  ...
+# Subtest: Backup roundtrip keeps textual payload as text, no executable operations
+ok 49 - Backup roundtrip keeps textual payload as text, no executable operations
+  ---
+  duration_ms: 0.352022
+  type: 'test'
+  ...
+# Subtest: Backup rejects wrong versions, excessive notes, duplicate IDs and invalid scene
+ok 50 - Backup rejects wrong versions, excessive notes, duplicate IDs and invalid scene
+  ---
+  duration_ms: 0.680789
+  type: 'test'
+  ...
+# Subtest: Merge deduplicates, keeps existing, enforces cap, has no side effects
+ok 51 - Merge deduplicates, keeps existing, enforces cap, has no side effects
+  ---
+  duration_ms: 0.351571
+  type: 'test'
+  ...
+# Subtest: Formatting normalizes negative zero and nonfinite values
+ok 52 - Formatting normalizes negative zero and nonfinite values
+  ---
+  duration_ms: 12.253366
+  type: 'test'
+  ...
+# Subtest: Local server returns complete HTML and security headers
+ok 53 - Local server returns complete HTML and security headers
+  ---
+  duration_ms: 4024.613697
+  type: 'test'
+  ...
+# Subtest: HEAD has correct length and no response body
+ok 54 - HEAD has correct length and no response body
+  ---
+  duration_ms: 4.230723
+  type: 'test'
+  ...
+# Subtest: Server rejects mutation methods
+ok 55 - Server rejects mutation methods
+  ---
+  duration_ms: 4.504367
+  type: 'test'
+  ...
+# Subtest: Missing and directory requests return 404
+ok 56 - Missing and directory requests return 404
+  ---
+  duration_ms: 3.418085
+  type: 'test'
+  ...
+# Subtest: Encoded traversal and malformed paths cannot escape root
+ok 57 - Encoded traversal and malformed paths cannot escape root
+  ---
+  duration_ms: 6.02821
+  type: 'test'
+  ...
+# Subtest: Built HTML is dependency-free and deterministic
+ok 58 - Built HTML is dependency-free and deterministic
+  ---
+  duration_ms: 38.002931
+  type: 'test'
+  ...
+1..58
+# tests 58
+# suites 0
+# pass 58
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4135.331744

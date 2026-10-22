@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="身有度：可离线使用的行住坐卧姿势实验室。3D 场景、工位试调、睡姿步骤与个人方案。">
+  <meta name="color-scheme" content="light">
+  <title>身有度 · 行住坐卧实验室</title>
+  <link rel="icon" type="image/svg+xml" href="assets/mark.svg">
+  <link rel="stylesheet" href="assets/style.css">
+  <script defer src="src/data.js"></script>
+  <script defer src="src/core.js"></script>
+  <script defer src="src/scene.js"></script>
+  <script defer src="src/app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#mainContent">跳到主要内容</a>
+  <header class="topbar">
+    <a class="brand" href="#lab" aria-label="身有度首页"><img src="assets/mark.svg" alt="" width="38" height="38"><span>身有度<small>BODY, IN BALANCE</small></span></a>
+    <nav class="main-nav" aria-label="主要导航"><button class="active" data-page="lab">姿势实验室</button><button data-page="plans">我的方案 <span id="planCount">0</span></button><button data-page="guide">使用与依据</button></nav>
+    <div class="header-right"><span class="offline"><i></i> 本地离线版</span><button class="icon-btn" id="helpBtn" aria-label="打开使用说明" title="使用说明">?</button></div>
+  </header>
+  <div id="storageWarning" class="storage-warning" hidden></div>
+  <main id="mainContent">
+    <section id="labPage" class="workspace" aria-label="姿势实验室">
+      <aside class="library panel">
+        <div class="library-head"><div><span class="eyebrow">POSTURE LIBRARY</span><h2>行住坐卧 <span id="libraryCount">15</span></h2></div><div class="view-switch" aria-label="条目显示方式"><button id="cardView" class="active" title="卡片视图" aria-label="卡片视图">▦</button><button id="listView" title="紧凑列表" aria-label="紧凑列表">☷</button></div></div>
+        <label class="search-box"><span aria-hidden="true">⌕</span><input id="searchInput" type="search" placeholder="搜索：工位、唐僧睡…" aria-label="搜索姿势" autocomplete="off"></label>
+        <div class="category-tabs" id="categoryTabs" aria-label="姿势分类"></div>
+        <button id="favoriteFilter" class="favorite-filter" aria-pressed="false">☆ 只看收藏 <span id="favoriteCount">0</span></button>
+        <div id="postureList" class="posture-list" aria-label="姿势条目"></div>
+        <div class="library-footer"><span class="mini-mark">◌</span><div>没有一种姿势需要一直坚持。<small>换个姿势，也是照顾身体。</small></div></div>
+      </aside>
+      <section class="lab-center">
+        <div class="pose-heading"><div><div class="eyebrow" id="poseEnglish">DESK / SITTING</div><h1 id="poseName">电脑工位坐姿</h1><p id="poseBrief"></p></div><button class="favorite-large" id="favoriteBtn" aria-label="收藏当前姿势" title="收藏当前姿势">☆</button></div>
+        <section class="stage-card" aria-label="可交互的三维姿势示意">
+          <div class="stage-top"><span class="pill"><i></i> 可旋转 3D</span><span id="sceneBadge" class="stage-badge">工作日常</span><button class="text-btn" id="captureBtn" title="保存当前视角为 PNG">保存视图 ↗</button></div>
+          <div class="canvas-wrap"><canvas id="sceneCanvas" tabindex="0" aria-label="三维姿势场景。拖动旋转，滚轮缩放；也可使用方向键，Home 复位。"></canvas><div id="sceneLabels" class="scene-labels" aria-hidden="true"></div><div class="stage-watermark">SHEN YOU DU<span>日常姿势 · 身体觉察</span></div><div id="sceneNotice" class="scene-notice" hidden></div></div>
+          <div class="stage-controls"><div class="camera-controls" aria-label="观察视角"><button data-camera="home" class="active" title="默认视角">透视</button><button data-camera="front">正面</button><button data-camera="side">侧面</button><button data-camera="top">俯视</button></div><button class="walk-play" id="walkPlay" hidden>▶ 演示步态</button><label class="switch-label"><input type="checkbox" id="measureToggle" checked><span>尺寸标注</span></label></div>
+          <div class="stage-caption"><span>拖动旋转 · 滚轮缩放 · 点身体部位查看对应步骤</span><span>教学示意，非生物力学仿真</span></div>
+        </section>
+        <div id="metricRow" class="metric-row" aria-live="polite"></div>
+        <section class="instruction-card panel">
+          <div class="detail-tabs" role="tablist" aria-label="姿势详情"><button role="tab" aria-selected="true" class="active" data-detail="steps">分步指导</button><button role="tab" aria-selected="false" data-detail="tradeoffs">优劣与自查</button><button role="tab" aria-selected="false" data-detail="sources">参考依据</button></div>
+          <div id="detailContent"></div>
+        </section>
+        <section class="wellbeing panel" aria-label="呼吸与换姿提醒">
+          <div class="breathing-block"><div class="breath-orb" id="breathOrb"><span id="breathPhase">自然</span></div><div class="breath-main"><h3>先松下来，再找位置</h3><p id="breathDescription">各姿势没有统一的“正确呼吸频率”。自然呼吸就好。</p><div class="breath-controls"><select id="breathMode" aria-label="呼吸方式"><option value="natural">自然呼吸 · 默认</option><option value="paced">舒适节拍 · 清醒时可选</option></select><button class="small-btn" id="breathStart" hidden>开始节拍</button></div><div id="breathSettings" class="breath-settings" hidden><label>吸气 <input id="inhaleSeconds" type="number" min="2" max="6" step="0.5" value="3"> 秒</label><label>呼气 <input id="exhaleSeconds" type="number" min="2" max="6" step="0.5" value="4"> 秒</label><span id="breathRate">动画约 8.6 次/分</span><p>只供清醒时轻柔跟随；不屏息、不用力深吸。不舒服立即停下，恢复自然呼吸。</p></div></div></div>
+          <div class="reminder-block"><span class="eyebrow">A LITTLE BREAK</span><h3>给身体留个逗号</h3><div class="timer-controls"><label><input type="number" id="timerMinutes" min="1" max="120" value="25" aria-label="提醒间隔分钟"> 分钟</label><button id="timerStart" class="small-btn">开启提醒</button></div><p id="timerStatus" aria-live="polite">间隔由你决定，不是医学规定。</p></div>
+        </section>
+        <p class="bottom-note">🪞 以 AI 为镜：身体的反馈比“摆得标准”更重要。<button data-page="guide" class="inline-link">了解模型边界 ↗</button></p>
+      </section>
+      <aside class="properties panel">
+        <div class="properties-title"><div><span class="eyebrow">MAKE IT YOURS</span><h2>按你的身体试调</h2></div><span class="unit-chip">cm</span></div>
+        <label class="height-input"><span>身高 <small>成人演示</small></span><div><input id="heightNumber" type="number" min="140" max="205" step="1" value="170" aria-label="身高厘米"><span>cm</span></div></label>
+        <input id="heightRange" type="range" min="140" max="205" step="1" value="170" aria-label="调整身高">
+        <div class="range-endpoints"><span>140 cm</span><span>205 cm</span></div>
+        <label class="auto-toggle"><input type="checkbox" id="autoFitToggle" checked> 身高变化时联动适配工位</label>
+        <details class="calibration"><summary>实际尺寸校准 <span>更贴近自己 ↗</span></summary><label class="check-line"><input type="checkbox" id="calibrated"> 使用我的坐姿实测值</label><div class="calibration-fields"><label>腘窝高 <input type="number" id="popliteal" min="28" max="60" step="0.5" value="43"><small>穿常用鞋、脚掌落地，从地面量到膝后折痕。</small></label><label>坐姿眼高 <input type="number" id="eyeSeat" min="50" max="100" step="0.5" value="75"><small>坐稳后，从受压后的椅面量到眼部水平线。</small></label><label>坐姿肘高 <input type="number" id="elbowSeat" min="12" max="40" step="0.5" value="25"><small>肩放松、前臂近水平，从椅面量到肘下方。</small></label></div><p>实测仍需现场试调；站姿尺寸目前仍按身高示意。</p></details>
+        <div class="divider"></div>
+        <div class="parameter-heading"><h3 id="parameterTitle">工位参数</h3><button id="autoFitBtn" class="inline-link">按身体适配 ↺</button></div>
+        <div id="parameterControls"></div>
+        <p class="parameter-note" id="parameterNote"></p>
+        <div class="diagnostics" id="diagnostics"></div>
+        <div class="save-area"><button id="savePlanBtn" class="primary-btn">＋ 保存当前方案</button><button id="printBtn" class="text-btn">打印姿势卡 / 保存为 PDF ↗</button><span>仅存于本机浏览器，不上传身体数据。</span></div>
+      </aside>
+    </section>
+    <section id="plansPage" class="page-section" hidden>
+      <div class="page-heading"><div><span class="eyebrow">YOUR PERSONAL COLLECTION</span><h1>把舒服的分寸，记下来。</h1><p>保存参数，也记录身体的感受。它们是观察记录，不是医疗结论。</p></div><div class="page-actions"><button class="secondary-btn" id="importBtn">导入备份</button><button class="primary-btn" id="exportBtn">导出全部方案 ↗</button><input id="importFile" type="file" accept="application/json,.json" hidden></div></div>
+      <div class="plans-bar"><h2>个人方案 <span id="savedCount">0</span></h2><button id="compareBtn" class="secondary-btn" disabled>选择 2 个方案进行对照</button></div>
+      <div id="plansList" class="plans-grid"></div>
+      <section class="favorites-section"><h2>收藏的姿势</h2><div id="savedFavorites" class="saved-favorites"></div></section>
+      <div class="privacy-note"><b>你的数据留在你这里。</b> 导出的 JSON 包含身高、参数与备注，请妥善保管。清理浏览器、移动文件夹或更换浏览器可能使本地记录不可见；定期导出备份更稳妥。</div>
+    </section>
+    <section id="guidePage" class="page-section" hidden>
+      <div class="page-heading"><div><span class="eyebrow">UNDERSTAND, NOT OVERCORRECT</span><h1>看懂姿势，不迷信“标准”。</h1><p>这是一份交互式生活指南，不是诊断、康复处方或人体测量软件。</p></div><button class="secondary-btn" data-page="lab">回到实验室 ↗</button></div>
+      <div class="guide-grid"><article class="panel guide-card"><span class="card-number">01</span><h2>先选情境，再调支撑</h2><p>从左侧选择行、住、坐、卧。支持卡片和紧凑列表，搜索“唐僧睡”“正坐”也能找到相关条目。“住”在此作为站立与静立分类。</p><p>在右侧调整身高。工位会给出试调起点；能够测量腘窝高、坐姿眼高和肘高时，启用“实际尺寸校准”。</p></article><article class="panel guide-card"><span class="card-number">02</span><h2>模型告诉你关系，不是答案</h2><p>拖动旋转，滚轮缩放；点击身体部位查看相关步骤。睡姿的步骤用于逐一定位与自查，模型展示的是完成姿势，不是起卧转移动作动画。</p><p>高亮只指出当前步骤关注的位置，不显示疼痛、受力或穴位。左右手以模型本人的左右为准，不以屏幕方向为准。</p></article><article class="panel guide-card"><span class="card-number">03</span><h2>推算、实测与证据分开</h2><p>未校准时使用产品内的简化比例：腘窝高 ≈ 身高 × 0.25，坐姿眼高 ≈ 身高 × 0.44，坐姿肘高 ≈ 身高 × 0.145。站姿眼高 ≈ 身高 × 0.936，站姿肘高 ≈ 身高 × 0.63。</p><p><strong>这些不是医学公式或官方人体测量标准。</strong> 椅高起点约为腘窝高 − 2 至腘窝高 cm。最终以脚部支撑、肩部放松和实际视线确认；提示阈值也是界面试调规则，不是诊断界限。</p></article><article class="panel guide-card"><span class="card-number">04</span><h2>床垫与呼吸，拒绝假精确</h2><p>软硬 1–5 档仅是项目内部的相对档位，不能对应品牌标签。模型没有体重、材料和组织力学输入，不能预测真实下陷或压强。枕高表示受压后高度的示意，不是购买建议。</p><p>默认自然呼吸。节拍只是清醒时可选的轻柔提示，频率由秒数算出，不代表最优值；不用于睡着后的呼吸控制或疾病治疗。</p></article></div>
+      <section class="safety-banner"><div class="safety-icon">!</div><div><h2>什么时候不要继续调姿势？</h2><p>出现疼痛、麻木、刺痛、眩晕或呼吸不适时，先停止并换到安全、舒适的位置。症状持续、反复或明显加重，应就医评估。反复憋醒、被观察到呼吸暂停，不应只靠换睡姿解决。</p><p>本版面向一般成人的教育演示，不将成人比例和步骤直接套用于儿童、孕期、术后或有活动限制的人群。胸痛、严重呼吸困难、突发无力等急症应及时寻求当地急救。</p></div></section>
+      <div class="source-heading"><h2>参考资料与证据边界</h2><span>资料核对：2026-10-16 · 外部原文需联网</span></div><p class="source-intro">步骤为项目基于一般原则重新编排，不是对原文的逐条翻译。传统文化资料只用于说明形态；不采纳其中未经验证的疗效说法。外部机构不代表为本项目背书。</p><div id="allSources" class="sources-grid"></div>
+    </section>
+  </main>
+  <footer class="site-footer"><span>身有度 SHEN YOU DU <b>·</b> 行住坐卧实验室 v1.0</span><span>少一点僵持，多一点觉察。 <button class="inline-link" data-page="guide">安全说明与来源</button></span></footer>
+  <dialog id="saveDialog"><form id="saveForm"><div class="dialog-heading"><div><span class="eyebrow">SAVE A MOMENT</span><h2>记下当前方案</h2></div><button type="button" class="icon-btn" data-close="saveDialog" aria-label="关闭">×</button></div><label class="form-label">方案名称<input type="text" id="planName" maxlength="60" required placeholder="例如：我的工位 · 调整后"></label><label class="form-label">我的感受 / 下次想试什么<textarea id="planNote" maxlength="1500" rows="4" placeholder="例如：脚掌落地后更轻松；下一次试把屏幕降低一点。请勿填入不必要的敏感信息。"></textarea></label><p class="muted">会保存当前姿势、身体尺寸及场景参数。备注是个人观察，不做自动诊断。</p><div class="dialog-actions"><button type="button" class="secondary-btn" data-close="saveDialog">取消</button><button class="primary-btn" type="submit">保存方案</button></div></form></dialog>
+  <dialog id="compareDialog" class="compare-dialog"><div class="dialog-heading"><div><span class="eyebrow">SIDE BY SIDE</span><h2>并排看，慢慢调整</h2></div><button type="button" class="icon-btn" data-close="compareDialog" aria-label="关闭对照">×</button></div><div id="compareContent"></div><p class="muted">对照展示的是参数与个人记录，不提供“健康分数”或最佳姿势排名。</p></dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  <section id="printSheet" class="print-sheet"></section>
+  <noscript><div class="noscript">本项目需要启用 JavaScript。请解压完整文件夹后，用 Chrome 或 Edge 打开 index.html。</div></noscript>
+</body>
+</html>

@@ -1,0 +1,13 @@
+{
+  "importedFileCount": 193,
+  "changedOriginalFiles": [],
+  "buildEquivalent": {
+    "index.html": true,
+    "source.html": true,
+    "projects/astronomy/日月地实验室.html": true,
+    "projects/physics/index.html": true,
+    "projects/posture/index.html": true,
+    "projects/chemistry/chemistry-explorer.html": true
+  },
+  "commonSecretPatternFindings": []
+}

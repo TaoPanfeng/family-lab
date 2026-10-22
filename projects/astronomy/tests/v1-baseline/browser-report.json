@@ -1,0 +1,159 @@
+{
+  "testedAt": "2026-10-16T02:13:35Z",
+  "browser": "144.0.7559.96",
+  "platform": "Linux Chromium / SwiftShader WebGL / Xvfb",
+  "loadMethod": "Playwright set_content; no browser URL navigation due runner administrator policy",
+  "notTested": [
+    "Windows operating system",
+    "actual local file:// navigation",
+    "native localStorage persistence",
+    "real iOS/Android touch hardware"
+  ],
+  "total": 35,
+  "passed": 35,
+  "failed": 0,
+  "errors": [],
+  "externalRequests": [],
+  "results": [
+    {
+      "name": "界面启动并移除加载页",
+      "pass": true
+    },
+    {
+      "name": "WebGL 实际创建，球体着色器已渲染",
+      "pass": true
+    },
+    {
+      "name": "桌面 1440px 无横向溢出",
+      "pass": true
+    },
+    {
+      "name": "切换时区只改显示，不跳天体位置",
+      "pass": true
+    },
+    {
+      "name": "年月日时分秒输入驱动星历",
+      "pass": true
+    },
+    {
+      "name": "前后一天可逆",
+      "pass": true
+    },
+    {
+      "name": "拖到年末不意外跳年，年按钮有效",
+      "pass": true
+    },
+    {
+      "name": "暂停时三维镜头拖动和缩放有效",
+      "pass": true
+    },
+    {
+      "name": "真实地月比和显示放大不改变物理数据",
+      "pass": true
+    },
+    {
+      "name": "双击月球可以靠近并跟随",
+      "pass": true
+    },
+    {
+      "name": "播放、暂停、调速与倒放都推进同一时钟",
+      "pass": true
+    },
+    {
+      "name": "高速跨越食事件时提前减速而不漏过",
+      "pass": true
+    },
+    {
+      "name": "二分二至跳转、天文四季与日照图",
+      "pass": true
+    },
+    {
+      "name": "扶正地轴、压平月轨、实验隔离与一键恢复",
+      "pass": true
+    },
+    {
+      "name": "互动问答和儿童讲解切换",
+      "pass": true
+    },
+    {
+      "name": "2024 日全食：当地真实角直径遮挡与日冕",
+      "pass": true
+    },
+    {
+      "name": "日全食太阳全遮挡，日冕仅视觉示意",
+      "pass": true
+    },
+    {
+      "name": "暂停时地面镜头可旋转、缩放并恢复追踪",
+      "pass": true
+    },
+    {
+      "name": "食接触点跳转、过程回放、太空视角联动",
+      "pass": true
+    },
+    {
+      "name": "同场北美日食换到上海明确显示不可见",
+      "pass": true
+    },
+    {
+      "name": "2009 上海日全食可重建",
+      "pass": true
+    },
+    {
+      "name": "2023 日环食可重建",
+      "pass": true
+    },
+    {
+      "name": "2025 月全食红月亮可重建",
+      "pass": true
+    },
+    {
+      "name": "月食可见性也检查所选地点地平线",
+      "pass": true
+    },
+    {
+      "name": "搜索下一场日月食与四种主要月相",
+      "pass": true
+    },
+    {
+      "name": "月相小图标可以跳到真实满月",
+      "pass": true
+    },
+    {
+      "name": "场景可恢复日期、地点、图层、镜头并保持暂停",
+      "pass": true
+    },
+    {
+      "name": "导入格式、非法范围与异常枚举被拒绝",
+      "pass": true
+    },
+    {
+      "name": "真实点击导出 JSON，再从文件导入恢复",
+      "pass": true
+    },
+    {
+      "name": "观测画面 PNG 实际导出",
+      "pass": true
+    },
+    {
+      "name": "帮助、精度与许可说明可打开",
+      "pass": true
+    },
+    {
+      "name": "390px 手机排版、菜单和视角切换",
+      "pass": true
+    },
+    {
+      "name": "1024px 平板排版无横向溢出",
+      "pass": true
+    },
+    {
+      "name": "应用运行不请求任何外部网络资源",
+      "pass": true
+    },
+    {
+      "name": "交互全过程没有 JavaScript 或 WebGL 错误",
+      "pass": true
+    }
+  ]
+}

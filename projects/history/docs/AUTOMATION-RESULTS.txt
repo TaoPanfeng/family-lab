@@ -1,0 +1,68 @@
+Command: node --test --test-isolation=none tests/core-data.test.cjs tests/ui-flow.test.cjs
+Runtime: Node.js v24.19.0 / jsdom 26.1.0
+Date: 2026-10-19
+
+✔ all shipped data scripts execute in a browser-style VM without DOM, imports or network (3.277945ms)
+✔ historical year parsing accepts BC/CE and rejects year zero, fractions, exponents and junk (0.540508ms)
+✔ every timeline slider position round-trips, is monotonic and skips historical year zero (16.691348ms)
+✔ year distances cross BC/CE once and never turn unknown dates into zero (0.484425ms)
+✔ restored rulers stay one person, sum their separate reigns and exclude the interruptions (0.726895ms)
+✔ same-year and uncertain reigns have honest durations and labels (0.610459ms)
+✔ simultaneous polities and the Wu Zhou interruption survive chronological filtering (0.348783ms)
+✔ the nearest historical map uses chronological distance, including BC/CE and edge years (0.834554ms)
+✔ search accepts personal names, Chinese tags, case differences and whitespace (0.603121ms)
+✔ saved-state sanitizing tolerates corrupted JSON values and bounds user-controlled memory (5.701113ms)
+✔ rendered text is escaped, including notes that resemble HTML (0.469981ms)
+✔ v1 has unique IDs and the declared dynasty-by-dynasty ruler coverage (1.451794ms)
+✔ every dynasty has dates, readable child/adult/social content and source links (2.183558ms)
+✔ concurrent dynasty bars do not conceal each other on the same timeline lane (3.167372ms)
+✔ ruler records have complete fields, valid life bounds and no invented year-zero dates (9.246172ms)
+✔ uncertain evidence remains null, including infant, exile and missing-person cases (0.683512ms)
+✔ reviewed old-calendar/public-era boundary dates do not regress to simplified year tables (0.295657ms)
+✔ accession, era names, state founding and actual power are kept distinct (0.368153ms)
+✔ legitimate contested and exile rulers are not clipped to the main dynasty interval (0.369546ms)
+✔ events have usable references, ordered dates, coordinates and human consequences (1.746987ms)
+✔ world references preserve their real ranges rather than being clipped to China’s slider (0.443316ms)
+✔ atlas snapshots are distinct chronological frames with dated, valid dynasty references (1.418742ms)
+✔ schematic map polygons have finite coordinates, area and no crossing edges (2.031292ms)
+✔ city/river layers and the bundled natural-land GeoJSON are geographic and complete (2.183107ms)
+✔ learning journeys and questions resolve to real eras and usable answer choices (0.782388ms)
+✔ offline startup executes only bundled scripts and renders the current collection (256.616151ms)
+✔ all eight navigation destinations render and update URL/title/current-page state (362.293154ms)
+✔ deep/child mode changes the actual reading text and survives reload (291.384873ms)
+✔ timeline zoom respects its limits, dynasty focus, and reset without invalid widths (367.842169ms)
+✔ year form rejects year zero, fractions and out-of-range values while accepting BCE years (171.199858ms)
+✔ timeline slider commits parallel kingdoms and the Wu Zhou interruption correctly (177.995251ms)
+✔ selecting a dynasty synchronizes the atlas epoch and clears the previous camera (234.93441ms)
+✔ ruler filters, clear and pagination reveal every archived ruler exactly once (546.53723ms)
+✔ ruler keyword search includes the achievements and costs the user can read (141.921158ms)
+✔ Chinese ruler-search composition preserves the input until the text is committed (221.370397ms)
+✔ global search opens matched objects, handles special text, Enter, Escape and slash (703.049735ms)
+✔ all 264 ruler dialogs expose life, reign, achievements, costs, notes and citations (4018.310247ms)
+✔ split reigns, very short reigns and unknown death dates remain explicit in the dialog (146.230912ms)
+✔ coverage table accounts for every ruler and its dynasty links open the correct filter (93.775704ms)
+✔ event filters combine dynasty, type and text; composing input is not replaced (200.424457ms)
+✔ all 38 event details preserve cause, outcome, social impact and source links (423.086492ms)
+✔ all 19 world cards and map keyboard controls open the correct civilization details (206.814403ms)
+✔ bookmarks from ruler and event dialogs persist, restore and can be removed (303.648324ms)
+✔ corrupt or stale local storage cannot crash startup or inject saved-note markup (97.353127ms)
+✔ blocked browser storage leaves reading, editing and exporting usable with honest status (121.149211ms)
+✔ comparison limits selection to three, renders substantive fields, supports remove and clear (157.457628ms)
+✔ quiz records only correct answers, prevents answer changes, wraps and never double counts (226.111578ms)
+✔ journey selection persists and its departure opens the requested era; glossary is usable (94.867619ms)
+✔ notes preserve Chinese text and literal markup through save/reload and Markdown export (101.52397ms)
+✔ all atlas snapshots can be selected and agree across dropdown, slider and displayed year (399.707916ms)
+✔ atlas legend, zoom, layers and reset preserve coherent public DOM state (220.284753ms)
+✔ pointer handler delays capture until a drag, pans, and does not treat dragging as a region click (64.383645ms)
+✔ every geolocated event has an explicit selected marker after its map action, including distant slices (4128.12783ms)
+✔ map playback advances under a fake clock and stops on manual change or leaving the atlas (252.964279ms)
+✔ source links are explicit external reading and direct hash destinations stay usable (103.336208ms)
+✔ skip-to-main anchor moves focus without changing the current view or active filter (58.228011ms)
+ℹ tests 56
+ℹ suites 0
+ℹ pass 56
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 15672.137183

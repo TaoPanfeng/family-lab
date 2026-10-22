@@ -1,0 +1,1372 @@
+TAP version 13
+# Subtest: 页面联调：kids/home 正常加载
+ok 1 - 页面联调：kids/home 正常加载
+  ---
+  duration_ms: 57.671289
+  type: 'test'
+  ...
+# Subtest: 页面联调：kids/stoich 正常加载
+ok 2 - 页面联调：kids/stoich 正常加载
+  ---
+  duration_ms: 44.790376
+  type: 'test'
+  ...
+# Subtest: 页面联调：kids/quests 正常加载
+ok 3 - 页面联调：kids/quests 正常加载
+  ---
+  duration_ms: 21.594169
+  type: 'test'
+  ...
+# Subtest: 页面联调：kids/notebook 正常加载
+ok 4 - 页面联调：kids/notebook 正常加载
+  ---
+  duration_ms: 16.28309
+  type: 'test'
+  ...
+# Subtest: 页面联调：kids/sources 正常加载
+ok 5 - 页面联调：kids/sources 正常加载
+  ---
+  duration_ms: 14.733102
+  type: 'test'
+  ...
+# Subtest: 页面联调：advanced/home 正常加载
+ok 6 - 页面联调：advanced/home 正常加载
+  ---
+  duration_ms: 9.499656
+  type: 'test'
+  ...
+# Subtest: 页面联调：advanced/stoich 正常加载
+ok 7 - 页面联调：advanced/stoich 正常加载
+  ---
+  duration_ms: 10.671509
+  type: 'test'
+  ...
+# Subtest: 页面联调：advanced/quests 正常加载
+ok 8 - 页面联调：advanced/quests 正常加载
+  ---
+  duration_ms: 9.995333
+  type: 'test'
+  ...
+# Subtest: 页面联调：advanced/notebook 正常加载
+ok 9 - 页面联调：advanced/notebook 正常加载
+  ---
+  duration_ms: 7.253942
+  type: 'test'
+  ...
+# Subtest: 页面联调：advanced/sources 正常加载
+ok 10 - 页面联调：advanced/sources 正常加载
+  ---
+  duration_ms: 9.495653
+  type: 'test'
+  ...
+# Subtest: 首页快捷入口与移动导航菜单事件
+ok 11 - 首页快捷入口与移动导航菜单事件
+  ---
+  duration_ms: 27.70351
+  type: 'test'
+  ...
+# Subtest: 计算台：过氧化氢分解制氧气 投料、输出、配平事件
+ok 12 - 计算台：过氧化氢分解制氧气 投料、输出、配平事件
+  ---
+  duration_ms: 20.303404
+  type: 'test'
+  ...
+# Subtest: 计算台：高锰酸钾分解制氧气 投料、输出、配平事件
+ok 13 - 计算台：高锰酸钾分解制氧气 投料、输出、配平事件
+  ---
+  duration_ms: 15.811246
+  type: 'test'
+  ...
+# Subtest: 计算台：乙酸与小苏打产生二氧化碳 投料、输出、配平事件
+ok 14 - 计算台：乙酸与小苏打产生二氧化碳 投料、输出、配平事件
+  ---
+  duration_ms: 31.391759
+  type: 'test'
+  ...
+# Subtest: 计算台：盐酸与氢氧化钠中和 投料、输出、配平事件
+ok 15 - 计算台：盐酸与氢氧化钠中和 投料、输出、配平事件
+  ---
+  duration_ms: 16.550906
+  type: 'test'
+  ...
+# Subtest: 计算台：二氧化碳使澄清石灰水浑浊 投料、输出、配平事件
+ok 16 - 计算台：二氧化碳使澄清石灰水浑浊 投料、输出、配平事件
+  ---
+  duration_ms: 15.368432
+  type: 'test'
+  ...
+# Subtest: 计算台：铁置换硫酸铜中的铜 投料、输出、配平事件
+ok 17 - 计算台：铁置换硫酸铜中的铜 投料、输出、配平事件
+  ---
+  duration_ms: 17.166537
+  type: 'test'
+  ...
+# Subtest: 计算台：氯化钙与碳酸钠生成沉淀 投料、输出、配平事件
+ok 18 - 计算台：氯化钙与碳酸钠生成沉淀 投料、输出、配平事件
+  ---
+  duration_ms: 18.261322
+  type: 'test'
+  ...
+# Subtest: 计算台：水的电解 投料、输出、配平事件
+ok 19 - 计算台：水的电解 投料、输出、配平事件
+  ---
+  duration_ms: 13.251846
+  type: 'test'
+  ...
+# Subtest: 计算台：甲烷完全燃烧 投料、输出、配平事件
+ok 20 - 计算台：甲烷完全燃烧 投料、输出、配平事件
+  ---
+  duration_ms: 17.680384
+  type: 'test'
+  ...
+# Subtest: 计算台：碳酸钙与盐酸反应 投料、输出、配平事件
+ok 21 - 计算台：碳酸钙与盐酸反应 投料、输出、配平事件
+  ---
+  duration_ms: 21.627141
+  type: 'test'
+  ...
+# Subtest: 计算台：铁氧化的简化守恒模型 投料、输出、配平事件
+ok 22 - 计算台：铁氧化的简化守恒模型 投料、输出、配平事件
+  ---
+  duration_ms: 16.578545
+  type: 'test'
+  ...
+# Subtest: 计算台：硝酸银与氯化钠生成沉淀 投料、输出、配平事件
+ok 23 - 计算台：硝酸银与氯化钠生成沉淀 投料、输出、配平事件
+  ---
+  duration_ms: 17.090072
+  type: 'test'
+  ...
+# Subtest: 计算台：氢与氧生成水（计量模型） 投料、输出、配平事件
+ok 24 - 计算台：氢与氧生成水（计量模型） 投料、输出、配平事件
+  ---
+  duration_ms: 13.887793
+  type: 'test'
+  ...
+# Subtest: 34.014g过氧化氢生成15.999g氧气，50%回收不改变消耗量
+ok 25 - 34.014g过氧化氢生成15.999g氧气，50%回收不改变消耗量
+  ---
+  duration_ms: 17.056141
+  type: 'test'
+  ...
+# Subtest: 计算台拒绝负数、空值及非法气体条件，零投料无虚构产物
+ok 26 - 计算台拒绝负数、空值及非法气体条件，零投料无虚构产物
+  ---
+  duration_ms: 28.217091
+  type: 'test'
+  ...
+# Subtest: 配平只接受正整数，错误配平提供原子数量反馈
+ok 27 - 配平只接受正整数，错误配平提供原子数量反馈
+  ---
+  duration_ms: 15.212189
+  type: 'test'
+  ...
+# Subtest: 披萨游戏穷举0–12饼底与0–24芝士，守恒且取整
+ok 28 - 披萨游戏穷举0–12饼底与0–24芝士，守恒且取整
+  ---
+  duration_ms: 12.007311
+  type: 'test'
+  ...
+# Subtest: 18题逐题错误反馈、重试、正确答案及进度去重
+ok 29 - 18题逐题错误反馈、重试、正确答案及进度去重
+  ---
+  duration_ms: 109.353903
+  type: 'test'
+  ...
+# Subtest: 笔记保存、HTML转义、导出、取消清空和确认清空
+ok 30 - 笔记保存、HTML转义、导出、取消清空和确认清空
+  ---
+  duration_ms: 25.175782
+  type: 'test'
+  ...
+# Subtest: 损坏的本地存储不会阻止启动
+ok 31 - 损坏的本地存储不会阻止启动
+  ---
+  duration_ms: 7.44017
+  type: 'test'
+  ...
+# Subtest: 参考来源安全打开，资料页明确模型和浏览器存储边界
+ok 32 - 参考来源安全打开，资料页明确模型和浏览器存储边界
+  ---
+  duration_ms: 8.229627
+  type: 'test'
+  ...
+# Subtest: 118 elements have consecutive unique atomic numbers, symbols, Chinese names and positions
+ok 33 - 118 elements have consecutive unique atomic numbers, symbols, Chinese names and positions
+  ---
+  duration_ms: 0.947319
+  type: 'test'
+  ...
+# Subtest: known independent periodic positions include helium and displaced f-block
+ok 34 - known independent periodic positions include helium and displaced f-block
+  ---
+  duration_ms: 0.423934
+  type: 'test'
+  ...
+# Subtest: standard atomic weights are distinguished from representative isotope mass numbers
+ok 35 - standard atomic weights are distinguished from representative isotope mass numbers
+  ---
+  duration_ms: 1.397595
+  type: 'test'
+  ...
+# Subtest: all data references resolve to unique sources and immutable records
+ok 36 - all data references resolve to unique sources and immutable records
+  ---
+  duration_ms: 0.549182
+  type: 'test'
+  ...
+# Subtest: formula parser independently counts H2O
+ok 37 - formula parser independently counts H2O
+  ---
+  duration_ms: 0.159397
+  type: 'test'
+  ...
+# Subtest: formula parser independently counts CO2
+ok 38 - formula parser independently counts CO2
+  ---
+  duration_ms: 0.081217
+  type: 'test'
+  ...
+# Subtest: formula parser independently counts Ca(OH)2
+ok 39 - formula parser independently counts Ca(OH)2
+  ---
+  duration_ms: 0.127689
+  type: 'test'
+  ...
+# Subtest: formula parser independently counts (NH4)2SO4
+ok 40 - formula parser independently counts (NH4)2SO4
+  ---
+  duration_ms: 0.072958
+  type: 'test'
+  ...
+# Subtest: formula parser independently counts Fe2(SO4)3
+ok 41 - formula parser independently counts Fe2(SO4)3
+  ---
+  duration_ms: 0.062028
+  type: 'test'
+  ...
+# Subtest: formula parser independently counts K4[Fe(CN)6]
+ok 42 - formula parser independently counts K4[Fe(CN)6]
+  ---
+  duration_ms: 0.059375
+  type: 'test'
+  ...
+# Subtest: formula parser independently counts CH3COOH
+ok 43 - formula parser independently counts CH3COOH
+  ---
+  duration_ms: 0.046196
+  type: 'test'
+  ...
+# Subtest: formula parser independently counts CH3COONa
+ok 44 - formula parser independently counts CH3COONa
+  ---
+  duration_ms: 0.190288
+  type: 'test'
+  ...
+# Subtest: formula parser independently counts CuSO4·5H2O
+ok 45 - formula parser independently counts CuSO4·5H2O
+  ---
+  duration_ms: 0.363807
+  type: 'test'
+  ...
+# Subtest: formula parser independently counts Na2CO3·10H2O
+ok 46 - formula parser independently counts Na2CO3·10H2O
+  ---
+  duration_ms: 0.097684
+  type: 'test'
+  ...
+# Subtest: formula parser independently counts H₂O
+ok 47 - formula parser independently counts H₂O
+  ---
+  duration_ms: 0.139849
+  type: 'test'
+  ...
+# Subtest: formula parser independently counts   Ca(OH)₂  
+ok 48 - formula parser independently counts   Ca(OH)₂  
+  ---
+  duration_ms: 0.055935
+  type: 'test'
+  ...
+# Subtest: formula parser independently counts (OH)2(OH)2
+ok 49 - formula parser independently counts (OH)2(OH)2
+  ---
+  duration_ms: 0.044262
+  type: 'test'
+  ...
+# Subtest: formula parser independently counts He
+ok 50 - formula parser independently counts He
+  ---
+  duration_ms: 0.044776
+  type: 'test'
+  ...
+# Subtest: formula parser independently counts Og
+ok 51 - formula parser independently counts Og
+  ---
+  duration_ms: 0.090685
+  type: 'test'
+  ...
+# Subtest: formula parser independently counts NaN
+ok 52 - formula parser independently counts NaN
+  ---
+  duration_ms: 0.047566
+  type: 'test'
+  ...
+# Subtest: formula parser rejects malformed, unsupported and overflow inputs without partial parsing
+ok 53 - formula parser rejects malformed, unsupported and overflow inputs without partial parsing
+  ---
+  duration_ms: 0.748882
+  type: 'test'
+  ...
+# Subtest: formula formatting retains hydrate coefficients on baseline
+ok 54 - formula formatting retains hydrate coefficients on baseline
+  ---
+  duration_ms: 0.322739
+  type: 'test'
+  ...
+# Subtest: molar masses match independent conventional arithmetic
+ok 55 - molar masses match independent conventional arithmetic
+  ---
+  duration_ms: 0.265613
+  type: 'test'
+  ...
+# Subtest: every curated reaction is atom-balanced; catalysts remain outside stoichiometric reactants
+ok 56 - every curated reaction is atom-balanced; catalysts remain outside stoichiometric reactants
+  ---
+  duration_ms: 0.937234
+  type: 'test'
+  ...
+# Subtest: atom counts for demanding equations match independent expected counts
+ok 57 - atom counts for demanding equations match independent expected counts
+  ---
+  duration_ms: 0.754108
+  type: 'test'
+  ...
+# Subtest: unbalanced reactions are detected and cannot produce quantities
+ok 58 - unbalanced reactions are detected and cannot produce quantities
+  ---
+  duration_ms: 0.450466
+  type: 'test'
+  ...
+# Subtest: malformed reaction data cannot bypass balance validation
+ok 59 - malformed reaction data cannot bypass balance validation
+  ---
+  duration_ms: 0.310718
+  type: 'test'
+  ...
+# Subtest: 68.028 g pure hydrogen peroxide gives 31.998 g oxygen and 36.030 g water
+ok 60 - 68.028 g pure hydrogen peroxide gives 31.998 g oxygen and 36.030 g water
+  ---
+  duration_ms: 0.492203
+  type: 'test'
+  ...
+# Subtest: 158.032343 g permanganate gives half a mole of oxygen
+ok 61 - 158.032343 g permanganate gives half a mole of oxygen
+  ---
+  duration_ms: 0.255616
+  type: 'test'
+  ...
+# Subtest: limiting bicarbonate leaves one mole acetic acid and gives one mole CO2
+ok 62 - limiting bicarbonate leaves one mole acetic acid and gives one mole CO2
+  ---
+  duration_ms: 0.356873
+  type: 'test'
+  ...
+# Subtest: reversing the limiting reactant reverses the leftover identity
+ok 63 - reversing the limiting reactant reverses the leftover identity
+  ---
+  duration_ms: 0.326208
+  type: 'test'
+  ...
+# Subtest: 3 mol hydrogen plus 1 mol oxygen forms 2 mol water leaving 1 mol hydrogen
+ok 64 - 3 mol hydrogen plus 1 mol oxygen forms 2 mol water leaving 1 mol hydrogen
+  ---
+  duration_ms: 0.388893
+  type: 'test'
+  ...
+# Subtest: exact ratio correctly reports both co-limiting reactants
+ok 65 - exact ratio correctly reports both co-limiting reactants
+  ---
+  duration_ms: 0.374797
+  type: 'test'
+  ...
+# Subtest: zero input prevents reaction while preserving unreacted mass
+ok 66 - zero input prevents reaction while preserving unreacted mass
+  ---
+  duration_ms: 0.226768
+  type: 'test'
+  ...
+# Subtest: 80 percent recovery accounts for uncollected products and does not invent leftover reactants
+ok 67 - 80 percent recovery accounts for uncollected products and does not invent leftover reactants
+  ---
+  duration_ms: 0.30981
+  type: 'test'
+  ...
+# Subtest: zero percent recovery still conserves all generated material as uncollected products
+ok 68 - zero percent recovery still conserves all generated material as uncollected products
+  ---
+  duration_ms: 0.226628
+  type: 'test'
+  ...
+# Subtest: electrolysis has a 2 to 1 dry gas volume ratio at the same conditions
+ok 69 - electrolysis has a 2 to 1 dry gas volume ratio at the same conditions
+  ---
+  duration_ms: 0.171102
+  type: 'test'
+  ...
+# Subtest: every reaction conserves mass across ratios and recovery fractions
+ok 70 - every reaction conserves mass across ratios and recovery fractions
+  ---
+  duration_ms: 11.30204
+  type: 'test'
+  ...
+# Subtest: tiny nonzero quantities are not treated as zero or incorrectly co-limiting
+ok 71 - tiny nonzero quantities are not treated as zero or incorrectly co-limiting
+  ---
+  duration_ms: 0.182402
+  type: 'test'
+  ...
+# Subtest: stoichiometry rejects negative, NaN, missing, unknown, infinite and wrong-unit inputs
+ok 72 - stoichiometry rejects negative, NaN, missing, unknown, infinite and wrong-unit inputs
+  ---
+  duration_ms: 1.34821
+  type: 'test'
+  ...
+# Subtest: ideal gas volumes match independent molar volumes and pressure scaling
+ok 73 - ideal gas volumes match independent molar volumes and pressure scaling
+  ---
+  duration_ms: 0.360531
+  type: 'test'
+  ...
+# Subtest: electron shells contain exactly the first 20 electron counts
+ok 74 - electron shells contain exactly the first 20 electron counts
+  ---
+  duration_ms: 0.348728
+  type: 'test'
+  ...
+# Subtest: atomic identity is set by protons, isotope by neutrons, and charge by electrons
+ok 75 - atomic identity is set by protons, isotope by neutrons, and charge by electrons
+  ---
+  duration_ms: 0.182631
+  type: 'test'
+  ...
+# Subtest: unlisted nuclear compositions are unknown instead of guessed stable
+ok 76 - unlisted nuclear compositions are unknown instead of guessed stable
+  ---
+  duration_ms: 0.242414
+  type: 'test'
+  ...
+# Subtest: isotope records have consistent identities and accurately scoped half-lives
+ok 77 - isotope records have consistent identities and accurately scoped half-lives
+  ---
+  duration_ms: 0.750451
+  type: 'test'
+  ...
+# Subtest: half-life function gives 100, 50, 25, 12.5 across successive half-lives
+ok 78 - half-life function gives 100, 50, 25, 12.5 across successive half-lives
+  ---
+  duration_ms: 0.168612
+  type: 'test'
+  ...
+# Subtest: decay probability has memoryless interval composition and stable small time behavior
+ok 79 - decay probability has memoryless interval composition and stable small time behavior
+  ---
+  duration_ms: 0.262833
+  type: 'test'
+  ...
+# Subtest: nuclear conservation rules correctly transform alpha, beta-minus and gamma
+ok 80 - nuclear conservation rules correctly transform alpha, beta-minus and gamma
+  ---
+  duration_ms: 0.196568
+  type: 'test'
+  ...
+# Subtest: known actual isotope decays use curated modes, including beta then gamma in cobalt-60
+ok 81 - known actual isotope decays use curated modes, including beta then gamma in cobalt-60
+  ---
+  duration_ms: 0.279199
+  type: 'test'
+  ...
+# Subtest: invalid nuclear data and X-ray as a decay mode are rejected
+ok 82 - invalid nuclear data and X-ray as a decay mode are rejected
+  ---
+  duration_ms: 0.45595
+  type: 'test'
+  ...
+# Subtest: strong acid and base pH are independently correct at 0.1 mol/L
+ok 83 - strong acid and base pH are independently correct at 0.1 mol/L
+  ---
+  duration_ms: 0.481265
+  type: 'test'
+  ...
+# Subtest: very dilute acid remains acidic when water autoionization is significant
+ok 84 - very dilute acid remains acidic when water autoionization is significant
+  ---
+  duration_ms: 0.186206
+  type: 'test'
+  ...
+# Subtest: 0.1 mol/L acetic acid has approximately pH 2.8753 and 1.33 percent ionization
+ok 85 - 0.1 mol/L acetic acid has approximately pH 2.8753 and 1.33 percent ionization
+  ---
+  duration_ms: 0.13987
+  type: 'test'
+  ...
+# Subtest: neutral sodium chloride and sugar differ in mobile solute ions, not neutral pH
+ok 86 - neutral sodium chloride and sugar differ in mobile solute ions, not neutral pH
+  ---
+  duration_ms: 0.077966
+  type: 'test'
+  ...
+# Subtest: all acidity models satisfy water ion product and valid ionization fractions across concentrations
+ok 87 - all acidity models satisfy water ion product and valid ionization fractions across concentrations
+  ---
+  duration_ms: 0.397319
+  type: 'test'
+  ...
+# Subtest: pH rejects invalid concentrations, nonphysical constants and unrecognized solutions
+ok 88 - pH rejects invalid concentrations, nonphysical constants and unrecognized solutions
+  ---
+  duration_ms: 0.298493
+  type: 'test'
+  ...
+# Subtest: pure calculations do not mutate inputs or shared reaction records
+ok 89 - pure calculations do not mutate inputs or shared reaction records
+  ---
+  duration_ms: 1.888228
+  type: 'test'
+  ...
+# Subtest: browser globals work without require or module, using only local scripts
+ok 90 - browser globals work without require or module, using only local scripts
+  ---
+  duration_ms: 7.654151
+  type: 'test'
+  ...
+# Subtest: all shared laboratory molar masses equal the core values, including manganese
+ok 91 - all shared laboratory molar masses equal the core values, including manganese
+  ---
+  duration_ms: 0.315623
+  type: 'test'
+  ...
+# Subtest: oxygen-peroxide: laboratory agrees with core at default and opposite limiting ratios
+ok 92 - oxygen-peroxide: laboratory agrees with core at default and opposite limiting ratios
+  ---
+  duration_ms: 1.290002
+  type: 'test'
+  ...
+# Subtest: oxygen-permanganate: laboratory agrees with core at default and opposite limiting ratios
+ok 93 - oxygen-permanganate: laboratory agrees with core at default and opposite limiting ratios
+  ---
+  duration_ms: 0.499874
+  type: 'test'
+  ...
+# Subtest: carbon-dioxide: laboratory agrees with core at default and opposite limiting ratios
+ok 94 - carbon-dioxide: laboratory agrees with core at default and opposite limiting ratios
+  ---
+  duration_ms: 0.511762
+  type: 'test'
+  ...
+# Subtest: neutralization: laboratory agrees with core at default and opposite limiting ratios
+ok 95 - neutralization: laboratory agrees with core at default and opposite limiting ratios
+  ---
+  duration_ms: 0.648263
+  type: 'test'
+  ...
+# Subtest: displacement: laboratory agrees with core at default and opposite limiting ratios
+ok 96 - displacement: laboratory agrees with core at default and opposite limiting ratios
+  ---
+  duration_ms: 0.464562
+  type: 'test'
+  ...
+# Subtest: precipitation: laboratory agrees with core at default and opposite limiting ratios
+ok 97 - precipitation: laboratory agrees with core at default and opposite limiting ratios
+  ---
+  duration_ms: 0.753238
+  type: 'test'
+  ...
+# Subtest: limewater agrees at the first stage and independently conserves the second-stage mass
+ok 98 - limewater agrees at the first stage and independently conserves the second-stage mass
+  ---
+  duration_ms: 0.963057
+  type: 'test'
+  ...
+# Subtest: electrolysis agrees with core for reacted water after applying the electrical-charge limit
+ok 99 - electrolysis agrees with core for reacted water after applying the electrical-charge limit
+  ---
+  duration_ms: 0.455117
+  type: 'test'
+  ...
+# Subtest: filtration: allowed water and salt ranges support the dissolved-salt model
+ok 100 - filtration: allowed water and salt ranges support the dissolved-salt model
+  ---
+  duration_ms: 0.747443
+  type: 'test'
+  ...
+# Subtest: distillation: allowed water and salt ranges support the dissolved-salt model
+ok 101 - distillation: allowed water and salt ranges support the dissolved-salt model
+  ---
+  duration_ms: 0.415343
+  type: 'test'
+  ...
+# Subtest: indicator colors are explicitly qualitative
+ok 102 - indicator colors are explicitly qualitative
+  ---
+  duration_ms: 0.125538
+  type: 'test'
+  ...
+# Subtest: phosphorus uses two qualitative oxygen scenes without quantitative products
+ok 103 - phosphorus uses two qualitative oxygen scenes without quantitative products
+  ---
+  duration_ms: 0.36345
+  type: 'test'
+  ...
+# Subtest: 随机衰变：同一批原子的时间往返可复现，剩余数单调且不为负
+ok 104 - 随机衰变：同一批原子的时间往返可复现，剩余数单调且不为负
+  ---
+  duration_ms: 2.280469
+  type: 'test'
+  ...
+# Subtest: 随机衰变：大样本半衰期统计接近一半，不把单原子切成半个
+ok 105 - 随机衰变：大样本半衰期统计接近一半，不把单原子切成半个
+  ---
+  duration_ms: 30.719399
+  type: 'test'
+  ...
+# Subtest: 随机衰变：拒绝非法原子数和时间边界
+ok 106 - 随机衰变：拒绝非法原子数和时间边界
+  ---
+  duration_ms: 0.246828
+  type: 'test'
+  ...
+# Subtest: 水的沸点：常压约100°C，降压后沸点降低，模型区间外拒绝计算
+ok 107 - 水的沸点：常压约100°C，降压后沸点降低，模型区间外拒绝计算
+  ---
+  duration_ms: 0.441612
+  type: 'test'
+  ...
+# Subtest: 蒸馏：0至200g全部收集边界均守恒，非挥发盐留在残液
+ok 108 - 蒸馏：0至200g全部收集边界均守恒，非挥发盐留在残液
+  ---
+  duration_ms: 0.512566
+  type: 'test'
+  ...
+# Subtest: 结晶：饱和边界、完全蒸干与补水均保留全部食盐
+ok 109 - 结晶：饱和边界、完全蒸干与补水均保留全部食盐
+  ---
+  duration_ms: 0.889702
+  type: 'test'
+  ...
+# Subtest: 中和：依据物质的量1:1，计入混合体积与过量一方
+ok 110 - 中和：依据物质的量1:1，计入混合体积与过量一方
+  ---
+  duration_ms: 0.437736
+  type: 'test'
+  ...
+# Subtest: 色谱：3种墨水×2种溶剂的组分与Rf有效，换溶剂可以改变顺序
+ok 111 - 色谱：3种墨水×2种溶剂的组分与Rf有效，换溶剂可以改变顺序
+  ---
+  duration_ms: 0.322404
+  type: 'test'
+  ...
+# Subtest: 生活模型：bread 改变关键条件产生合理的定性对照
+ok 112 - 生活模型：bread 改变关键条件产生合理的定性对照
+  ---
+  duration_ms: 0.578793
+  type: 'test'
+  ...
+# Subtest: 生活模型：apple 改变关键条件产生合理的定性对照
+ok 113 - 生活模型：apple 改变关键条件产生合理的定性对照
+  ---
+  duration_ms: 0.118005
+  type: 'test'
+  ...
+# Subtest: 生活模型：rust 改变关键条件产生合理的定性对照
+ok 114 - 生活模型：rust 改变关键条件产生合理的定性对照
+  ---
+  duration_ms: 0.067989
+  type: 'test'
+  ...
+# Subtest: 生活模型：soap 改变关键条件产生合理的定性对照
+ok 115 - 生活模型：soap 改变关键条件产生合理的定性对照
+  ---
+  duration_ms: 0.039514
+  type: 'test'
+  ...
+# Subtest: 生活模型：egg 改变关键条件产生合理的定性对照
+ok 116 - 生活模型：egg 改变关键条件产生合理的定性对照
+  ---
+  duration_ms: 0.035622
+  type: 'test'
+  ...
+# Subtest: 生活模型：scale 改变关键条件产生合理的定性对照
+ok 117 - 生活模型：scale 改变关键条件产生合理的定性对照
+  ---
+  duration_ms: 0.040576
+  type: 'test'
+  ...
+# Subtest: 生活模型：battery 改变关键条件产生合理的定性对照
+ok 118 - 生活模型：battery 改变关键条件产生合理的定性对照
+  ---
+  duration_ms: 0.044935
+  type: 'test'
+  ...
+# Subtest: 生活模型：soda 改变关键条件产生合理的定性对照
+ok 119 - 生活模型：soda 改变关键条件产生合理的定性对照
+  ---
+  duration_ms: 0.037185
+  type: 'test'
+  ...
+# Subtest: 生活场景表恰有8个有效场景，未知场景不会伪造结果
+ok 120 - 生活场景表恰有8个有效场景，未知场景不会伪造结果
+  ---
+  duration_ms: 0.445441
+  type: 'test'
+  ...
+# Subtest: 周期表：序数/名称检索、类别联合筛选与空结果可恢复
+ok 121 - 周期表：序数/名称检索、类别联合筛选与空结果可恢复
+  ---
+  duration_ms: 23.505891
+  type: 'test'
+  ...
+# Subtest: 周期表：d区分类不笼统写为过渡金属，稳定Co-59不会跳到C-14
+ok 122 - 周期表：d区分类不笼统写为过渡金属，稳定Co-59不会跳到C-14
+  ---
+  duration_ms: 20.800653
+  type: 'test'
+  ...
+# Subtest: 周期表：记录元素和同位素入口连接至正确模块
+ok 123 - 周期表：记录元素和同位素入口连接至正确模块
+  ---
+  duration_ms: 36.520417
+  type: 'test'
+  ...
+# Subtest: 原子URL参数 NaN 安全回退到支持的前20号元素
+ok 124 - 原子URL参数 NaN 安全回退到支持的前20号元素
+  ---
+  duration_ms: 11.170408
+  type: 'test'
+  ...
+# Subtest: 原子URL参数 -1 安全回退到支持的前20号元素
+ok 125 - 原子URL参数 -1 安全回退到支持的前20号元素
+  ---
+  duration_ms: 9.5499
+  type: 'test'
+  ...
+# Subtest: 原子URL参数 21 安全回退到支持的前20号元素
+ok 126 - 原子URL参数 21 安全回退到支持的前20号元素
+  ---
+  duration_ms: 10.369629
+  type: 'test'
+  ...
+# Subtest: 原子URL参数 6.5 安全回退到支持的前20号元素
+ok 127 - 原子URL参数 6.5 安全回退到支持的前20号元素
+  ---
+  duration_ms: 9.410777
+  type: 'test'
+  ...
+# Subtest: 原子URL参数 999 安全回退到支持的前20号元素
+ok 128 - 原子URL参数 999 安全回退到支持的前20号元素
+  ---
+  duration_ms: 8.304647
+  type: 'test'
+  ...
+# Subtest: 周期表：非法URL不崩溃，21号元素仍为有效周期表条目
+ok 129 - 周期表：非法URL不崩溃，21号元素仍为有效周期表条目
+  ---
+  duration_ms: 41.114039
+  type: 'test'
+  ...
+# Subtest: 原子搭建：质子/中子/电子分别改变身份、质量数、电荷，电子云可切换
+ok 130 - 原子搭建：质子/中子/电子分别改变身份、质量数、电荷，电子云可切换
+  ---
+  duration_ms: 24.986727
+  type: 'test'
+  ...
+# Subtest: 原子搭建：3个挑战有错误提示、改正与独立学习进度
+ok 131 - 原子搭建：3个挑战有错误提示、改正与独立学习进度
+  ---
+  duration_ms: 12.786078
+  type: 'test'
+  ...
+# Subtest: 衰变计时器：时间往返复现同一随机样本，播放暂停、终点和重置正常
+ok 132 - 衰变计时器：时间往返复现同一随机样本，播放暂停、终点和重置正常
+  ---
+  duration_ms: 38.825603
+  type: 'test'
+  ...
+# Subtest: 衰变计时器：切换原子数与核素，换批次改变单次结果
+ok 133 - 衰变计时器：切换原子数与核素，换批次改变单次结果
+  ---
+  duration_ms: 37.256149
+  type: 'test'
+  ...
+# Subtest: 射线变换：α和β−正确改变核素，γ与X保持A、Z且清楚说明来源
+ok 134 - 射线变换：α和β−正确改变核素，γ与X保持A、Z且清楚说明来源
+  ---
+  duration_ms: 20.111522
+  type: 'test'
+  ...
+# Subtest: 射线屏障：光子为逐渐减弱模型，儿童与进阶检查题均可纠错
+ok 135 - 射线屏障：光子为逐渐减弱模型，儿童与进阶检查题均可纠错
+  ---
+  duration_ms: 15.951411
+  type: 'test'
+  ...
+# Subtest: 蒸馏交互：温度与冷却门槛、降压、上限、质量账本及重置
+ok 136 - 蒸馏交互：温度与冷却门槛、降压、上限、质量账本及重置
+  ---
+  duration_ms: 54.75115
+  type: 'test'
+  ...
+# Subtest: 过滤交互：半批与全批的沙、水和盐分别守恒，再过滤不脱盐
+ok 137 - 过滤交互：半批与全批的沙、水和盐分别守恒，再过滤不脱盐
+  ---
+  duration_ms: 19.751278
+  type: 'test'
+  ...
+# Subtest: 结晶交互：出现晶体、蒸干、补水重溶以及起始盐超出溶解度时结果正确
+ok 138 - 结晶交互：出现晶体、蒸干、补水重溶以及起始盐超出溶解度时结果正确
+  ---
+  duration_ms: 12.448267
+  type: 'test'
+  ...
+# Subtest: 色谱交互：起点浸没不计正常展开，溶剂与墨水切换有效
+ok 139 - 色谱交互：起点浸没不计正常展开，溶剂与墨水切换有效
+  ---
+  duration_ms: 17.586521
+  type: 'test'
+  ...
+# Subtest: 电离交互：6种溶液的pH、分子/离子解释与纯水控件状态对应
+ok 140 - 电离交互：6种溶液的pH、分子/离子解释与纯水控件状态对应
+  ---
+  duration_ms: 27.807835
+  type: 'test'
+  ...
+# Subtest: 稀释交互：极稀酸趋近中性，浓度输出不会被中和控件覆盖
+ok 141 - 稀释交互：极稀酸趋近中性，浓度输出不会被中和控件覆盖
+  ---
+  duration_ms: 31.629785
+  type: 'test'
+  ...
+# Subtest: 中和交互：空容器不算中和，酸/碱过量与等当点反馈正确
+ok 142 - 中和交互：空容器不算中和，酸/碱过量与等当点反馈正确
+  ---
+  duration_ms: 18.065298
+  type: 'test'
+  ...
+# Subtest: 生活展区：kids 8场景条件、推进、重置、观察记录与纠错闭环
+ok 143 - 生活展区：kids 8场景条件、推进、重置、观察记录与纠错闭环
+  ---
+  duration_ms: 115.819294
+  type: 'test'
+  ...
+# Subtest: 生活展区：advanced 8场景条件、推进、重置、观察记录与纠错闭环
+ok 144 - 生活展区：advanced 8场景条件、推进、重置、观察记录与纠错闭环
+  ---
+  duration_ms: 109.58788
+  type: 'test'
+  ...
+# Subtest: 完整应用挂载：kids/home
+ok 145 - 完整应用挂载：kids/home
+  ---
+  duration_ms: 17.891879
+  type: 'test'
+  ...
+# Subtest: 完整应用挂载：kids/lab
+ok 146 - 完整应用挂载：kids/lab
+  ---
+  duration_ms: 19.828831
+  type: 'test'
+  ...
+# Subtest: 完整应用挂载：kids/periodic
+ok 147 - 完整应用挂载：kids/periodic
+  ---
+  duration_ms: 65.12086
+  type: 'test'
+  ...
+# Subtest: 完整应用挂载：kids/atom
+ok 148 - 完整应用挂载：kids/atom
+  ---
+  duration_ms: 20.887801
+  type: 'test'
+  ...
+# Subtest: 完整应用挂载：kids/stoich
+ok 149 - 完整应用挂载：kids/stoich
+  ---
+  duration_ms: 21.798274
+  type: 'test'
+  ...
+# Subtest: 完整应用挂载：kids/decay
+ok 150 - 完整应用挂载：kids/decay
+  ---
+  duration_ms: 21.992787
+  type: 'test'
+  ...
+# Subtest: 完整应用挂载：kids/separation
+ok 151 - 完整应用挂载：kids/separation
+  ---
+  duration_ms: 15.109397
+  type: 'test'
+  ...
+# Subtest: 完整应用挂载：kids/ions
+ok 152 - 完整应用挂载：kids/ions
+  ---
+  duration_ms: 24.503795
+  type: 'test'
+  ...
+# Subtest: 完整应用挂载：kids/life
+ok 153 - 完整应用挂载：kids/life
+  ---
+  duration_ms: 17.23048
+  type: 'test'
+  ...
+# Subtest: 完整应用挂载：kids/quests
+ok 154 - 完整应用挂载：kids/quests
+  ---
+  duration_ms: 16.71602
+  type: 'test'
+  ...
+# Subtest: 完整应用挂载：kids/notebook
+ok 155 - 完整应用挂载：kids/notebook
+  ---
+  duration_ms: 14.020337
+  type: 'test'
+  ...
+# Subtest: 完整应用挂载：kids/sources
+ok 156 - 完整应用挂载：kids/sources
+  ---
+  duration_ms: 17.45369
+  type: 'test'
+  ...
+# Subtest: 完整应用挂载：advanced/home
+ok 157 - 完整应用挂载：advanced/home
+  ---
+  duration_ms: 18.255239
+  type: 'test'
+  ...
+# Subtest: 完整应用挂载：advanced/lab
+ok 158 - 完整应用挂载：advanced/lab
+  ---
+  duration_ms: 16.644458
+  type: 'test'
+  ...
+# Subtest: 完整应用挂载：advanced/periodic
+ok 159 - 完整应用挂载：advanced/periodic
+  ---
+  duration_ms: 23.681664
+  type: 'test'
+  ...
+# Subtest: 完整应用挂载：advanced/atom
+ok 160 - 完整应用挂载：advanced/atom
+  ---
+  duration_ms: 18.668658
+  type: 'test'
+  ...
+# Subtest: 完整应用挂载：advanced/stoich
+ok 161 - 完整应用挂载：advanced/stoich
+  ---
+  duration_ms: 22.646848
+  type: 'test'
+  ...
+# Subtest: 完整应用挂载：advanced/decay
+ok 162 - 完整应用挂载：advanced/decay
+  ---
+  duration_ms: 36.29984
+  type: 'test'
+  ...
+# Subtest: 完整应用挂载：advanced/separation
+ok 163 - 完整应用挂载：advanced/separation
+  ---
+  duration_ms: 16.993362
+  type: 'test'
+  ...
+# Subtest: 完整应用挂载：advanced/ions
+ok 164 - 完整应用挂载：advanced/ions
+  ---
+  duration_ms: 28.548336
+  type: 'test'
+  ...
+# Subtest: 完整应用挂载：advanced/life
+ok 165 - 完整应用挂载：advanced/life
+  ---
+  duration_ms: 20.397326
+  type: 'test'
+  ...
+# Subtest: 完整应用挂载：advanced/quests
+ok 166 - 完整应用挂载：advanced/quests
+  ---
+  duration_ms: 16.679452
+  type: 'test'
+  ...
+# Subtest: 完整应用挂载：advanced/notebook
+ok 167 - 完整应用挂载：advanced/notebook
+  ---
+  duration_ms: 12.938053
+  type: 'test'
+  ...
+# Subtest: 完整应用挂载：advanced/sources
+ok 168 - 完整应用挂载：advanced/sources
+  ---
+  duration_ms: 15.751122
+  type: 'test'
+  ...
+# Subtest: 实验全流程 DOM：kids/oxygen-peroxide
+ok 169 - 实验全流程 DOM：kids/oxygen-peroxide
+  ---
+  duration_ms: 307.961455
+  type: 'test'
+  ...
+# Subtest: 实验全流程 DOM：kids/oxygen-permanganate
+ok 170 - 实验全流程 DOM：kids/oxygen-permanganate
+  ---
+  duration_ms: 109.768934
+  type: 'test'
+  ...
+# Subtest: 实验全流程 DOM：kids/carbon-dioxide
+ok 171 - 实验全流程 DOM：kids/carbon-dioxide
+  ---
+  duration_ms: 108.894055
+  type: 'test'
+  ...
+# Subtest: 实验全流程 DOM：kids/neutralization
+ok 172 - 实验全流程 DOM：kids/neutralization
+  ---
+  duration_ms: 174.148167
+  type: 'test'
+  ...
+# Subtest: 实验全流程 DOM：kids/indicators
+ok 173 - 实验全流程 DOM：kids/indicators
+  ---
+  duration_ms: 152.282454
+  type: 'test'
+  ...
+# Subtest: 实验全流程 DOM：kids/limewater
+ok 174 - 实验全流程 DOM：kids/limewater
+  ---
+  duration_ms: 93.025077
+  type: 'test'
+  ...
+# Subtest: 实验全流程 DOM：kids/displacement
+ok 175 - 实验全流程 DOM：kids/displacement
+  ---
+  duration_ms: 65.529114
+  type: 'test'
+  ...
+# Subtest: 实验全流程 DOM：kids/precipitation
+ok 176 - 实验全流程 DOM：kids/precipitation
+  ---
+  duration_ms: 131.386285
+  type: 'test'
+  ...
+# Subtest: 实验全流程 DOM：kids/filtration
+ok 177 - 实验全流程 DOM：kids/filtration
+  ---
+  duration_ms: 219.732455
+  type: 'test'
+  ...
+# Subtest: 实验全流程 DOM：kids/distillation
+ok 178 - 实验全流程 DOM：kids/distillation
+  ---
+  duration_ms: 324.154345
+  type: 'test'
+  ...
+# Subtest: 实验全流程 DOM：kids/electrolysis
+ok 179 - 实验全流程 DOM：kids/electrolysis
+  ---
+  duration_ms: 114.864131
+  type: 'test'
+  ...
+# Subtest: 实验全流程 DOM：kids/phosphorus
+ok 180 - 实验全流程 DOM：kids/phosphorus
+  ---
+  duration_ms: 153.783553
+  type: 'test'
+  ...
+# Subtest: 实验全流程 DOM：advanced/oxygen-peroxide
+ok 181 - 实验全流程 DOM：advanced/oxygen-peroxide
+  ---
+  duration_ms: 244.432641
+  type: 'test'
+  ...
+# Subtest: 实验全流程 DOM：advanced/oxygen-permanganate
+ok 182 - 实验全流程 DOM：advanced/oxygen-permanganate
+  ---
+  duration_ms: 494.744888
+  type: 'test'
+  ...
+# Subtest: 实验全流程 DOM：advanced/carbon-dioxide
+ok 183 - 实验全流程 DOM：advanced/carbon-dioxide
+  ---
+  duration_ms: 116.550779
+  type: 'test'
+  ...
+# Subtest: 实验全流程 DOM：advanced/neutralization
+ok 184 - 实验全流程 DOM：advanced/neutralization
+  ---
+  duration_ms: 125.463451
+  type: 'test'
+  ...
+# Subtest: 实验全流程 DOM：advanced/indicators
+ok 185 - 实验全流程 DOM：advanced/indicators
+  ---
+  duration_ms: 153.042528
+  type: 'test'
+  ...
+# Subtest: 实验全流程 DOM：advanced/limewater
+ok 186 - 实验全流程 DOM：advanced/limewater
+  ---
+  duration_ms: 149.17754
+  type: 'test'
+  ...
+# Subtest: 实验全流程 DOM：advanced/displacement
+ok 187 - 实验全流程 DOM：advanced/displacement
+  ---
+  duration_ms: 79.607318
+  type: 'test'
+  ...
+# Subtest: 实验全流程 DOM：advanced/precipitation
+ok 188 - 实验全流程 DOM：advanced/precipitation
+  ---
+  duration_ms: 82.634882
+  type: 'test'
+  ...
+# Subtest: 实验全流程 DOM：advanced/filtration
+ok 189 - 实验全流程 DOM：advanced/filtration
+  ---
+  duration_ms: 212.088659
+  type: 'test'
+  ...
+# Subtest: 实验全流程 DOM：advanced/distillation
+ok 190 - 实验全流程 DOM：advanced/distillation
+  ---
+  duration_ms: 316.096569
+  type: 'test'
+  ...
+# Subtest: 实验全流程 DOM：advanced/electrolysis
+ok 191 - 实验全流程 DOM：advanced/electrolysis
+  ---
+  duration_ms: 125.432294
+  type: 'test'
+  ...
+# Subtest: 实验全流程 DOM：advanced/phosphorus
+ok 192 - 实验全流程 DOM：advanced/phosphorus
+  ---
+  duration_ms: 123.741699
+  type: 'test'
+  ...
+# Subtest: 实验错误不推进：漏装置、错连接、漏材料、操作越序
+ok 193 - 实验错误不推进：漏装置、错连接、漏材料、操作越序
+  ---
+  duration_ms: 52.368725
+  type: 'test'
+  ...
+# Subtest: 实验中途切换儿童/进阶模式保留器材与材料
+ok 194 - 实验中途切换儿童/进阶模式保留器材与材料
+  ---
+  duration_ms: 38.080367
+  type: 'test'
+  ...
+# Subtest: 离开实验路由取消动画，返回后从保留状态继续
+ok 195 - 离开实验路由取消动画，返回后从保留状态继续
+  ---
+  duration_ms: 236.156345
+  type: 'test'
+  ...
+# Subtest: 器材键盘位置调整与清空后重新选择配方
+ok 196 - 器材键盘位置调整与清空后重新选择配方
+  ---
+  duration_ms: 48.150263
+  type: 'test'
+  ...
+# Subtest: 白磷只显示模型卡与观察盒，页面没有数字投料或现实点火操作
+ok 197 - 白磷只显示模型卡与观察盒，页面没有数字投料或现实点火操作
+  ---
+  duration_ms: 19.074066
+  type: 'test'
+  ...
+# Subtest: 118张元素卡在两种模式逐一展开，资料和属性均存在
+ok 198 - 118张元素卡在两种模式逐一展开，资料和属性均存在
+  ---
+  duration_ms: 407.277994
+  type: 'test'
+  ...
+# Subtest: 应用内每次切换路由都会卸载旧事件，不重复保存或推进
+ok 199 - 应用内每次切换路由都会卸载旧事件，不重复保存或推进
+  ---
+  duration_ms: 173.469488
+  type: 'test'
+  ...
+# Subtest: 12 experiment recipes contain valid apparatus, materials, targets, ranges and ordered operations
+ok 200 - 12 experiment recipes contain valid apparatus, materials, targets, ranges and ordered operations
+  ---
+  duration_ms: 5.174784
+  type: 'test'
+  ...
+# Subtest: invalid experiment/state/action identifiers fail explicitly and unknown actions do not mutate state
+ok 201 - invalid experiment/state/action identifiers fail explicitly and unknown actions do not mutate state
+  ---
+  duration_ms: 1.263996
+  type: 'test'
+  ...
+# Subtest: every experiment refuses operation before setup and before a prediction is recorded
+ok 202 - every experiment refuses operation before setup and before a prediction is recorded
+  ---
+  duration_ms: 29.001155
+  type: 'test'
+  ...
+# Subtest: all 12 recipes reject skipped or repeated operations while keeping the prescribed next step
+ok 203 - all 12 recipes reject skipped or repeated operations while keeping the prescribed next step
+  ---
+  duration_ms: 11.876637
+  type: 'test'
+  ...
+# Subtest: editing preparation after a preliminary operation resets the operation sequence
+ok 204 - editing preparation after a preliminary operation resets the operation sequence
+  ---
+  duration_ms: 0.758778
+  type: 'test'
+  ...
+# Subtest: running experiments lock chemistry configuration while allowing schematic movement and playback speed
+ok 205 - running experiments lock chemistry configuration while allowing schematic movement and playback speed
+  ---
+  duration_ms: 3.366845
+  type: 'test'
+  ...
+# Subtest: done experiments require a restart before changing materials
+ok 206 - done experiments require a restart before changing materials
+  ---
+  duration_ms: 0.766995
+  type: 'test'
+  ...
+# Subtest: every recipe material accepts its declared endpoints and rejects values outside its range
+ok 207 - every recipe material accepts its declared endpoints and rejects values outside its range
+  ---
+  duration_ms: 14.409128
+  type: 'test'
+  ...
+# Subtest: repeated additions use cumulative quantities and cannot exceed the container material limit
+ok 208 - repeated additions use cumulative quantities and cannot exceed the container material limit
+  ---
+  duration_ms: 0.677556
+  type: 'test'
+  ...
+# Subtest: accepted floating-point endpoint tolerance is normalized to a valid material quantity
+ok 209 - accepted floating-point endpoint tolerance is normalized to a valid material quantity
+  ---
+  duration_ms: 0.242365
+  type: 'test'
+  ...
+# Subtest: portions require integers and unknown material/container combinations remain unsupported
+ok 210 - portions require integers and unknown material/container combinations remain unsupported
+  ---
+  duration_ms: 1.210681
+  type: 'test'
+  ...
+# Subtest: removing apparatus also removes its contents and connections; undo restores a complete valid setup
+ok 211 - removing apparatus also removes its contents and connections; undo restores a complete valid setup
+  ---
+  duration_ms: 0.731464
+  type: 'test'
+  ...
+# Subtest: removing a required material invalidates preparation and undo restores its exact quantity
+ok 212 - removing a required material invalidates preparation and undo restores its exact quantity
+  ---
+  duration_ms: 0.228701
+  type: 'test'
+  ...
+# Subtest: connection direction follows physical port identities even when the destination is selected first
+ok 213 - connection direction follows physical port identities even when the destination is selected first
+  ---
+  duration_ms: 0.656432
+  type: 'test'
+  ...
+# Subtest: wrong cooling-water connections and reversed electrode polarity are blocked with useful feedback
+ok 214 - wrong cooling-water connections and reversed electrode polarity are blocked with useful feedback
+  ---
+  duration_ms: 1.088627
+  type: 'test'
+  ...
+# Subtest: model controls enforce finite bounds, integer heat settings and available options
+ok 215 - model controls enforce finite bounds, integer heat settings and available options
+  ---
+  duration_ms: 1.37676
+  type: 'test'
+  ...
+# Subtest: more catalyst accelerates the demonstration without increasing theoretical oxygen yield
+ok 216 - more catalyst accelerates the demonstration without increasing theoretical oxygen yield
+  ---
+  duration_ms: 0.490731
+  type: 'test'
+  ...
+# Subtest: virtual heating speed does not change the selected distillation recovery or oxygen stoichiometry
+ok 217 - virtual heating speed does not change the selected distillation recovery or oxygen stoichiometry
+  ---
+  duration_ms: 1.8968
+  type: 'test'
+  ...
+# Subtest: invalid clock increments and playback speeds cannot corrupt progress
+ok 218 - invalid clock increments and playback speeds cannot corrupt progress
+  ---
+  duration_ms: 3.199571
+  type: 'test'
+  ...
+# Subtest: pause holds the exact clock and overshoot ends once at 100 percent
+ok 219 - pause holds the exact clock and overshoot ends once at 100 percent
+  ---
+  duration_ms: 0.329829
+  type: 'test'
+  ...
+# Subtest: restart keeps the experimental comparison inputs but clears prediction, progress and performed steps
+ok 220 - restart keeps the experimental comparison inputs but clears prediction, progress and performed steps
+  ---
+  duration_ms: 0.284585
+  type: 'test'
+  ...
+# Subtest: reset empties the workbench and switching recipes cannot leak previous materials or controls
+ok 221 - reset empties the workbench and switching recipes cannot leak previous materials or controls
+  ---
+  duration_ms: 0.809641
+  type: 'test'
+  ...
+# Subtest: reducer transitions work with deeply frozen inputs and undo does not alias restored contents
+ok 222 - reducer transitions work with deeply frozen inputs and undo does not alias restored contents
+  ---
+  duration_ms: 0.962698
+  type: 'test'
+  ...
+# Subtest: the phosphorus scenario exposes conceptual oxygen choice and no quantitative product recipe
+ok 223 - the phosphorus scenario exposes conceptual oxygen choice and no quantitative product recipe
+  ---
+  duration_ms: 0.374523
+  type: 'test'
+  ...
+# Subtest: 单文件包无外链脚本、样式或本地图片依赖
+ok 224 - 单文件包无外链脚本、样式或本地图片依赖
+  ---
+  duration_ms: 59.797307
+  type: 'test'
+  ...
+# Subtest: 单文件版本全部12路由正常切换
+ok 225 - 单文件版本全部12路由正常切换
+  ---
+  duration_ms: 111.364181
+  type: 'test'
+  ...
+# Subtest: 单文件版本的计算与交互没有因打包丢失
+ok 226 - 单文件版本的计算与交互没有因打包丢失
+  ---
+  duration_ms: 31.319888
+  type: 'test'
+  ...
+# Subtest: 静态站入口顺序与本地资源完整
+ok 227 - 静态站入口顺序与本地资源完整
+  ---
+  duration_ms: 0.72935
+  type: 'test'
+  ...
+1..227
+# tests 227
+# suites 0
+# pass 227
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 8021.700207

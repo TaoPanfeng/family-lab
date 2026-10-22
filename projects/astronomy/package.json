@@ -1,0 +1,20 @@
+{
+  "name": "sun-earth-moon-time-lab",
+  "version": "2.0.0",
+  "description": "Offline interactive Sun/Earth/Moon astronomy laboratory",
+  "private": true,
+  "license": "AGPL-3.0-or-later",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "node tools/build.cjs",
+    "test": "node tests/test.cjs",
+    "start": "node tools/serve.cjs",
+    "test:v2": "node tests/v2-test.cjs",
+    "test:browser": "python tests/v2-browser-test.py",
+    "test:server": "python tests/server-test.py"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

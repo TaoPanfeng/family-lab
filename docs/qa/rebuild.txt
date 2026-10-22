@@ -1,0 +1,7 @@
+Built 日月地实验室.html (8.05 MB).
+SHA256 dca5e558ea4cdfb416e8205424da3eb319a51f686ec8dc728930288880c1caf7
+Double-click the HTML in Chrome / Edge. No npm install, server, or internet required.
+Built offline index.html: 151441 bytes
+Built standalone index.html: 153469 bytes; no external runtime assets.
+Offline application: chemistry-explorer.html (402700 bytes)
+Built homepage and source index for 5 projects.

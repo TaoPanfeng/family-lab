@@ -1,0 +1,12 @@
+{
+  "credit": "Eclipse Predictions by Fred Espenak, NASA's GSFC",
+  "checkedDate": "2026-10-16",
+  "note": "NASA solar pages explicitly give UT. The lunar catalog gives TD; subtract its listed DeltaT=75s to obtain its UT prediction. The app approximates UT1 by UTC. Models and DeltaT choices differ; these are sanity checks, not a precision certification.",
+  "events": [
+    {"date":"2009-07-22","kind":"solar","type":"日全食","referenceUT":"2009-07-22T02:35:18.100Z","source":"https://eclipse.gsfc.nasa.gov/SEbeselm/SEbeselm2001/SE2009Jul22Tbeselm.html"},
+    {"date":"2023-10-14","kind":"solar","type":"日环食","referenceUT":"2023-10-14T17:59:29.500Z","source":"https://eclipse.gsfc.nasa.gov/SEbeselm/SEbeselm2001/SE2023Oct14Abeselm.html"},
+    {"date":"2024-04-08","kind":"solar","type":"日全食","referenceUT":"2024-04-08T18:17:18.300Z","source":"https://eclipse.gsfc.nasa.gov/SEbeselm/SEbeselm2001/SE2024Apr08Tbeselm.html"},
+    {"date":"2025-03-14","kind":"lunar","type":"月全食","referenceTD":"2025-03-14T06:59:56Z","referenceDeltaTSeconds":75,"referenceUT":"2025-03-14T06:58:41Z","source":"https://eclipse.gsfc.nasa.gov/LEcat5/LE2001-2100.html"},
+    {"date":"2025-09-07","kind":"lunar","type":"月全食","referenceTD":"2025-09-07T18:12:58Z","referenceDeltaTSeconds":75,"referenceUT":"2025-09-07T18:11:43Z","source":"https://eclipse.gsfc.nasa.gov/LEcat5/LE2001-2100.html"}
+  ]
+}

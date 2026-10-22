@@ -1,0 +1,62 @@
+{
+  "date": "2026-10-22",
+  "project": "family-lab",
+  "selectedProjects": 5,
+  "importedOriginalFiles": 193,
+  "changedOriginalFiles": [],
+  "unitTests": {
+    "homepage": 14,
+    "astronomyCore": 52,
+    "astronomyLearning": 50,
+    "physics": 58,
+    "posture": 47,
+    "chemistry": 227,
+    "historyData": 25,
+    "passed": 473,
+    "failed": 0
+  },
+  "browserChecks": {
+    "portalAndFiveApps": 72,
+    "physicsRegression": 62,
+    "postureRegression": 167,
+    "passed": 301,
+    "failed": 0
+  },
+  "buildEquivalence": {
+    "index.html": true,
+    "source.html": true,
+    "projects/astronomy/日月地实验室.html": true,
+    "projects/physics/index.html": true,
+    "projects/posture/index.html": true,
+    "projects/chemistry/chemistry-explorer.html": true
+  },
+  "verified": [
+    "selected latest app only",
+    "all local entry paths exist",
+    "source and compiled HTML agree",
+    "runtime interactions in Chromium with injected HTML",
+    "desktop/tablet/mobile homepage layout",
+    "physics exports/imports",
+    "15 postures and 82 posture steps"
+  ],
+  "notVerified": [
+    "native file:// navigation (blocked by administrator)",
+    "Windows .cmd launchers",
+    "native browser disk persistence",
+    "actual hardware WebGL",
+    "real mobile devices",
+    "history jsdom UI suite (dependency unavailable locally)",
+    "GitHub Actions workflow execution",
+    "remote repository creation/push",
+    "live GitHub Pages deployment"
+  ],
+  "github": {
+    "account": "TaoPanfeng",
+    "repositoryCount": null,
+    "starredRepositoryCount": null,
+    "repositoryCreated": false,
+    "pushed": false,
+    "deployed": false,
+    "liveUrl": null
+  }
+}

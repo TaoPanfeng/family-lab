@@ -1,0 +1,338 @@
+{
+  "loading": "HTML injection (not file navigation)",
+  "checks": [
+    {
+      "name": "首页恰好五个项目入口",
+      "passed": true
+    },
+    {
+      "name": "首页入口存在且指向原文件：日月地",
+      "passed": true
+    },
+    {
+      "name": "首页入口存在且指向原文件：物理",
+      "passed": true
+    },
+    {
+      "name": "首页入口存在且指向原文件：化学",
+      "passed": true
+    },
+    {
+      "name": "首页入口存在且指向原文件：历史",
+      "passed": true
+    },
+    {
+      "name": "首页入口存在且指向原文件：坐卧",
+      "passed": true
+    },
+    {
+      "name": "首页 1440px 无横向溢出",
+      "passed": true
+    },
+    {
+      "name": "首页 768px 无横向溢出",
+      "passed": true
+    },
+    {
+      "name": "首页 390px 无横向溢出",
+      "passed": true
+    },
+    {
+      "name": "键盘可以聚焦项目入口",
+      "passed": true
+    },
+    {
+      "name": "首页使用说明可以展开",
+      "passed": true
+    },
+    {
+      "name": "日月地三个学习入口",
+      "passed": true
+    },
+    {
+      "name": "日月地主题切换：moon",
+      "passed": true
+    },
+    {
+      "name": "日月地主题切换：seasons",
+      "passed": true
+    },
+    {
+      "name": "日月地主题切换：shadow",
+      "passed": true
+    },
+    {
+      "name": "日月地主题切换：eclipse",
+      "passed": true
+    },
+    {
+      "name": "物理包含16个实验",
+      "passed": true
+    },
+    {
+      "name": "物理实验导航：speed",
+      "passed": true
+    },
+    {
+      "name": "物理实验导航：acceleration",
+      "passed": true
+    },
+    {
+      "name": "物理实验导航：force",
+      "passed": true
+    },
+    {
+      "name": "物理实验导航：work",
+      "passed": true
+    },
+    {
+      "name": "物理实验导航：fall",
+      "passed": true
+    },
+    {
+      "name": "物理实验导航：jet",
+      "passed": true
+    },
+    {
+      "name": "物理实验导航：pressure",
+      "passed": true
+    },
+    {
+      "name": "物理实验导航：atmosphere",
+      "passed": true
+    },
+    {
+      "name": "物理实验导航：boiling",
+      "passed": true
+    },
+    {
+      "name": "物理实验导航：barometer",
+      "passed": true
+    },
+    {
+      "name": "物理实验导航：buoyancy",
+      "passed": true
+    },
+    {
+      "name": "物理实验导航：lever",
+      "passed": true
+    },
+    {
+      "name": "物理实验导航：pulley",
+      "passed": true
+    },
+    {
+      "name": "物理实验导航：spring",
+      "passed": true
+    },
+    {
+      "name": "物理实验导航：pendulum",
+      "passed": true
+    },
+    {
+      "name": "物理实验导航：circuit",
+      "passed": true
+    },
+    {
+      "name": "化学包含12个页面路由",
+      "passed": true
+    },
+    {
+      "name": "化学页面导航：home",
+      "passed": true
+    },
+    {
+      "name": "化学页面导航：lab",
+      "passed": true
+    },
+    {
+      "name": "化学页面导航：periodic",
+      "passed": true
+    },
+    {
+      "name": "化学页面导航：atom",
+      "passed": true
+    },
+    {
+      "name": "化学页面导航：stoich",
+      "passed": true
+    },
+    {
+      "name": "化学页面导航：decay",
+      "passed": true
+    },
+    {
+      "name": "化学页面导航：separation",
+      "passed": true
+    },
+    {
+      "name": "化学页面导航：ions",
+      "passed": true
+    },
+    {
+      "name": "化学页面导航：life",
+      "passed": true
+    },
+    {
+      "name": "化学页面导航：quests",
+      "passed": true
+    },
+    {
+      "name": "化学页面导航：notebook",
+      "passed": true
+    },
+    {
+      "name": "化学页面导航：sources",
+      "passed": true
+    },
+    {
+      "name": "历史页面导航：overview",
+      "passed": true
+    },
+    {
+      "name": "历史页面导航：rulers",
+      "passed": true
+    },
+    {
+      "name": "历史页面导航：atlas",
+      "passed": true
+    },
+    {
+      "name": "历史页面导航：events",
+      "passed": true
+    },
+    {
+      "name": "历史页面导航：world",
+      "passed": true
+    },
+    {
+      "name": "历史页面导航：learn",
+      "passed": true
+    },
+    {
+      "name": "历史页面导航：bookmarks",
+      "passed": true
+    },
+    {
+      "name": "历史时间轴放大改变刻度",
+      "passed": true
+    },
+    {
+      "name": "坐卧包含15个姿势",
+      "passed": true
+    },
+    {
+      "name": "坐卧条目切换：office",
+      "passed": true
+    },
+    {
+      "name": "坐卧条目切换：bench",
+      "passed": true
+    },
+    {
+      "name": "坐卧条目切换：upright",
+      "passed": true
+    },
+    {
+      "name": "坐卧条目切换：seiza",
+      "passed": true
+    },
+    {
+      "name": "坐卧条目切换：cross",
+      "passed": true
+    },
+    {
+      "name": "坐卧条目切换：stand",
+      "passed": true
+    },
+    {
+      "name": "坐卧条目切换：standdesk",
+      "passed": true
+    },
+    {
+      "name": "坐卧条目切换：quiet",
+      "passed": true
+    },
+    {
+      "name": "坐卧条目切换：walk",
+      "passed": true
+    },
+    {
+      "name": "坐卧条目切换：left",
+      "passed": true
+    },
+    {
+      "name": "坐卧条目切换：right",
+      "passed": true
+    },
+    {
+      "name": "坐卧条目切换：supine",
+      "passed": true
+    },
+    {
+      "name": "坐卧条目切换：prone",
+      "passed": true
+    },
+    {
+      "name": "坐卧条目切换：fetal",
+      "passed": true
+    },
+    {
+      "name": "坐卧条目切换：auspicious",
+      "passed": true
+    },
+    {
+      "name": "无未捕获脚本异常",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "name": "运行过程没有外部 HTTP 请求",
+      "passed": true,
+      "detail": []
+    }
+  ],
+  "pageErrors": [],
+  "runtimeNetworkRequests": [],
+  "screenshots": [
+    "home-1440.png",
+    "home-390.png",
+    "astronomy-desktop.png",
+    "physics-desktop.png",
+    "chemistry-desktop.png",
+    "history-desktop.png",
+    "posture-desktop.png"
+  ],
+  "layouts": [
+    {
+      "project": "astronomy",
+      "width": 1440,
+      "scrollWidth": 1440
+    },
+    {
+      "project": "physics",
+      "width": 1440,
+      "scrollWidth": 1440
+    },
+    {
+      "project": "chemistry",
+      "width": 1440,
+      "scrollWidth": 1440
+    },
+    {
+      "project": "history",
+      "width": 1440,
+      "scrollWidth": 1440
+    },
+    {
+      "project": "posture",
+      "width": 1440,
+      "scrollWidth": 1440
+    }
+  ],
+  "browser": "144.0.7559.96",
+  "astronomyRenderer": "2D fallback",
+  "passed": 72,
+  "failed": 0,
+  "status": "passed"
+}

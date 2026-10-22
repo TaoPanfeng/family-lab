@@ -1,0 +1,73 @@
+{
+  "timestamp": "2026-10-19T11:30:44.725Z",
+  "node": "v24.19.0",
+  "suites": [
+    {
+      "file": "tests/app.test.cjs",
+      "status": 0,
+      "tests": 32,
+      "pass": 32,
+      "fail": 0,
+      "skipped": 0
+    },
+    {
+      "file": "tests/core.test.cjs",
+      "status": 0,
+      "tests": 58,
+      "pass": 58,
+      "fail": 0,
+      "skipped": 0
+    },
+    {
+      "file": "tests/cross-module.test.cjs",
+      "status": 0,
+      "tests": 13,
+      "pass": 13,
+      "fail": 0,
+      "skipped": 0
+    },
+    {
+      "file": "tests/explore.test.cjs",
+      "status": 0,
+      "tests": 41,
+      "pass": 41,
+      "fail": 0,
+      "skipped": 0
+    },
+    {
+      "file": "tests/integration.test.cjs",
+      "status": 0,
+      "tests": 55,
+      "pass": 55,
+      "fail": 0,
+      "skipped": 0
+    },
+    {
+      "file": "tests/lab.test.cjs",
+      "status": 0,
+      "tests": 24,
+      "pass": 24,
+      "fail": 0,
+      "skipped": 0
+    },
+    {
+      "file": "tests/offline.test.cjs",
+      "status": 0,
+      "tests": 4,
+      "pass": 4,
+      "fail": 0,
+      "skipped": 0
+    }
+  ],
+  "tests": 227,
+  "pass": 227,
+  "fail": 0,
+  "skipped": 0,
+  "status": "passed",
+  "verification": {
+    "models": true,
+    "domEvents": true,
+    "realBrowser": false
+  },
+  "browserLimit": "受管理预览服务因 bwrap 无法挂载 proc 而未能启动；DOM 模拟测试不验证浏览器布局、触屏手势、GPU 绘图或下载对话框。"
+}

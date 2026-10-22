@@ -1,0 +1,13 @@
+{
+  "samples": 4000,
+  "randomSeed": 20261016,
+  "maxAngleErrorArcsec": {
+    "sun": 0.008612366484755924,
+    "moon": 0.011935261379644065
+  },
+  "maxDistanceErrorKm": {
+    "sun": 8.87384324896342,
+    "moon": 0.01991190993928897
+  },
+  "note": "Interpolation residual only, NOT total astronomical or eclipse accuracy."
+}

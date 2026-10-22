@@ -1,0 +1,38 @@
+{
+  "startJD": 2415016.5,
+  "stepDays": 4.0,
+  "degree": 8,
+  "channels": 8,
+  "segments": 18356,
+  "byteOrder": "little-endian",
+  "dtype": "float32",
+  "source": "Swiss Ephemeris 2.10.03 / Moshier via pyswisseph 2.10.3.2",
+  "frame": "apparent geocentric true equator/equinox of date (EQD)",
+  "fields": [
+    "Sun.x AU",
+    "Sun.y AU",
+    "Sun.z AU",
+    "Moon.x AU",
+    "Moon.y AU",
+    "Moon.z AU",
+    "true obliquity degrees",
+    "equation of equinoxes degrees"
+  ],
+  "userRangeUTC": [
+    "1900-01-01T00:00:00Z",
+    "2100-12-31T23:59:59Z"
+  ],
+  "interpolationValidation": {
+    "samples": 4000,
+    "randomSeed": 20261016,
+    "maxAngleErrorArcsec": {
+      "sun": 0.008612366484755924,
+      "moon": 0.011935261379644065
+    },
+    "maxDistanceErrorKm": {
+      "sun": 8.87384324896342,
+      "moon": 0.01991190993928897
+    },
+    "note": "Interpolation residual only, NOT total astronomical or eclipse accuracy."
+  }
+}

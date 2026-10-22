@@ -1,0 +1,18 @@
+{
+  "name": "family-lab",
+  "version": "1.0.0",
+  "private": true,
+  "description": "日月地、物理、化学、历史、坐卧：统一入口、独立项目、离线优先。",
+  "engines": {
+    "node": ">=22.17"
+  },
+  "scripts": {
+    "build": "node tools/build.cjs",
+    "build:home": "node tools/build-home.cjs",
+    "test": "node tools/test.cjs",
+    "test:offline": "node tools/test.cjs --offline",
+    "test:portal": "node --test tests/portal.test.cjs",
+    "test:browser": "python tests/browser-smoke.py",
+    "site": "python tools/prepare-site.py"
+  }
+}

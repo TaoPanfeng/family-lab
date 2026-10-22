@@ -1,0 +1,879 @@
+{
+  "mode": "injected-html+storage-mock",
+  "browser": "144.0.7559.96",
+  "renderer": {
+    "vertices": 26412,
+    "webgl": false,
+    "renderCount": 194,
+    "playing": false,
+    "finite": true
+  },
+  "durationSeconds": 24.67,
+  "poseCount": 15,
+  "stepCount": 82,
+  "passed": 167,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "独立入口初始化",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "全部 15 个条目可发现",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "分类筛选：walk",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "分类筛选：stand",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "分类筛选：sit",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "分类筛选：lie",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "唐僧睡别名搜索",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "正坐含椅坐及跪坐",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "搜索无结果与恢复入口",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "紧凑列表切换",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "收藏筛选",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：office/1",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：office/2",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：office/3",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：office/4",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：office/5",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：office/6",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "优劣自查：office",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "来源可见：office",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：bench/1",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：bench/2",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：bench/3",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：bench/4",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：bench/5",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "优劣自查：bench",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "来源可见：bench",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：upright/1",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：upright/2",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：upright/3",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：upright/4",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：upright/5",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "优劣自查：upright",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "来源可见：upright",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：seiza/1",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：seiza/2",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：seiza/3",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：seiza/4",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：seiza/5",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "优劣自查：seiza",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "来源可见：seiza",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：cross/1",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：cross/2",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：cross/3",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：cross/4",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：cross/5",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "优劣自查：cross",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "来源可见：cross",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：stand/1",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：stand/2",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：stand/3",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：stand/4",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：stand/5",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "优劣自查：stand",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "来源可见：stand",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：standdesk/1",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：standdesk/2",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：standdesk/3",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：standdesk/4",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：standdesk/5",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "优劣自查：standdesk",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "来源可见：standdesk",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：quiet/1",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：quiet/2",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：quiet/3",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：quiet/4",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：quiet/5",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "优劣自查：quiet",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "来源可见：quiet",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：walk/1",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：walk/2",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：walk/3",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：walk/4",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：walk/5",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "优劣自查：walk",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "来源可见：walk",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：left/1",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：left/2",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：left/3",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：left/4",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：left/5",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：left/6",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "优劣自查：left",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "来源可见：left",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：right/1",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：right/2",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：right/3",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：right/4",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：right/5",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：right/6",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "优劣自查：right",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "来源可见：right",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：supine/1",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：supine/2",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：supine/3",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：supine/4",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：supine/5",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：supine/6",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "优劣自查：supine",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "来源可见：supine",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：prone/1",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：prone/2",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：prone/3",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：prone/4",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：prone/5",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：prone/6",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "优劣自查：prone",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "来源可见：prone",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：fetal/1",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：fetal/2",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：fetal/3",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：fetal/4",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：fetal/5",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：fetal/6",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "优劣自查：fetal",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "来源可见：fetal",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：auspicious/1",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：auspicious/2",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：auspicious/3",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：auspicious/4",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：auspicious/5",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "三维姿势与步骤：auspicious/6",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "优劣自查：auspicious",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "来源可见：auspicious",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "180cm 自动适配",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "实测优先、联动家具",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "关闭联动保留家具",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "椅高越界钳制",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "空输入保留已有参数",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "身高下限保护",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "失配提示随参数更新",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "视角切换真实重绘",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "尺寸标注关闭",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "保存方案：办公位 · 初次试调",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "床垫档位改变实际画面",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "枕高与膝间支撑可调整",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "左右手标注",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "保存方案：侧卧 · 支撑对照",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "方案文本不执行 HTML",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "双方案展示",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "并排三维对照及差异行",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "对照关闭后释放界面",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "JSON 实际下载内容完整",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "重复导入跳过",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "非法备份不改变现有方案",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "损坏 JSON 错误提示",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "有效新方案导入",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "确认后仅删除指定方案",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "应用方案恢复身高姿势和家具",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "PNG 实际导出可解码",
+      "passed": true,
+      "detail": {
+        "width": 804,
+        "height": 517
+      }
+    },
+    {
+      "name": "打印卡生成参数步骤来源",
+      "passed": true,
+      "detail": {
+        "calls": 1,
+        "steps": 6,
+        "sources": 4
+      }
+    },
+    {
+      "name": "自愿呼吸节拍启停",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "恢复自然呼吸",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "计时提醒启动",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "到期提醒正常触发",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "步态持续动画可暂停",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "步态停止",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "安全边界与 13 条资料展示",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "1024px 响应式无横向溢出",
+      "passed": true,
+      "detail": {
+        "inner": 1024,
+        "scroll": 1024
+      }
+    },
+    {
+      "name": "768px 响应式无横向溢出",
+      "passed": true,
+      "detail": {
+        "inner": 768,
+        "scroll": 768
+      }
+    },
+    {
+      "name": "390px 响应式无横向溢出",
+      "passed": true,
+      "detail": {
+        "inner": 390,
+        "scroll": 390
+      }
+    },
+    {
+      "name": "320px 响应式无横向溢出",
+      "passed": true,
+      "detail": {
+        "inner": 320,
+        "scroll": 320
+      }
+    },
+    {
+      "name": "新页面恢复已存方案逻辑（存储替身）",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "原生存储被拒时保留功能与提示",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "保存方案：无法持久化时的临时记录",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "存储失败不谎报成功",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "运行期间无外部网络依赖",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "name": "无未处理 JavaScript 错误",
+      "passed": true,
+      "detail": []
+    }
+  ],
+  "pageErrors": [],
+  "requests": [],
+  "limitations": [
+    "注入模式不是 Windows 实际 file:// 双击测试。",
+    "内存替身只验证存储读写恢复逻辑，不验证原生磁盘持久化。",
+    "实际系统打印弹窗替换为计数器；未测试打印设备。"
+  ]
+}

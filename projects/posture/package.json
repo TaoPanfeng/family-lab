@@ -1,0 +1,15 @@
+{
+  "name": "shenyodu-posture-lab",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Offline interactive posture education lab",
+  "scripts": {
+    "build": "node build.cjs",
+    "test": "node --test tests/core.test.cjs tests/server.test.cjs",
+    "start": "node server.cjs"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "MIT"
+}

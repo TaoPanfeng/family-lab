@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light"><meta name="description" content="观物：离线亲子物理实验室。让现象、参数、公式与自己的发现连起来。">
+<title>观物 · 物理实验室</title>
+<style>/*__STYLE__*/</style>
+</head>
+<body>
+<a class="skip-link" href="#main">跳到实验台</a>
+<header class="topbar">
+ <a class="brand" href="#" aria-label="观物，回到实验台"><span class="brand-mark">∴</span><span><strong>观物<span class="brand-divider"> / </span><span class="brand-sub">物理实验室</span></strong><small>从现象出发，向原理走近。</small></span></a>
+ <nav class="topnav" aria-label="主导航"><button data-page="lab" class="active">实验台</button><button data-page="map">公式地图</button><button data-page="notes">我的发现 <span id="note-count">0</span></button></nav>
+ <div class="top-tools"><span class="offline-dot" title="计算与画面均在本机运行">本地离线</span><button class="icon-btn" id="help-btn" aria-label="使用说明与安全">?</button></div>
+</header>
+<div class="audience-bar"><span class="audience-label">今天怎么探索？</span><div class="segmented" role="group" aria-label="探索模式"><button data-mode="research">我来研究</button><button data-mode="child">小小探索员</button><button data-mode="family" class="active">亲子共玩</button></div><span id="mode-description">孩子先动手，大人先提问。</span><span id="storage-status" class="storage-status"></span></div>
+<div id="storage-warning" class="storage-warning" hidden>当前浏览器不允许持久保存。记录仅在本次页面中暂存，请导出 JSON 备份后再关闭。</div>
+<div class="shell">
+ <aside class="library" id="library">
+  <div class="library-title"><div><span class="eyebrow">EXPLORE THE EVERYDAY</span><h2>现象实验库 <span>16</span></h2></div><button class="icon-btn mobile-close" id="close-library" aria-label="关闭实验列表">×</button></div>
+  <label class="search"><span>⌕</span><input id="lab-search" type="search" placeholder="搜索：水、滑轮、F=ma…" aria-label="搜索实验与公式"></label>
+  <div id="lab-list" class="lab-list"></div>
+  <div class="library-footer"><span class="mirror-icon">🪞</span><p>一次只改一个条件。<br><strong>让猜想，接受观察。</strong></p></div>
+ </aside>
+ <main id="main" tabindex="-1">
+  <section id="page-lab" class="page active">
+   <div class="lab-heading"><div><span class="eyebrow" id="lab-breadcrumb"></span><h1 id="lab-title"></h1><p id="lab-lead"></p></div><div class="heading-actions"><button class="soft-btn mobile-library" id="open-library">☷ 实验库</button><button class="soft-btn" id="snapshot-btn">↗ 保存画面</button></div></div>
+   <div class="workspace">
+    <div class="stage-column">
+     <div id="danger-banner" class="danger-banner" hidden></div>
+     <div class="stage">
+      <div class="stage-top"><span><i></i> <span id="model-label">理想模型</span></span><span id="stage-formula" class="stage-formula"></span><button id="compare-toggle" class="dark-btn">A/B 对照</button></div>
+      <div class="stages" id="stages">
+       <div class="canvas-box" id="baseline-box" hidden><div class="canvas-caption"><b>A</b> 固定参数 <span>共享模拟时间</span></div><canvas id="baseline-canvas" class="scene-canvas" role="img" aria-label="固定参数的对照实验画面"></canvas></div>
+       <div class="canvas-box"><div class="canvas-caption" id="current-caption"><b>B</b> 当前试调 <span>共享模拟时间</span></div><canvas id="scene-canvas" class="scene-canvas" role="img" aria-label="可调参数的物理实验示意图"></canvas></div>
+      </div>
+      <div class="playbar"><button id="play-btn" class="play-btn" aria-label="播放实验">▶</button><button id="rewind-btn" class="dark-btn" title="回到起点" aria-label="回到起点">↺</button><input type="range" id="timeline" min="0" max="1000" step="1" value="0" aria-label="模拟时间进度"><output id="time-label">0.00 s</output><label class="time-scale">倍速 <select id="time-scale" aria-label="模拟时间倍率"><option value="0.25">0.25×</option><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option><option value="10">10×</option><option value="100">100×</option><option value="1000">1000×</option></select></label></div>
+     </div>
+     <div id="metrics" class="metrics" aria-live="off"></div>
+     <div id="comparison-info" class="comparison-info" hidden></div>
+     <div id="live-extra" class="live-extra"></div>
+     <section class="learning-card">
+      <div class="learning-tabs" role="tablist" aria-label="实验学习面板"><button role="tab" id="tab-explore" data-tab="explore" aria-controls="panel-explore">先猜再试</button><button role="tab" id="tab-formula" data-tab="formula" aria-controls="panel-formula">公式怎么来</button><button role="tab" id="tab-chart" data-tab="chart" aria-controls="panel-chart">关系曲线</button><button role="tab" id="tab-boundary" data-tab="boundary" aria-controls="panel-boundary">条件与依据</button></div>
+      <div id="panel-explore" role="tabpanel" aria-labelledby="tab-explore" class="learning-panel"></div>
+      <div id="panel-formula" role="tabpanel" aria-labelledby="tab-formula" class="learning-panel" hidden></div>
+      <div id="panel-chart" role="tabpanel" aria-labelledby="tab-chart" class="learning-panel" hidden></div>
+      <div id="panel-boundary" role="tabpanel" aria-labelledby="tab-boundary" class="learning-panel" hidden></div>
+     </section>
+     <div class="journey-footer"><span>不是背下一个式子，是多看懂一个现象。</span><button id="next-lab" class="text-btn"></button></div>
+    </div>
+    <aside class="controls-card"><div class="control-heading"><div><span class="eyebrow">CHANGE ONE THING</span><h2>动一动，看看变化</h2></div><button id="reset-params" class="icon-btn" aria-label="恢复当前实验默认参数" title="恢复默认参数">↺</button></div><div id="controls"></div><div class="control-actions"><button id="pin-baseline" class="outline-btn">⊞ 固定当前为对照 A</button><button id="save-note" class="primary-btn">＋ 记下我的发现</button></div><div class="control-footnote" id="control-footnote"></div></aside>
+   </div>
+  </section>
+  <section id="page-map" class="page" hidden></section>
+  <section id="page-notes" class="page" hidden></section>
+ </main>
+</div>
+<footer class="page-footer"><span>观物 GUANWU · 亲子物理实验室 v1.0</span><span>🪞 以 AI 为镜，也让模型接受检验。</span><button class="text-btn" id="footer-help">模型边界与使用说明 ↗</button></footer>
+<dialog id="note-dialog"><form id="note-form"><div class="dialog-heading"><div><span class="eyebrow">A SMALL DISCOVERY</span><h2 id="note-dialog-title">记下这一次发现</h2></div><button type="button" class="icon-btn" data-close="note-dialog" aria-label="关闭">×</button></div><p class="muted">用自己的话说，不必像课本。参数和现场会一起保存。</p><label>标题<input name="title" maxlength="120" required></label><label>我原来猜<textarea name="guess" maxlength="2000" rows="2" placeholder="我原来以为……"></textarea></label><label>我观察到 <span class="required">*</span><textarea name="discovery" maxlength="2000" rows="3" required placeholder="我只改变了……，发现……"></textarea></label><label>我还想问<textarea name="question" maxlength="2000" rows="2" placeholder="再改一个条件会怎样？"></textarea></label><div class="dialog-actions"><button type="button" class="soft-btn" data-close="note-dialog">取消</button><button type="submit" class="primary-btn">保存发现与现场</button></div></form></dialog>
+<dialog id="help-dialog"><div class="dialog-heading"><div><span class="eyebrow">BEFORE WE EXPLORE</span><h2>把现象看清，把边界留住</h2></div><button class="icon-btn" data-close="help-dialog" aria-label="关闭">×</button></div><div class="help-content">
+<h3>1. 从一个问题出发</h3><p>选实验 → 先猜 → 拖动一个参数或用任务按钮 → 看变化 → 展开公式 → 用自己的话记录。研究模式默认展开公式，儿童与亲子模式先展示问题。亲子共玩可交换驾驶员。</p>
+<h3>2. 让两个条件同时出现</h3><p>点击「固定当前为对照 A」，再只改一个参数。A 保持原参数，B 是当前试调；两边共用一个模拟时间，各自到达终点后定格。参数改变会暂停并回到起点，避免悄悄改变运动历史。两边尺寸会优先使用共同量程；粒子、球与器材大小常为教学放大，不拿屏幕尺子代替数值。</p>
+<h3>3. 公式关系不是一串魔法推导</h3><p><b>定义、实验定律、推导、近似是不同的。</b>不能从 v=Δx/Δt 单凭代数就推出牛顿定律。每个实验都标出所需条件和来源；「公式地图」显示概念联系，不把所有箭头冒充严格推导。</p>
+<div class="notice"><b>模型内观察，不是独立实测。</b><p>动画由这些公式和模型驱动，用来理解关系、提出预测；不能反过来将动画当成公式已经被独立实验验证的证据。数值精细也不代表现实测量同样精确。</p></div>
+<h3>4. 记录只在你的设备里</h3><p>无需联网、登录或后端；没有遥测、远程字体或在线 AI 接口。只有主动打开来源链接时才联网。浏览器允许时自动暂存；清理数据、换浏览器、移动文件或私密模式都可能让记录不可见。<b>「我的发现 → 导出全部备份」是可靠的带走方式。</b>浏览器禁止存储时会明确提醒，不会假装保存成功。</p>
+<h3>5. 只把安全的好奇心带到现实</h3><p>水银、高处抛物、高压水柱、热水蒸气、密闭加热、重物悬挂和电路接线均以屏幕模拟为主。不接触水银，不拆器具，不接市电，不短接电池。项目不是工程设计、健康建议、登山指南或安全认证。</p>
+<h3>6. 播放、暂停与迁移</h3><p>空格播放／暂停，R 回到起点；输入框与弹窗内不会抢按键。可拖动时间轴，也可选 0.25×–1000×；切到后台会暂停。某些实验展示的是静力平衡或参数关系，播放只让示意粒子运动，不代表系统经历了真实加热或建立平衡的过程。</p><p>电脑 Chrome／Edge 为优先入口。完整解压后打开 index.html；本机策略限制时，可按 README 使用可选本机服务器。不要关闭浏览器安全防护。</p>
+<h3>参考资料</h3><div id="all-sources"></div>
+</div></dialog>
+<dialog id="confirm-dialog"><h2 id="confirm-title">确认操作</h2><p id="confirm-message"></p><div class="dialog-actions"><button class="soft-btn" id="confirm-cancel">取消</button><button class="danger-btn" id="confirm-ok">确认</button></div></dialog>
+<input id="import-input" type="file" accept=".json,application/json" hidden>
+<div id="toast" role="status" aria-live="polite" hidden></div>
+<noscript><div class="noscript">这个实验室需要浏览器启用 JavaScript。所有计算均在本地进行。</div></noscript>
+<script>/*__CATALOG__*/</script>
+<script>/*__PHYSICS__*/</script>
+<script>/*__SCENE__*/</script>
+<script>/*__APP__*/</script>
+</body></html>

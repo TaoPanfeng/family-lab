@@ -1,0 +1,227 @@
+{
+  "timestamp": "2026-10-16T03:27:00Z",
+  "htmlSha256": "dca5e558ea4cdfb416e8205424da3eb319a51f686ec8dc728930288880c1caf7",
+  "browser": "144.0.7559.96",
+  "platform": "Linux Chromium + SwiftShader via Xvfb",
+  "loading": "set_content(full delivered HTML); no navigation policy modified",
+  "not_tested": [
+    "Windows hardware / Start.cmd",
+    "actual file:// navigation (blocked by administrator)",
+    "native localStorage across browser restarts",
+    "real iOS/Android touch hardware"
+  ],
+  "passed": 52,
+  "total": 52,
+  "errors": [],
+  "externalRequests": [],
+  "results": [
+    {
+      "name": "V2 三入口首页实际启动",
+      "pass": true
+    },
+    {
+      "name": "首次打开不会虚构上次探索",
+      "pass": true
+    },
+    {
+      "name": "实际创建两个 WebGL 视图",
+      "pass": true
+    },
+    {
+      "name": "桌面没有横向溢出",
+      "pass": true
+    },
+    {
+      "name": "首次月相场景在上海地平线上方",
+      "pass": true
+    },
+    {
+      "name": "同步视图使用同一 UTC 时刻",
+      "pass": true
+    },
+    {
+      "name": "切换时区不跳天体位置，双视图仍同步",
+      "pass": true
+    },
+    {
+      "name": "手工日期输入驱动场景并重定位时间轴",
+      "pass": true
+    },
+    {
+      "name": "非法日期被校验器拒绝而不改变状态",
+      "pass": true
+    },
+    {
+      "name": "主题步进、播放、暂停与倒放均操作同一时钟",
+      "pass": true
+    },
+    {
+      "name": "上海日全食：太空食影与地面遮挡同步",
+      "pass": true
+    },
+    {
+      "name": "V1 食接触跳转与回放功能保留",
+      "pass": true
+    },
+    {
+      "name": "换地点会重新计算可见性与遮挡",
+      "pass": true
+    },
+    {
+      "name": "月食自动切换月亮追踪与月食解释，不错用日食讲解",
+      "pass": true
+    },
+    {
+      "name": "月食场景恢复保留事件与第二视图追踪对象",
+      "pass": true
+    },
+    {
+      "name": "四季 A/B：同一时间地点，左真右假隔离",
+      "pass": true
+    },
+    {
+      "name": "改变右侧地轴不篡改左侧；同倾角日照相符",
+      "pass": true
+    },
+    {
+      "name": "暂停时相机仍可拖动，A/B 镜头同步",
+      "pass": true
+    },
+    {
+      "name": "返回刚才恢复时间、任务与主镜头",
+      "pass": true
+    },
+    {
+      "name": "独立地面场景恢复不会被强制切回太空",
+      "pass": true
+    },
+    {
+      "name": "立杆实验：杆高加倍，影长随几何关系变化",
+      "pass": true
+    },
+    {
+      "name": "立杆实验可比较上海与悉尼",
+      "pass": true
+    },
+    {
+      "name": "原理按需展开，并显示当前真实数值",
+      "pass": true
+    },
+    {
+      "name": "高级工具可展开；真实显示比例不影响天文数据",
+      "pass": true
+    },
+    {
+      "name": "儿童界面减少专业面板，预测阶段不直接公布答案",
+      "pass": true
+    },
+    {
+      "name": "孩子完成先猜、真实操作、观察解释三个步骤",
+      "pass": true
+    },
+    {
+      "name": "发现卡由孩子自己填写，保存文字与完整场景",
+      "pass": true
+    },
+    {
+      "name": "亲子模式有提问分工，可实际交换驾驶员",
+      "pass": true
+    },
+    {
+      "name": "轻量画质可用，天文数据保持不变",
+      "pass": true
+    },
+    {
+      "name": "JSON 实际下载、重新导入，重复备份不会重复记录",
+      "pass": true
+    },
+    {
+      "name": "无效备份被拒绝且不破坏已有记录",
+      "pass": true
+    },
+    {
+      "name": "编辑保留原场景，用户文字转义防止 HTML 注入",
+      "pass": true
+    },
+    {
+      "name": "发现卡 PNG 实际导出，并包含用户文字",
+      "pass": true
+    },
+    {
+      "name": "发现卡可以返回对应时刻并保持暂停",
+      "pass": true
+    },
+    {
+      "name": "删除需确认，并可撤销刚才删除",
+      "pass": true
+    },
+    {
+      "name": "兼容导入 V1 场景文件",
+      "pass": true
+    },
+    {
+      "name": "同步双视图可以实际导出 PNG，保留时间地点",
+      "pass": true
+    },
+    {
+      "name": "390px 排版无横向溢出，手机切换双视图与缩放有效",
+      "pass": true
+    },
+    {
+      "name": "390px 上可以完成儿童探索而非仅展示截图",
+      "pass": true
+    },
+    {
+      "name": "1024px 平板视口没有横向溢出",
+      "pass": true
+    },
+    {
+      "name": "顶部书签进入 V2 记录流程，不丢失对照参数",
+      "pass": true
+    },
+    {
+      "name": "对话框中空格不意外播放，Esc 可关闭",
+      "pass": true
+    },
+    {
+      "name": "新浏览器上下文可导入备份并恢复原场景",
+      "pass": true
+    },
+    {
+      "name": "A/B 镜头有相同绘制高度，避免视觉缩放混淆",
+      "pass": true
+    },
+    {
+      "name": "同一日期只改钟点，不会把全天影子混为正午影子",
+      "pass": true
+    },
+    {
+      "name": "高级修改 A 后，B 沿用同一月轨条件且明确标为双假设",
+      "pass": true
+    },
+    {
+      "name": "暂停时减少 GPU 重绘，而不是持续空转",
+      "pass": true
+    },
+    {
+      "name": "模拟 WebGL 初始化失败，二维兼容画面和计算仍可运行",
+      "pass": true
+    },
+    {
+      "name": "存储适配器夹具：欢迎页不覆盖旧现场，继续入口可恢复",
+      "pass": true
+    },
+    {
+      "name": "存储被禁止时清晰提示暂存与导出",
+      "pass": true
+    },
+    {
+      "name": "完整交互没有外部 HTTP(S) 请求",
+      "pass": true
+    },
+    {
+      "name": "完整交互没有 JavaScript / WebGL 控制台错误",
+      "pass": true
+    }
+  ]
+}

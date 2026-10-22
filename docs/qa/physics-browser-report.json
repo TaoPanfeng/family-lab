@@ -1,0 +1,335 @@
+{
+  "app": "GuanWu Physics Lab 1.0",
+  "checks": [
+    {
+      "name": "Initial lab and four live readouts",
+      "passed": true
+    },
+    {
+      "name": "speed: prediction → single-variable A/B → explanation",
+      "passed": true
+    },
+    {
+      "name": "speed: all formula steps, chart axes and sources",
+      "passed": true
+    },
+    {
+      "name": "speed: rendered numeric extrema and all select options",
+      "passed": true
+    },
+    {
+      "name": "acceleration: prediction → single-variable A/B → explanation",
+      "passed": true
+    },
+    {
+      "name": "acceleration: all formula steps, chart axes and sources",
+      "passed": true
+    },
+    {
+      "name": "acceleration: rendered numeric extrema and all select options",
+      "passed": true
+    },
+    {
+      "name": "force: prediction → single-variable A/B → explanation",
+      "passed": true
+    },
+    {
+      "name": "force: all formula steps, chart axes and sources",
+      "passed": true
+    },
+    {
+      "name": "force: rendered numeric extrema and all select options",
+      "passed": true
+    },
+    {
+      "name": "work: prediction → single-variable A/B → explanation",
+      "passed": true
+    },
+    {
+      "name": "work: all formula steps, chart axes and sources",
+      "passed": true
+    },
+    {
+      "name": "work: rendered numeric extrema and all select options",
+      "passed": true
+    },
+    {
+      "name": "fall: prediction → single-variable A/B → explanation",
+      "passed": true
+    },
+    {
+      "name": "fall: all formula steps, chart axes and sources",
+      "passed": true
+    },
+    {
+      "name": "fall: rendered numeric extrema and all select options",
+      "passed": true
+    },
+    {
+      "name": "jet: prediction → single-variable A/B → explanation",
+      "passed": true
+    },
+    {
+      "name": "jet: all formula steps, chart axes and sources",
+      "passed": true
+    },
+    {
+      "name": "jet: rendered numeric extrema and all select options",
+      "passed": true
+    },
+    {
+      "name": "pressure: prediction → single-variable A/B → explanation",
+      "passed": true
+    },
+    {
+      "name": "pressure: all formula steps, chart axes and sources",
+      "passed": true
+    },
+    {
+      "name": "pressure: rendered numeric extrema and all select options",
+      "passed": true
+    },
+    {
+      "name": "atmosphere: prediction → single-variable A/B → explanation",
+      "passed": true
+    },
+    {
+      "name": "atmosphere: all formula steps, chart axes and sources",
+      "passed": true
+    },
+    {
+      "name": "atmosphere: rendered numeric extrema and all select options",
+      "passed": true
+    },
+    {
+      "name": "boiling: prediction → single-variable A/B → explanation",
+      "passed": true
+    },
+    {
+      "name": "boiling: all formula steps, chart axes and sources",
+      "passed": true
+    },
+    {
+      "name": "boiling: rendered numeric extrema and all select options",
+      "passed": true
+    },
+    {
+      "name": "barometer: prediction → single-variable A/B → explanation",
+      "passed": true
+    },
+    {
+      "name": "barometer: all formula steps, chart axes and sources",
+      "passed": true
+    },
+    {
+      "name": "barometer: rendered numeric extrema and all select options",
+      "passed": true
+    },
+    {
+      "name": "buoyancy: prediction → single-variable A/B → explanation",
+      "passed": true
+    },
+    {
+      "name": "buoyancy: all formula steps, chart axes and sources",
+      "passed": true
+    },
+    {
+      "name": "buoyancy: rendered numeric extrema and all select options",
+      "passed": true
+    },
+    {
+      "name": "lever: prediction → single-variable A/B → explanation",
+      "passed": true
+    },
+    {
+      "name": "lever: all formula steps, chart axes and sources",
+      "passed": true
+    },
+    {
+      "name": "lever: rendered numeric extrema and all select options",
+      "passed": true
+    },
+    {
+      "name": "pulley: prediction → single-variable A/B → explanation",
+      "passed": true
+    },
+    {
+      "name": "pulley: all formula steps, chart axes and sources",
+      "passed": true
+    },
+    {
+      "name": "pulley: rendered numeric extrema and all select options",
+      "passed": true
+    },
+    {
+      "name": "spring: prediction → single-variable A/B → explanation",
+      "passed": true
+    },
+    {
+      "name": "spring: all formula steps, chart axes and sources",
+      "passed": true
+    },
+    {
+      "name": "spring: rendered numeric extrema and all select options",
+      "passed": true
+    },
+    {
+      "name": "pendulum: prediction → single-variable A/B → explanation",
+      "passed": true
+    },
+    {
+      "name": "pendulum: all formula steps, chart axes and sources",
+      "passed": true
+    },
+    {
+      "name": "pendulum: rendered numeric extrema and all select options",
+      "passed": true
+    },
+    {
+      "name": "circuit: prediction → single-variable A/B → explanation",
+      "passed": true
+    },
+    {
+      "name": "circuit: all formula steps, chart axes and sources",
+      "passed": true
+    },
+    {
+      "name": "circuit: rendered numeric extrema and all select options",
+      "passed": true
+    },
+    {
+      "name": "A/B isolation, multi-variable warning, reset and mercury warning",
+      "passed": true
+    },
+    {
+      "name": "Play/pause, scrubbing, speed, parameter restart and keyboard",
+      "passed": true
+    },
+    {
+      "name": "Direct manipulation of water-height handle",
+      "passed": true
+    },
+    {
+      "name": "Actual CSV download: 61 samples, headers and correct values",
+      "passed": true
+    },
+    {
+      "name": "Note create/edit, XSS text escaping, A/B and time restoration",
+      "passed": true
+    },
+    {
+      "name": "Actual JSON export/import, duplicate merge, atomic reject, delete/cancel/undo",
+      "passed": true
+    },
+    {
+      "name": "Actual PNG scene export with A/B",
+      "passed": true
+    },
+    {
+      "name": "Formula-map routing, library search, modes, roles, help and keyboard tabs",
+      "passed": true
+    },
+    {
+      "name": "Rendered preview set and every Canvas scene at nonzero time",
+      "passed": true
+    },
+    {
+      "name": "Tablet/mobile: 12 viewport-page combinations and library controls",
+      "passed": true
+    },
+    {
+      "name": "Explicit mocked-storage contract: autosave and paused restoration",
+      "passed": true
+    },
+    {
+      "name": "No uncaught browser errors",
+      "passed": true
+    },
+    {
+      "name": "Offline interactions trigger no external HTTP requests",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "network": [],
+  "viewport_checks": [
+    {
+      "width": 1024,
+      "height": 768,
+      "view": "lab",
+      "overflow": false
+    },
+    {
+      "width": 1024,
+      "height": 768,
+      "view": "map",
+      "overflow": false
+    },
+    {
+      "width": 1024,
+      "height": 768,
+      "view": "notes",
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "height": 1024,
+      "view": "lab",
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "height": 1024,
+      "view": "map",
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "height": 1024,
+      "view": "notes",
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "view": "lab",
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "view": "map",
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "view": "notes",
+      "overflow": false
+    },
+    {
+      "width": 360,
+      "height": 800,
+      "view": "lab",
+      "overflow": false
+    },
+    {
+      "width": 360,
+      "height": 800,
+      "view": "map",
+      "overflow": false
+    },
+    {
+      "width": 360,
+      "height": 800,
+      "view": "notes",
+      "overflow": false
+    }
+  ],
+  "browser": "144.0.7559.96",
+  "navigation_limitation": "Page.goto: net::ERR_BLOCKED_BY_ADMINISTRATOR at file:///mnt/data/work/qa/projects/physics/index.html",
+  "loading": "exact built HTML through Playwright set_content; native file navigation unverified",
+  "native_storage_available": false,
+  "passed": 62,
+  "failed": 0
+}

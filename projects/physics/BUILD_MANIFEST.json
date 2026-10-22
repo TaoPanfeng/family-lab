@@ -1,0 +1,13 @@
+{
+  "version": "1.0.0",
+  "sha256": "996cfee320ed770a382bec7a2b207fc46b84cabfad84d3eab881306c85d47348",
+  "bytes": 151441,
+  "inputs": [
+    "src/index.template.html",
+    "assets/style.css",
+    "src/catalog.js",
+    "src/physics.js",
+    "src/scene.js",
+    "src/app.js"
+  ]
+}

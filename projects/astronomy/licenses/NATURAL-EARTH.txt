@@ -1,0 +1,15 @@
+Made with Natural Earth.
+
+The coastline/polygon source used to generate the illustrative Earth texture
+is Natural Earth's low-resolution world land data, simplified to 0.2 degrees.
+Data are public domain. No political labels or borders are rendered.
+The raster coloring and fictional cloud patterns are procedural artwork.
+The result is a teaching illustration, not a geographic survey or legal map.
+
+Source and terms, checked 2026-10-16:
+https://www.naturalearthdata.com/about/terms-of-use/
+https://www.naturalearthdata.com/downloads/110m-physical-vectors/
+
+Bundled source: data/coastlines.geojson
+Generator: tools/generate_textures.py
+Output: src/assets/earth.jpg

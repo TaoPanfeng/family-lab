@@ -1,0 +1,16 @@
+{
+  "mode": "injected-html+storage-mock",
+  "browser": "144.0.7559.96",
+  "durationSeconds": 24.67,
+  "poseCount": 15,
+  "stepCount": 82,
+  "passed": 167,
+  "failed": 0,
+  "renderer": {
+    "vertices": 26412,
+    "webgl": false,
+    "renderCount": 194,
+    "playing": false,
+    "finite": true
+  }
+}

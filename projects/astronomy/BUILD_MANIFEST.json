@@ -1,0 +1,343 @@
+{
+  "project": "日月地 · 时空实验室",
+  "version": "2.0.0",
+  "htmlSha256": "dca5e558ea4cdfb416e8205424da3eb319a51f686ec8dc728930288880c1caf7",
+  "browserTestTimestamp": "2026-10-16T03:27:00Z",
+  "files": [
+    {
+      "path": ".gitignore",
+      "bytes": 97,
+      "sha256": "980fc76170ef9dfe82259233ba2e9d3f3b6f280b8746ae924733cac7f8ca6fc1"
+    },
+    {
+      "path": "Build.cmd",
+      "bytes": 447,
+      "sha256": "9ade8efa1865eea517b72c9f1ebc3ee889f55249f34c1a87e760484f29660f81"
+    },
+    {
+      "path": "LICENSE",
+      "bytes": 34523,
+      "sha256": "0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0"
+    },
+    {
+      "path": "README.md",
+      "bytes": 9955,
+      "sha256": "b7eb41d45776cd5886181afb3fbbb2cc2111a472f9678b49257c86e181087ca0"
+    },
+    {
+      "path": "Start-server.cmd",
+      "bytes": 365,
+      "sha256": "ae681a6853a5d93a3616dc73ef74f5fb6789b3bd5372baa1b4bb8fc84e47ae03"
+    },
+    {
+      "path": "Start.cmd",
+      "bytes": 175,
+      "sha256": "b52172d49ffc915b515a3ffa13af7a4e7d7009a788094018d37a85d23f9a904e"
+    },
+    {
+      "path": "data/coastlines.geojson",
+      "bytes": 239873,
+      "sha256": "00f45f74fd0bc0e007f7196308f804230132c5e0c9365f3769d0635e205bf29f"
+    },
+    {
+      "path": "data/ephemeris.f32",
+      "bytes": 5286528,
+      "sha256": "efeeccecb132d1e5739c21e0e0cba1331a22024f92180d2b59fadcc11bb81a64"
+    },
+    {
+      "path": "data/ephemeris.meta.json",
+      "bytes": 936,
+      "sha256": "55fe429d7ea7e3eb4acaf4b68650a887009b5cccf7c17915760f813c3c2aeefe"
+    },
+    {
+      "path": "docs/DEVELOPMENT.md",
+      "bytes": 6472,
+      "sha256": "266ea7214711bb705b55f3a104c6a8f8f095e4c84a658937f6bb63e7a9d97761"
+    },
+    {
+      "path": "docs/PRECISION.md",
+      "bytes": 7904,
+      "sha256": "295ebb44d1c3e8717ac892eb898f740f2d1395e8afd2c1291f5f4f4099629e9b"
+    },
+    {
+      "path": "docs/SOURCES.md",
+      "bytes": 2640,
+      "sha256": "2f805ac5e229c7b7240c760833ee7ff55b28dda89b2e379db4845cc16c398122"
+    },
+    {
+      "path": "docs/TEST_REPORT.md",
+      "bytes": 14451,
+      "sha256": "1836f5e522698d7d930142dd3f94241535a28141b6358b091c8a5ab4103bb014"
+    },
+    {
+      "path": "licenses/NATURAL-EARTH.txt",
+      "bytes": 666,
+      "sha256": "62adccbdd9784587cd5595d8b48215b763745636b694b12968070220bb219eb9"
+    },
+    {
+      "path": "licenses/THIRD-PARTY-NOTICES.md",
+      "bytes": 2845,
+      "sha256": "562135b4fb46c590a28e9a7176ec872dfabf89d3c7b2fc015a122e5c825eb50c"
+    },
+    {
+      "path": "licenses/THREE-MIT.txt",
+      "bytes": 1256,
+      "sha256": "58dc2296ef7ce7d7c2ff0ce0db9286ca868951b47fc34a160c23723ff99848e3"
+    },
+    {
+      "path": "package.json",
+      "bytes": 551,
+      "sha256": "dc0ad12c60d5b226d57104d062285efd550dc3a6a5321c481c5b481ed00358b5"
+    },
+    {
+      "path": "previews/00-welcome.png",
+      "bytes": 233200,
+      "sha256": "2eaae77d26fffc252295c94f272d068ef4839b04ec92820e4547aa563dd60d52"
+    },
+    {
+      "path": "previews/01-research.png",
+      "bytes": 345460,
+      "sha256": "f18c5e6399bca2cf2c304baa7f452db9dabc7620d7b08d4862b35fbb8e687183"
+    },
+    {
+      "path": "previews/02-solar-eclipse.png",
+      "bytes": 415486,
+      "sha256": "5ec67389f45a96dac6cc95f120a43a74debfecb007fe103c7485c635d3e76766"
+    },
+    {
+      "path": "previews/03-lunar-eclipse.png",
+      "bytes": 363483,
+      "sha256": "152d81a43c6539826fc2e890efe1961133256e761fc02f049c4edbb29cedfefb"
+    },
+    {
+      "path": "previews/04-axis-comparison.png",
+      "bytes": 484520,
+      "sha256": "f1e4e2432afe577c5e4be063885d625adbea1472379756abd5bf63dd11cd521e"
+    },
+    {
+      "path": "previews/05-noon-shadow.png",
+      "bytes": 368642,
+      "sha256": "19d31ef288cacf9fb8587488a98ff10ce4b718aceb49b7428b8ac347be89b409"
+    },
+    {
+      "path": "previews/06-child-predict.png",
+      "bytes": 315126,
+      "sha256": "6065c0a14fc745f423c31c5b953dc7864e476feb3827066acef38c1d42102122"
+    },
+    {
+      "path": "previews/07-family-experiment.png",
+      "bytes": 474087,
+      "sha256": "bc571650fadfd87e7683c78154249f451ed87c93e1b75abf8a1e533740b57d3c"
+    },
+    {
+      "path": "previews/08-notebook.png",
+      "bytes": 149357,
+      "sha256": "2d6de4b3933e8320759611eb25e648e039a4d640a22b9be330993f4a1985b18a"
+    },
+    {
+      "path": "previews/09-mobile.png",
+      "bytes": 92793,
+      "sha256": "5935a251c2761f7bbc686e35a99da2a7887ea02e96d7e71574823f9020190f95"
+    },
+    {
+      "path": "previews/10-mobile-guide.png",
+      "bytes": 87695,
+      "sha256": "ec69ffbaded8f48d0ff546b564cf0d79d0a36bf68dafee7119d52307db020a17"
+    },
+    {
+      "path": "previews/11-tablet.png",
+      "bytes": 250819,
+      "sha256": "dac3dac076735dffdf55c91ec43cd9cc8958d34cc9b71e901fe1fd78feadcbed"
+    },
+    {
+      "path": "previews/12-compatibility.png",
+      "bytes": 227757,
+      "sha256": "e5ae233368a8b5ff21ccb75014c8913a027be28235ee65828e8d8b004d2e8952"
+    },
+    {
+      "path": "src/assets/earth.jpg",
+      "bytes": 261623,
+      "sha256": "f05a3cd7889f8284e964cfcadae202f25c4099b7a60a9f6c4c8b6d2a00645a14"
+    },
+    {
+      "path": "src/assets/moon.jpg",
+      "bytes": 130777,
+      "sha256": "d9dfe16687ff295b609b028dc86a9f075184fb5d226863f0c78db0eff07ef036"
+    },
+    {
+      "path": "src/astro.js",
+      "bytes": 9492,
+      "sha256": "56e5cdbea415dd20172125b95509871f44ffc762739a90b6090f117a8dcc301b"
+    },
+    {
+      "path": "src/diagrams.js",
+      "bytes": 7664,
+      "sha256": "f851cb266b6ebb9382522e1be3c7fc820c05acc9866bedfc4981396b8ce4b972"
+    },
+    {
+      "path": "src/events.js",
+      "bytes": 7100,
+      "sha256": "43da83620c4526dcc4ccfa7dc87df6b061ab74ba81bfe06406d79d124c3708d3"
+    },
+    {
+      "path": "src/index.template.html",
+      "bytes": 17987,
+      "sha256": "11d5e8dbc260cdf0935b3491d009e9e5cebbd3fdd84e8f93a94c908636314820"
+    },
+    {
+      "path": "src/learning.js",
+      "bytes": 7150,
+      "sha256": "a48fddd17ba774b2f5f80b5ce2d9556abb65d93c5bc52e72df76f13e2fec010a"
+    },
+    {
+      "path": "src/scene.js",
+      "bytes": 25251,
+      "sha256": "1f60a800fa670a295113b627aadbfabd31b19216ecddcf3207f9757fcdf2197f"
+    },
+    {
+      "path": "src/styles.css",
+      "bytes": 31011,
+      "sha256": "dca3afe6b7ef555e357e3024001131ecc6aa600a9a417c979da1e9355e543ce8"
+    },
+    {
+      "path": "src/ui.js",
+      "bytes": 52686,
+      "sha256": "8fa9cf7fda4c4c4e37102ef600d36b2a7e741de42dab2db0f0bc4687230ceaf7"
+    },
+    {
+      "path": "src/v2.css",
+      "bytes": 24443,
+      "sha256": "d8d677170b2386e39d81a6592eb29fc81f771a3b6635e753ff6acd5ecf909f57"
+    },
+    {
+      "path": "src/v2.js",
+      "bytes": 59149,
+      "sha256": "3732998a46ee4ac81920e5451d08f061d13106785a60b604300bdbf90102fbf8"
+    },
+    {
+      "path": "tests/interpolation-report.json",
+      "bytes": 323,
+      "sha256": "e111a3df1cea833c75f57bf9530c1900f2fdc9768b4812bbeda0c2b0f67bcd66"
+    },
+    {
+      "path": "tests/nasa-reference.json",
+      "bytes": 1400,
+      "sha256": "675fc3f82db01206ec694b9197ced652281dd8d967aaff75b6f511ce249b691d"
+    },
+    {
+      "path": "tests/server-report.json",
+      "bytes": 605,
+      "sha256": "14c6a5b34d2ede30544c9f98a10c85e8b6aa3e6878d58836f72fc7e34465edb2"
+    },
+    {
+      "path": "tests/server-test.py",
+      "bytes": 2570,
+      "sha256": "34b167194c28195a947dd2dfed7401576aaf2135a3be596491bce36defc0daa1"
+    },
+    {
+      "path": "tests/test-report.json",
+      "bytes": 8854,
+      "sha256": "ee84c87d3b798ef17489e5898442890ea7fc0cdea7d080ad792380b38cb7f287"
+    },
+    {
+      "path": "tests/test.cjs",
+      "bytes": 11357,
+      "sha256": "a544769db8045b75094069fe72bb03d6c4062f77fef9973a3049d84dba9851f1"
+    },
+    {
+      "path": "tests/v1-baseline/README.md",
+      "bytes": 218,
+      "sha256": "2ec64ff812d3736f25f190f984517376994cee567522db827aee5afa111614ef"
+    },
+    {
+      "path": "tests/v1-baseline/TEST_REPORT.md",
+      "bytes": 10341,
+      "sha256": "71df86a153fdf0efb95a6321d3c5931e670cfc6c1d70167463f8fe001ac5c3a4"
+    },
+    {
+      "path": "tests/v1-baseline/browser-report.json",
+      "bytes": 3743,
+      "sha256": "ec71f4ed989453473d197b68f1434fc2caaf23defda1f9c85523d37b6c0f88e4"
+    },
+    {
+      "path": "tests/v1-baseline/browser-test-v1.py",
+      "bytes": 15517,
+      "sha256": "edc593745d2d7aaa4fa35ffbf09382ca778b6d30434c22a6372b6ba2d4f0e4c5"
+    },
+    {
+      "path": "tests/v1-baseline/interpolation-report.json",
+      "bytes": 323,
+      "sha256": "e111a3df1cea833c75f57bf9530c1900f2fdc9768b4812bbeda0c2b0f67bcd66"
+    },
+    {
+      "path": "tests/v1-baseline/server-report.json",
+      "bytes": 605,
+      "sha256": "3838aa7a9671626fbfca9cd5f88f5149da6c0e056ab091efdfa620fc3f3b38ae"
+    },
+    {
+      "path": "tests/v1-baseline/test-report.json",
+      "bytes": 8854,
+      "sha256": "a56fd80e99302013a3dcd456260cebe53b5ae94477515fcacc6293722a5129b9"
+    },
+    {
+      "path": "tests/v2-browser-report.json",
+      "bytes": 5837,
+      "sha256": "b4cd2f964a3fd8db1a4c08cd9a05ec7cd3cab10e6f6214f8da3713d7940c9ed0"
+    },
+    {
+      "path": "tests/v2-browser-test.py",
+      "bytes": 25864,
+      "sha256": "118b30d0b8e1952027303679de7db5dee418066ec6b9e3f485d8fb6407402008"
+    },
+    {
+      "path": "tests/v2-report.json",
+      "bytes": 4483,
+      "sha256": "4f64d59d8c8f28dcf26bbaeae97850671f8e0677deedc516eb3690d2ab9b4d83"
+    },
+    {
+      "path": "tests/v2-test.cjs",
+      "bytes": 10447,
+      "sha256": "2ec50306485586fcc5a024935e857316be6ffabb2f214bd6694d4d4f46e44e3d"
+    },
+    {
+      "path": "tools/build.cjs",
+      "bytes": 1846,
+      "sha256": "2e78585231854954df255701c9c560e6ec77d6fabc109ad24e835f95a0e0e145"
+    },
+    {
+      "path": "tools/generate_ephemeris.py",
+      "bytes": 3615,
+      "sha256": "6c504e09c9e20887a3534bc2c8c80f2ee668860d0aac48807d74e4c949878162"
+    },
+    {
+      "path": "tools/generate_textures.py",
+      "bytes": 3661,
+      "sha256": "129af94af0c0e619d4c60dbd30f7289c7b2d37fbd7904227087df316ae94dc3c"
+    },
+    {
+      "path": "tools/package.py",
+      "bytes": 8421,
+      "sha256": "520070afb413246656e41f5b8f3bf28841744d5f4459e36acd4ae64bb6dbaed2"
+    },
+    {
+      "path": "tools/serve.cjs",
+      "bytes": 1722,
+      "sha256": "008507253d95b96d275e503c8dad88821571ea17ba1c613af9bf360baac73f00"
+    },
+    {
+      "path": "vendor/three.r140.min.js",
+      "bytes": 623567,
+      "sha256": "1baf8525cd80caceabd6eb50da7961aa47f191ac7a68adb454c3a761b29244e2"
+    },
+    {
+      "path": "先读我.txt",
+      "bytes": 2037,
+      "sha256": "e8520f2ba17822948b39af6d1bdc0f7a342780f79072523e41ced16a9ae46038"
+    },
+    {
+      "path": "日月地实验室.html",
+      "bytes": 8438273,
+      "sha256": "dca5e558ea4cdfb416e8205424da3eb319a51f686ec8dc728930288880c1caf7"
+    }
+  ]
+}

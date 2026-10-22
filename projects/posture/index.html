@@ -1,0 +1,668 @@
+<!-- 自包含离线成品。修改 src/ 或 assets/ 后运行 node build.cjs 重新生成。 -->
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="身有度：可离线使用的行住坐卧姿势实验室。3D 场景、工位试调、睡姿步骤与个人方案。">
+  <meta name="color-scheme" content="light">
+  <title>身有度 · 行住坐卧实验室</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCI+PHJlY3Qgd2lkdGg9IjQ4IiBoZWlnaHQ9IjQ4IiByeD0iMTUiIGZpbGw9IiMyODVkNGIiLz48Y2lyY2xlIGN4PSIyNSIgY3k9IjEyIiByPSIzLjMiIGZpbGw9IiNlZWU5ZDgiLz48cGF0aCBkPSJNMTQgMjNjNi0xIDctNiAxMS02IDQgMCA1IDUgMTEgNk0yNSAxOHYxMm0wLTQtOSAxMW05LTExIDggMTEiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2VlZTlkOCIgc3Ryb2tlLXdpZHRoPSIyLjgiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik0xMiAzOGgyNSIgc3Ryb2tlPSIjYWRiYjljIiBzdHJva2Utd2lkdGg9IjEuNiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PC9zdmc+Cg==">
+  <style>
+:root{--bg:#f6f7f3;--paper:#fffefa;--ink:#263e35;--muted:#7b877e;--line:#e3e8df;--green:#315e4b;--green-soft:#e9efe4;--accent:#bc8550;--gold:#b78e54;--warn:#876439;--shadow:0 4px 24px #26433605;--radius:18px;font-family:Inter,"Segoe UI","PingFang SC","Microsoft YaHei",system-ui,sans-serif;color:var(--ink);font-size:14px;line-height:1.6}*{box-sizing:border-box}body{margin:0;background:var(--bg)}button,input,select,textarea{font:inherit}button,a,input,select,textarea{-webkit-tap-highlight-color:transparent}button{cursor:pointer;color:inherit;transition:background .15s,transform .15s,border-color .15s}button:disabled{opacity:.43;cursor:not-allowed}button:hover:not(:disabled){filter:brightness(.975)}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible{outline:3px solid #9bb19b;outline-offset:3px}button{border:0;background:none}a{color:var(--green)}h1,h2,h3,p{margin:0}h1{font-size:27px;font-weight:650;letter-spacing:.01em;line-height:1.45}h2{font-size:17px;font-weight:650}h3{font-size:14px;font-weight:650}p{line-height:1.8}small{font-size:11px}button img{pointer-events:none}input[type=number]::-webkit-inner-spin-button{opacity:.45}input[type=range]{appearance:none;-webkit-appearance:none;height:4px;width:100%;border-radius:4px;background:#dfe5d9;accent-color:var(--green);cursor:pointer;margin:15px 0 6px}input[type=range]::-webkit-slider-thumb{appearance:none;width:14px;height:14px;border-radius:50%;background:var(--green);border:3px solid #fafcf7;box-shadow:0 0 0 1px var(--green)}input[type=range]::-moz-range-thumb{width:10px;height:10px;border:2px solid #fafcf7;border-radius:50%;background:var(--green)}input[type=checkbox]{accent-color:var(--green)}input[type=number],input[type=text],input[type=search],textarea,select{border:1px solid var(--line);background:var(--paper);border-radius:8px;color:var(--ink);padding:7px 9px;min-width:0}input[type=number]{font-variant-numeric:tabular-nums}textarea{resize:vertical}button[hidden],[hidden]{display:none!important}.topbar{height:86px;padding:0 32px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);background:#fffefbe8;gap:24px}.brand{display:flex;align-items:center;gap:10px;text-decoration:none;min-width:190px}.brand>span{font-size:22px;font-weight:650;letter-spacing:.09em;line-height:1.3}.brand small{display:block;font-size:8px;letter-spacing:.17em;color:var(--muted);font-weight:500;margin-top:5px}.main-nav{display:flex;gap:28px;align-self:stretch}.main-nav button{font-size:14px;position:relative;padding:0 2px;color:var(--muted);white-space:nowrap}.main-nav button.active{color:var(--green);font-weight:650}.main-nav button.active:after{content:'';height:3px;position:absolute;bottom:0;left:0;right:0;background:var(--green);border-radius:3px 3px 0 0}.main-nav button span{background:var(--green-soft);padding:1px 5px;border-radius:4px;font-size:10px;margin-left:3px}.header-right{display:flex;gap:18px;align-items:center}.offline{color:var(--muted);font-size:11px;white-space:nowrap}.offline i,.pill i{display:inline-block;width:5px;height:5px;background:#71946d;border-radius:50%;margin-right:6px}.icon-btn{border:1px solid var(--line);border-radius:50%;height:29px;width:29px;padding:0;font-size:15px;color:var(--muted);display:inline-grid;place-items:center}.workspace{max-width:1800px;margin:0 auto;padding:27px 28px;display:grid;grid-template-columns:236px minmax(420px,1fr) 294px;gap:24px;align-items:start}.panel{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}.eyebrow{font-size:9px;letter-spacing:.17em;color:#83917e;font-weight:650}.library{padding:20px 13px 0;position:sticky;top:16px;overflow:hidden}.library-head{display:flex;align-items:center;justify-content:space-between;padding:0 5px 18px}.library-head h2{margin-top:3px}.library-head h2 span{font-size:10px;background:var(--green-soft);padding:2px 5px;border-radius:4px;vertical-align:middle;margin-left:4px;color:#70816e}.view-switch{display:flex;gap:2px;padding:3px;background:#f2f4ec;border-radius:6px}.view-switch button{height:25px;width:25px;padding:0;color:#84917e;font-size:18px;line-height:1}.view-switch button.active{background:white;color:var(--green);border-radius:4px;box-shadow:0 1px 4px #00000009}.search-box{display:flex;align-items:center;background:#f5f6f0;border:1px solid var(--line);border-radius:9px;padding-left:10px;margin-bottom:13px;gap:6px}.search-box>span{font-size:23px;color:#8e9b8a;line-height:1}.search-box input{width:100%;border:0;background:transparent;font-size:11px;padding:9px 3px}.category-tabs{display:flex;gap:4px;margin-bottom:9px}.category-tabs button{flex:1;border-radius:7px;padding:5px 2px;font-size:12px;color:var(--muted)}.category-tabs button.active{background:var(--green);color:white}.favorite-filter{display:flex;justify-content:space-between;font-size:10px;width:100%;color:var(--muted);padding:5px 5px 12px}.favorite-filter.active{color:var(--green);font-weight:650}.favorite-filter span{font-variant-numeric:tabular-nums}.posture-list{max-height:650px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:#d8e1d0 transparent;padding:0 2px 12px;display:flex;flex-direction:column;gap:8px}.posture-card{border:1px solid #e8ece3;border-radius:12px;padding:12px 10px;text-align:left;display:flex;gap:11px;align-items:center;min-height:81px;background:#fffefa;width:100%;position:relative}.posture-card.active{background:#edf2e7;border-color:#c4d2bd;box-shadow:inset 3px 0 var(--green)}.posture-card.active .pose-thumb{background:#dbe7d2}.pose-thumb{width:45px;height:53px;flex-shrink:0;border-radius:9px;background:#f0f2e9;display:grid;place-items:center;color:#758c75}.pose-thumb svg{width:39px;height:44px}.posture-card .card-text{min-width:0}.posture-card b{font-weight:600;font-size:12px;display:block;line-height:1.6}.posture-card small{display:block;color:var(--muted);font-size:9px;line-height:1.5;margin-top:5px}.tiny-star{position:absolute;right:7px;top:4px;color:var(--gold);font-size:10px}.posture-list.compact{gap:3px}.posture-list.compact .posture-card{min-height:44px;padding:9px 8px;border-color:transparent;border-radius:7px}.posture-list.compact .posture-card.active{border-color:#c4d2bd}.posture-list.compact .pose-thumb{height:25px;width:28px;background:transparent}.posture-list.compact .pose-thumb svg{height:25px;width:24px}.posture-list.compact .card-text small{display:none}.library-footer{border-top:1px solid var(--line);display:flex;gap:10px;padding:15px 5px;align-items:center;font-size:10px;color:#778570}.library-footer small{display:block;font-size:9px;color:#9aa18e}.mini-mark{font-size:28px;color:#9ba88e}.lab-center{min-width:0}.pose-heading{display:flex;justify-content:space-between;align-items:center;margin:3px 1px 18px;gap:10px}.pose-heading .eyebrow{font-size:9px;margin-bottom:3px}.pose-heading p{font-size:12px;color:var(--muted);margin-top:6px}.favorite-large{font-size:25px;line-height:1;width:40px;height:40px;border:1px solid var(--line);background:var(--paper);border-radius:50%;color:#91a187}.favorite-large.active{color:var(--gold);border-color:#d8c59f;background:#fff9ed}.stage-card{border:1px solid #dbe4d6;border-radius:var(--radius);overflow:hidden;background:#eef2eb;box-shadow:var(--shadow)}.stage-top{position:relative;z-index:1;display:flex;align-items:center;padding:15px 17px 0;gap:9px;height:43px}.pill{font-size:10px;color:var(--green);background:#fafcf6cf;border:1px solid #dee6d7;border-radius:20px;padding:3px 9px}.stage-badge{font-size:10px;color:#85917c}.stage-top .text-btn{margin-left:auto;font-size:10px;color:#78886e}.canvas-wrap{height:405px;position:relative;overflow:hidden}.canvas-wrap canvas{display:block;touch-action:none;cursor:grab;outline-offset:-4px}.canvas-wrap canvas:active{cursor:grabbing}.scene-labels{position:absolute;inset:0;pointer-events:none;overflow:hidden}.scene-label{position:absolute;top:0;left:0;font-size:10px;color:#59704e;background:#fcfdf8db;border:1px solid #ccd8c0;padding:3px 7px;border-radius:5px;white-space:nowrap;box-shadow:0 2px 6px #2d493507}.scene-label.eye{background:#416a56;color:white;border-color:#416a56}.scene-label.leftHand,.scene-label.rightHand{color:#8c632d;background:#ffedce;border-color:#e1bd80}.stage-watermark{position:absolute;right:17px;bottom:15px;pointer-events:none;font-size:8px;font-weight:600;letter-spacing:.2em;color:#9eae93;text-align:right}.stage-watermark span{font-size:8px;display:block;letter-spacing:.05em;margin-top:3px}.stage-controls{padding:1px 16px 11px;display:flex;gap:10px;align-items:center;justify-content:space-between}.camera-controls{display:flex;padding:3px;gap:2px;border:1px solid #d9e2d1;background:#f8faf3cf;border-radius:8px}.camera-controls button{font-size:10px;padding:4px 10px;border-radius:5px;color:#829078}.camera-controls button.active{background:white;color:var(--green);box-shadow:0 1px 4px #0000000c}.switch-label{display:flex;align-items:center;gap:4px;font-size:10px;color:#75836c;white-space:nowrap;cursor:pointer}.switch-label input{width:13px;height:13px}.stage-caption{display:flex;justify-content:space-between;gap:8px;font-size:8px;border-top:1px solid #dce4d5;padding:9px 16px;color:#909a87;background:#f2f5ed}.walk-play{font-size:10px;border:1px solid #b8cbb2;border-radius:7px;padding:5px 8px;color:var(--green);background:#fbfff6}.scene-notice{position:absolute;left:16px;right:16px;top:8px;padding:9px 12px;background:#fff4dce8;color:#856239;border-radius:8px;font-size:11px;pointer-events:none}.metric-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0 17px}.metric{padding:14px 16px;border-radius:13px;border:1px solid var(--line);background:var(--paper);min-width:0}.metric>span{font-size:10px;color:var(--muted);display:block;white-space:nowrap}.metric strong{display:block;margin:4px 0 1px;color:var(--green);font-size:21px;line-height:1.4;letter-spacing:-.025em;font-weight:600;font-variant-numeric:tabular-nums}.metric strong small{font-size:10px;letter-spacing:0;margin-left:4px;color:#7a8874;font-weight:500}.metric em{font-size:9px;color:#929b88;font-style:normal;display:block}.instruction-card{overflow:hidden}.detail-tabs{display:flex;border-bottom:1px solid var(--line);padding:0 17px;gap:23px}.detail-tabs button{padding:15px 0 12px;position:relative;font-size:12px;color:var(--muted)}.detail-tabs button.active{color:var(--green);font-weight:650}.detail-tabs button.active:after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:2px;background:var(--green)}#detailContent{padding:19px 21px 17px;min-height:236px}.step-track{display:flex;gap:7px;align-items:flex-start;margin-bottom:20px}.step-item{flex:1;min-width:0;text-align:center;position:relative;padding:0}.step-item:not(:last-child):after{content:'';position:absolute;top:14px;height:1px;background:#dee5d7;left:65%;width:70%}.step-item>span{display:inline-grid;place-items:center;width:29px;height:29px;border:1px solid #dfe6d7;border-radius:50%;font-size:11px;color:#879880;background:#fbfcf7;position:relative;z-index:1}.step-item.active>span{background:var(--green);border-color:var(--green);color:white}.step-item.done>span{background:#e8efdf;color:#657d58}.step-item small{display:block;margin-top:6px;color:#919a87;font-size:9px;line-height:1.5}.step-item.active small{color:var(--green);font-weight:650}.current-step{display:flex;gap:13px;margin:0 0 14px}.step-big-number{font-size:25px;font-weight:400;line-height:1.2;color:#c4cebb;min-width:31px}.current-step h3{margin-bottom:6px;font-size:14px}.current-step p{font-size:12px;color:#6f7e68;line-height:1.9;min-height:44px}.step-bottom{display:flex;align-items:center;justify-content:space-between;gap:10px}.step-hint{font-size:9px;color:#929c88}.step-buttons{display:flex;gap:7px}.small-btn{font-size:10px;border:1px solid #d8e1ce;border-radius:7px;background:#fbfcf7;padding:6px 11px;white-space:nowrap}.small-btn.strong{color:white;background:var(--green);border-color:var(--green)}.tradeoff-grid{display:grid;grid-template-columns:1fr 1fr;gap:21px}.tradeoff-column h3{font-size:12px;margin-bottom:8px}.tradeoff-column ul{margin:0;padding-left:16px;font-size:11px;color:#74806b;line-height:1.9}.tradeoff-column li{margin-bottom:7px}.tradeoff-column.warn h3{color:var(--warn)}.self-check{margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}.self-check h3{font-size:11px;margin-bottom:6px}.self-check label{display:block;font-size:11px;color:#74806b;margin:5px 0}.source-inline{border-bottom:1px solid #edf0e8;padding:9px 0;display:flex;gap:12px;align-items:flex-start}.source-inline:first-child{padding-top:0}.source-inline:last-child{border:0}.source-inline .source-num{font-size:10px;color:#a4ad98;line-height:2}.source-inline a{font-size:11px;font-weight:600;text-decoration:none;line-height:1.6}.source-inline p{font-size:10px;line-height:1.8;color:#839076;margin-top:3px}.evidence-note{font-size:10px;background:#f3f5eb;border-radius:7px;color:#7c8971;padding:9px 11px;margin-top:9px}.wellbeing{margin-top:17px;display:grid;grid-template-columns:1.65fr 1fr;padding:20px 18px;gap:20px}.breathing-block{display:flex;gap:15px;align-items:flex-start}.breath-orb{background:#e7efdc;border:1px solid #d1dfbf;border-radius:50%;width:59px;height:59px;flex-shrink:0;display:grid;place-items:center;color:#698155;font-size:10px;box-shadow:inset 0 0 0 7px #f1f5e9;margin-top:3px;will-change:transform}.breath-main h3,.reminder-block h3{font-size:12px;margin-bottom:5px}.breath-main p{color:#8b9681;font-size:10px;line-height:1.8}.breath-controls{display:flex;gap:6px;margin-top:9px;flex-wrap:wrap}.breath-controls select{font-size:10px;padding:4px 6px;max-width:180px}.breath-settings{margin-top:9px;font-size:10px;color:#7e8b73}.breath-settings>label{display:inline-block;margin:3px 5px 3px 0;white-space:nowrap}.breath-settings input{width:45px;font-size:10px;padding:3px}.breath-settings>span{display:block;margin:5px 0}.reminder-block{border-left:1px solid var(--line);padding-left:19px}.reminder-block .eyebrow{font-size:8px;display:block;margin-bottom:5px}.reminder-block p{font-size:9px;color:#929b87;margin-top:7px}.timer-controls{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.timer-controls label{font-size:10px;color:#89957d}.timer-controls input{width:45px;padding:4px 5px;font-size:11px}.bottom-note{font-size:10px;margin:15px 0 0;color:#909b85;text-align:center}.bottom-note button{font-size:10px;margin-left:6px}.properties{padding:21px 20px;position:sticky;top:16px}.properties-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:19px}.properties-title h2{font-size:15px;margin-top:4px}.unit-chip{font-size:10px;background:#f0f3e9;padding:2px 7px;border:1px solid #e3e9d9;border-radius:5px;color:#8c987f}.height-input{display:flex;align-items:center;justify-content:space-between}.height-input>span{font-size:12px}.height-input small{color:#939c88;display:block;font-size:9px}.height-input>div{display:flex;align-items:baseline;gap:5px}.height-input input{width:74px;padding:3px 5px 3px 9px;font-size:24px;font-weight:500;border-color:transparent;background:#f8f9f3;color:var(--green)}.height-input>div>span{font-size:10px;color:#8a987c}.range-endpoints{display:flex;justify-content:space-between;color:#a0aa93;font-size:9px}.auto-toggle{display:flex;align-items:center;gap:4px;margin:13px 0;font-size:10px;color:#6b805e}.calibration{border-top:1px dashed #dfe6d6;margin-top:15px;padding-top:12px}.calibration summary{font-size:11px;cursor:pointer;color:#79896d;list-style:none;display:flex;justify-content:space-between}.calibration summary:before{content:'＋';margin-right:4px}.calibration summary span{margin-left:auto;font-size:9px;color:#a2ab95}.calibration[open] summary:before{content:'－'}.calibration-fields label{display:grid;grid-template-columns:1fr 65px;gap:4px;align-items:center;font-size:10px;margin:12px 0;color:#7a8970}.calibration-fields input{font-size:11px;padding:4px 5px;width:65px}.calibration-fields small{grid-column:1/-1;font-size:9px;line-height:1.7;color:#9aa48d}.calibration p{font-size:9px;color:#9da58f}.check-line{display:flex;align-items:center;gap:3px;font-size:10px;color:#6c7f62;margin:13px 0}.divider{height:1px;background:var(--line);margin:20px 0 17px}.parameter-heading{display:flex;justify-content:space-between;align-items:center;margin-bottom:17px;gap:6px}.parameter-heading h3{font-size:12px}.inline-link{font-size:10px;padding:0;color:#6b865d;text-decoration:none}.parameter{margin-bottom:17px}.parameter label{display:flex;justify-content:space-between;align-items:center;font-size:11px;color:#738368;gap:8px}.parameter-value{display:flex;align-items:baseline;gap:4px}.parameter input[type=number]{font-size:11px;padding:3px 4px;width:59px;text-align:right;background:#f7f9f2}.parameter-value>span{font-size:9px;color:#a0a98f}.parameter input[type=range]{margin-top:9px;height:3px}.parameter>p{font-size:9px;color:#a0aa94;line-height:1.7;margin-top:1px}.parameter-switch{display:flex;align-items:center;justify-content:space-between;font-size:11px;color:#738368;gap:5px;margin:16px 0}.parameter-switch input{height:14px;width:14px}.firmness-scale{display:flex;gap:5px;margin:9px 0 4px}.firmness-scale button{flex:1;border:1px solid #dfe5d5;border-radius:7px;height:31px;font-size:11px;background:#f6f8f1}.firmness-scale button.active{background:var(--green);color:white;border-color:var(--green)}.firmness-labels{display:flex;justify-content:space-between;font-size:9px;color:#99a48b}.parameter-note{font-size:9px;color:#a0a78f;margin-top:8px;line-height:1.8}.diagnostics{margin-top:16px;display:flex;flex-direction:column;gap:8px}.diagnostic{font-size:10px;padding:10px 11px;border:1px solid #e4e9d9;background:#f5f7ee;border-radius:9px;line-height:1.8;color:#788669;display:flex;gap:6px}.diagnostic .status-symbol{font-size:11px;font-weight:700;flex-shrink:0}.diagnostic.warn{background:#fcf7e9;color:#97774c;border-color:#eee1c6}.diagnostic.info{background:#f2f5ee;color:#859178;border-color:#e1e7da}.save-area{border-top:1px solid var(--line);margin-top:20px;padding-top:17px;text-align:center}.primary-btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;background:var(--green);color:#fffef5;border:1px solid var(--green);border-radius:9px;font-size:12px;font-weight:500;padding:10px 17px;min-height:40px}.save-area .primary-btn{width:100%;font-size:12px}.save-area .text-btn{font-size:10px;display:block;margin:10px auto 8px;color:#879477}.text-btn{font-size:11px;padding:0;color:#7a8c6f}.save-area>span{font-size:8px;color:#a5ad96;display:block}.secondary-btn{display:inline-flex;align-items:center;justify-content:center;background:var(--paper);border:1px solid #d9e2d1;border-radius:9px;font-size:12px;padding:10px 16px;min-height:40px;color:#708461}.site-footer{max-width:1800px;margin:0 auto;border-top:1px solid var(--line);padding:19px 30px 25px;font-size:9px;color:#a0a993;display:flex;justify-content:space-between;gap:16px}.site-footer b{font-weight:400;padding:0 6px}.site-footer .inline-link{font-size:9px;margin-left:10px}.page-section{max-width:1320px;margin:0 auto;padding:42px 32px 60px;min-height:calc(100vh - 160px)}.page-heading{display:flex;justify-content:space-between;align-items:center;gap:30px;margin-bottom:36px}.page-heading h1{font-size:30px;margin:9px 0 10px}.page-heading p{font-size:12px;color:#8c9980}.page-actions{display:flex;gap:10px;flex-shrink:0}.plans-bar{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding-bottom:17px;margin-bottom:22px}.plans-bar h2 span{color:#93a086;font-size:12px;margin-left:8px}.plans-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.plan-card{background:var(--paper);border:1px solid var(--line);border-radius:15px;padding:21px;position:relative}.plan-card.selected{border-color:#8ea881;background:#f5f8ee}.plan-select{display:flex;align-items:center;font-size:10px;color:#86957b;margin-bottom:17px;gap:4px;cursor:pointer}.plan-card .plan-top{display:flex;gap:14px;align-items:center}.plan-card .plan-top h3{font-size:14px;word-break:break-word}.plan-card .plan-top p{font-size:10px;color:#8d9a81}.plan-card .plan-meta{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}.plan-meta span{font-size:9px;padding:4px 7px;border:1px solid #e1e7d9;border-radius:6px;background:#f4f6ed;color:#819172}.plan-note{font-size:11px;color:#859179;white-space:pre-wrap;word-break:break-word;padding:10px 0;min-height:43px}.plan-date{font-size:9px;color:#a2aa97;margin-top:8px}.plan-actions{display:flex;justify-content:space-between;align-items:center;margin-top:18px;padding-top:13px;border-top:1px solid var(--line)}.delete-plan{font-size:10px;color:#ad8b70}.empty-state{grid-column:1/-1;padding:58px 24px;background:#f1f4eb;border:1px dashed #d2ddc8;border-radius:16px;text-align:center;color:#8d9c80}.empty-state h3{font-size:18px;color:#6a845d;margin:12px 0 9px}.empty-state p{font-size:12px;margin-bottom:20px}.empty-symbol{font-size:34px;color:#9bb58a}.library .empty-state{padding:26px 8px;border:0;background:transparent}.library .empty-state p{font-size:10px}.favorites-section{margin-top:38px}.favorites-section h2{margin-bottom:15px}.saved-favorites{display:flex;gap:10px;flex-wrap:wrap}.favorite-chip{font-size:12px;padding:9px 15px;background:var(--paper);border:1px solid #dce4d4;border-radius:8px}.saved-favorites>p{font-size:11px;color:#95a08b}.privacy-note{margin-top:36px;font-size:11px;color:#8d9980;padding:18px 21px;background:#edf1e5;border-radius:12px;line-height:1.9}.privacy-note b{font-weight:600;color:#708163;margin-right:8px}.guide-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}.guide-card{padding:25px 28px}.guide-card h2{margin:6px 0 13px;font-size:17px}.guide-card p{font-size:12px;color:#879479;line-height:2;margin:10px 0}.guide-card strong{color:#667d59;font-weight:600}.card-number{font-size:23px;color:#b2c1a2}.safety-banner{margin:26px 0 36px;padding:23px 27px;background:#faf3e1;border:1px solid #eaddbc;border-radius:15px;display:flex;gap:20px;color:#8e784f}.safety-icon{display:grid;place-items:center;width:33px;height:33px;border:1px solid #d3b67f;border-radius:50%;flex-shrink:0;margin-top:5px;font-size:18px}.safety-banner h2{font-size:15px;margin-bottom:8px}.safety-banner p{font-size:12px;margin:6px 0}.source-heading{display:flex;justify-content:space-between;align-items:center;gap:15px}.source-heading span{font-size:10px;color:#98a189}.source-intro{font-size:11px;color:#96a087;margin:14px 0 23px}.sources-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:13px}.source-card{padding:20px 22px;background:var(--paper);border:1px solid var(--line);border-radius:12px}.source-card .source-type{display:inline-block;font-size:9px;color:#8b9b7b;background:#f2f6e9;padding:3px 7px;border-radius:5px;margin-bottom:10px}.source-card a{display:block;text-decoration:none;font-size:13px;font-weight:600}.source-card p{font-size:11px;color:#92a081;line-height:1.9;margin-top:8px}.source-card small{font-size:9px;color:#aab29e;display:block;margin-top:8px}dialog{border:1px solid #dce5d4;border-radius:19px;max-width:540px;width:calc(100% - 32px);padding:27px 30px;background:var(--paper);color:var(--ink);max-height:90vh;overflow:auto;box-shadow:0 18px 100px #1c342730}dialog::backdrop{background:#223d2c55;backdrop-filter:blur(3px)}.dialog-heading{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;gap:20px}.dialog-heading h2{font-size:20px;margin-top:5px}.form-label{display:block;font-size:12px;margin:17px 0;color:#78896a}.form-label input,.form-label textarea{display:block;width:100%;margin-top:9px;padding:10px 12px;font-size:13px}.muted{font-size:11px;color:#96a187;line-height:1.9}.dialog-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:25px}.compare-dialog{max-width:1080px}.comparison-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}.comparison-card{min-width:0}.comparison-card h3{font-size:17px;margin-bottom:5px;word-break:break-word}.comparison-card>p{font-size:11px;color:#8c9a7d}.mini-view{height:260px;position:relative;margin:15px 0;border-radius:12px;overflow:hidden;background:#eef2eb}.mini-view canvas{touch-action:none;cursor:grab}.mini-view .scene-labels{display:none}.comparison-table{width:100%;border-collapse:collapse;font-size:11px;margin:10px 0 15px}.comparison-table td{padding:8px 3px;border-bottom:1px solid var(--line);vertical-align:top}.comparison-table td:first-child{color:#97a18b;width:40%}.comparison-table .different td:last-child{color:#997343;font-weight:600}.comparison-note{white-space:pre-wrap;word-break:break-word;background:#f2f5eb;border-radius:9px;padding:12px;color:#829173;font-size:11px;margin:10px 0 22px}.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);z-index:10000;max-width:min(680px,calc(100% - 32px));width:max-content;padding:13px 22px;border-radius:12px;background:#2d523ff2;color:#fffbed;box-shadow:0 10px 35px #26473122;font-size:12px;text-align:center;line-height:1.7}.storage-warning{padding:10px 26px;background:#fff3d9;color:#886633;font-size:11px}.skip-link{position:absolute;left:-999px;top:8px;z-index:2000;background:white;padding:10px}.skip-link:focus{left:10px}.print-sheet{display:none}.noscript{position:fixed;inset:30%;padding:30px;background:white;border:2px solid #bc8f55;border-radius:15px;z-index:10000}.check-saved{font-size:10px;color:#8a9b79}.full-steps{font-size:12px}
+@media(min-width:1600px){.workspace{grid-template-columns:256px minmax(500px,1fr) 315px;gap:28px;padding:30px 38px}.canvas-wrap{height:480px}.posture-list{max-height:740px}.properties{padding:24px}.pose-heading h1{font-size:30px}.posture-card{min-height:84px}.pose-thumb{width:49px}.current-step p{font-size:13px}}
+@media(max-width:1250px){.workspace{padding:22px 18px;gap:16px;grid-template-columns:205px minmax(360px,1fr) 260px}.topbar{padding:0 23px;gap:15px}.main-nav{gap:23px}.properties{padding:18px 16px}.library{padding:17px 10px 0}.posture-card{padding:10px 8px;gap:7px;min-height:73px}.pose-thumb{width:36px;height:47px}.pose-thumb svg{width:33px;height:39px}.posture-card b{font-size:11px}.pose-heading h1{font-size:24px}.pose-heading p{font-size:11px}.canvas-wrap{height:365px}.stage-caption{font-size:7px;padding:8px 10px}.metric{padding:12px 10px}.metric strong{font-size:19px}.wellbeing{padding:17px 13px;gap:11px;grid-template-columns:1.5fr 1fr}.breathing-block{gap:10px}.breath-orb{width:44px;height:44px;font-size:9px}.reminder-block{padding-left:12px}.step-hint{font-size:8px}.detail-tabs{gap:18px}#detailContent{padding:17px 16px}.properties-title h2{font-size:14px}}
+@media(max-width:1040px){.workspace{grid-template-columns:195px minmax(380px,1fr)}.properties{grid-column:2;position:static;display:grid;grid-template-columns:1fr 1fr;gap:0 24px}.properties-title,.height-input,#heightRange,.range-endpoints,.auto-toggle,.calibration{grid-column:1}.properties>.divider{display:none}.parameter-heading{grid-column:2;grid-row:1}.properties #parameterControls{grid-column:2;grid-row:2/8}.properties .parameter-note{grid-column:2}.diagnostics{grid-column:1/-1}.save-area{grid-column:1/-1}.save-area .primary-btn{max-width:320px}.canvas-wrap{height:410px}.library{position:sticky;grid-row:1/3}.posture-list{max-height:620px}.header-right{gap:10px}.topbar .brand{min-width:155px}.brand>span{font-size:20px}.offline{font-size:10px}.plans-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:740px){.topbar{height:auto;flex-wrap:wrap;justify-content:space-between;padding:15px 18px 0;gap:14px}.brand img{height:33px;width:33px}.brand>span{font-size:20px}.brand small{font-size:7px}.header-right{margin-left:auto}.main-nav{order:3;width:100%;justify-content:center;height:43px;gap:34px}.main-nav button{font-size:12px}.workspace{display:flex;flex-direction:column;padding:20px 14px;gap:20px}.library{position:static;max-width:none;width:100%;padding:14px 12px}.library-head{padding:0 2px 10px}.library-head .eyebrow{font-size:8px}.library-head h2{font-size:15px}.search-box{margin-bottom:9px}.category-tabs{width:70%;margin-bottom:9px}.favorite-filter{position:absolute;right:12px;top:117px;width:auto;padding:4px 0;gap:9px;font-size:10px}.posture-list{display:flex;flex-direction:row;max-height:none;overflow-x:auto;padding-bottom:4px;gap:8px}.posture-card{flex:0 0 164px;min-height:67px;max-width:200px}.posture-list.compact{flex-wrap:wrap;max-height:200px;overflow-y:auto;gap:4px}.posture-list.compact .posture-card{flex:1 0 45%;min-height:37px}.posture-list.compact .posture-card b{font-size:10px}.library-footer{display:none}.lab-center{width:100%;display:contents}.pose-heading{order:0;width:100%;margin:2px 0 -4px}.pose-heading h1{font-size:26px}.pose-heading p{font-size:11px}.stage-card{width:100%;margin-bottom:-6px}.canvas-wrap{height:390px}.stage-top{padding:12px 13px 0}.stage-controls{padding:0 11px 11px}.stage-caption{flex-direction:column;gap:1px;font-size:8px}.metric-row{width:100%;gap:8px;margin:0 0 -3px}.metric{padding:12px 10px}.metric strong{font-size:18px}.metric>span{font-size:9px}.metric em{font-size:8px}.instruction-card{width:100%}.current-step p{font-size:12px}.detail-tabs{gap:24px;padding:0 17px}#detailContent{padding:19px 15px}.step-item small{font-size:8px}.step-track{gap:3px}.step-hint{max-width:52%;font-size:8px}.step-bottom{align-items:center}.wellbeing{width:100%;margin:0;grid-template-columns:1fr;padding:20px;gap:17px}.reminder-block{border-left:0;border-top:1px solid var(--line);padding-left:0;padding-top:15px;display:grid;grid-template-columns:1fr auto;align-items:center}.reminder-block .eyebrow{grid-column:1}.reminder-block h3{grid-column:1}.reminder-block .timer-controls{grid-column:2;grid-row:1/3}.reminder-block p{grid-column:1/-1}.breath-orb{width:57px;height:57px}.breathing-block{gap:17px}.bottom-note{width:100%;font-size:9px;order:4;margin:0}.properties{display:block;width:100%;order:3;position:static;padding:22px}.properties>.divider{display:block}.height-input input{width:86px}.parameter-controls-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 18px}.properties-title h2{font-size:16px}.parameter{margin-bottom:16px}.parameter label{font-size:12px}.parameter-note{font-size:10px}.properties .diagnostic{font-size:11px}.save-area>span{font-size:9px}.site-footer{padding:20px 18px;flex-direction:column;gap:7px;align-items:center;text-align:center;font-size:8px}.page-section{padding:27px 17px 45px}.page-heading{display:block;margin-bottom:25px}.page-heading h1{font-size:25px}.page-heading p{font-size:11px}.page-actions{margin-top:20px}.page-actions .primary-btn,.page-actions .secondary-btn{flex:1;font-size:11px;padding:10px 8px}.page-heading>.secondary-btn{margin-top:20px}.plans-grid{grid-template-columns:1fr}.plans-bar h2{font-size:16px}.plans-bar button{font-size:10px;padding:8px}.guide-grid{grid-template-columns:1fr}.guide-card{padding:22px}.source-heading{display:block}.source-heading span{display:block;margin-top:6px}.sources-grid{grid-template-columns:1fr}.safety-banner{padding:21px 18px;gap:12px}.safety-banner p{font-size:11px}.comparison-grid{grid-template-columns:1fr}.compare-dialog{padding:22px 18px}.dialog-heading h2{font-size:18px}.comparison-card+.comparison-card{border-top:1px solid var(--line);padding-top:20px}.mini-view{height:250px}dialog{padding:24px 21px}.source-intro{font-size:11px}.tradeoff-grid{grid-template-columns:1fr;gap:15px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}.breath-orb{will-change:auto}}
+@media print{body{background:#fff;color:#172b20;font-size:11pt}.topbar,main,.site-footer,dialog,.toast,.storage-warning{display:none!important}.print-sheet{display:block;padding:20px;font-size:11pt}.print-sheet h1{font-size:22pt;margin-bottom:6px}.print-sheet .print-sub{font-size:10pt;color:#666}.print-sheet h2{font-size:13pt;margin:18px 0 8px}.print-sheet p{font-size:10pt;line-height:1.7}.print-sheet ol{padding-left:20px}.print-sheet li{margin-bottom:10px;break-inside:avoid}.print-sheet table{border-collapse:collapse;width:100%;margin:15px 0}.print-sheet td{padding:6px;border:1px solid #ccc}.print-sheet .print-warning{border:1px solid #999;padding:9px;margin-top:12px}.print-sheet a{color:#333;text-decoration:none;word-break:break-all}.print-sheet .print-sources{font-size:8pt}.print-sheet .print-sources p{font-size:8pt} @page{margin:12mm}}
+
+/* 补充可读性与窄屏交互 */
+.current-step p{font-size:13px}.parameter label{font-size:12px}.parameter>p,.parameter-note{font-size:10px}.step-hint{font-size:10px}.stage-caption{font-size:9px}.scene-label{font-size:11px}.breath-main p{font-size:11px}.step-item small{font-size:10px}
+@media(max-width:740px){.library{position:relative}.current-step p{font-size:13px}.step-item small{font-size:9px}.stage-caption{font-size:9px}.step-hint{font-size:9px}}
+@media(max-width:380px){.step-bottom{flex-wrap:wrap}.step-hint{max-width:100%}.step-buttons{margin-left:auto}.camera-controls button{padding:4px 7px}.walk-play{font-size:9px;padding:4px}}
+
+</style>
+</head>
+<body>
+  <a class="skip-link" href="#mainContent">跳到主要内容</a>
+  <header class="topbar">
+    <a class="brand" href="#lab" aria-label="身有度首页"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCI+PHJlY3Qgd2lkdGg9IjQ4IiBoZWlnaHQ9IjQ4IiByeD0iMTUiIGZpbGw9IiMyODVkNGIiLz48Y2lyY2xlIGN4PSIyNSIgY3k9IjEyIiByPSIzLjMiIGZpbGw9IiNlZWU5ZDgiLz48cGF0aCBkPSJNMTQgMjNjNi0xIDctNiAxMS02IDQgMCA1IDUgMTEgNk0yNSAxOHYxMm0wLTQtOSAxMW05LTExIDggMTEiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2VlZTlkOCIgc3Ryb2tlLXdpZHRoPSIyLjgiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik0xMiAzOGgyNSIgc3Ryb2tlPSIjYWRiYjljIiBzdHJva2Utd2lkdGg9IjEuNiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PC9zdmc+Cg==" alt="" width="38" height="38"><span>身有度<small>BODY, IN BALANCE</small></span></a>
+    <nav class="main-nav" aria-label="主要导航"><button class="active" data-page="lab">姿势实验室</button><button data-page="plans">我的方案 <span id="planCount">0</span></button><button data-page="guide">使用与依据</button></nav>
+    <div class="header-right"><span class="offline"><i></i> 本地离线版</span><button class="icon-btn" id="helpBtn" aria-label="打开使用说明" title="使用说明">?</button></div>
+  </header>
+  <div id="storageWarning" class="storage-warning" hidden></div>
+  <main id="mainContent">
+    <section id="labPage" class="workspace" aria-label="姿势实验室">
+      <aside class="library panel">
+        <div class="library-head"><div><span class="eyebrow">POSTURE LIBRARY</span><h2>行住坐卧 <span id="libraryCount">15</span></h2></div><div class="view-switch" aria-label="条目显示方式"><button id="cardView" class="active" title="卡片视图" aria-label="卡片视图">▦</button><button id="listView" title="紧凑列表" aria-label="紧凑列表">☷</button></div></div>
+        <label class="search-box"><span aria-hidden="true">⌕</span><input id="searchInput" type="search" placeholder="搜索：工位、唐僧睡…" aria-label="搜索姿势" autocomplete="off"></label>
+        <div class="category-tabs" id="categoryTabs" aria-label="姿势分类"></div>
+        <button id="favoriteFilter" class="favorite-filter" aria-pressed="false">☆ 只看收藏 <span id="favoriteCount">0</span></button>
+        <div id="postureList" class="posture-list" aria-label="姿势条目"></div>
+        <div class="library-footer"><span class="mini-mark">◌</span><div>没有一种姿势需要一直坚持。<small>换个姿势，也是照顾身体。</small></div></div>
+      </aside>
+      <section class="lab-center">
+        <div class="pose-heading"><div><div class="eyebrow" id="poseEnglish">DESK / SITTING</div><h1 id="poseName">电脑工位坐姿</h1><p id="poseBrief"></p></div><button class="favorite-large" id="favoriteBtn" aria-label="收藏当前姿势" title="收藏当前姿势">☆</button></div>
+        <section class="stage-card" aria-label="可交互的三维姿势示意">
+          <div class="stage-top"><span class="pill"><i></i> 可旋转 3D</span><span id="sceneBadge" class="stage-badge">工作日常</span><button class="text-btn" id="captureBtn" title="保存当前视角为 PNG">保存视图 ↗</button></div>
+          <div class="canvas-wrap"><canvas id="sceneCanvas" tabindex="0" aria-label="三维姿势场景。拖动旋转，滚轮缩放；也可使用方向键，Home 复位。"></canvas><div id="sceneLabels" class="scene-labels" aria-hidden="true"></div><div class="stage-watermark">SHEN YOU DU<span>日常姿势 · 身体觉察</span></div><div id="sceneNotice" class="scene-notice" hidden></div></div>
+          <div class="stage-controls"><div class="camera-controls" aria-label="观察视角"><button data-camera="home" class="active" title="默认视角">透视</button><button data-camera="front">正面</button><button data-camera="side">侧面</button><button data-camera="top">俯视</button></div><button class="walk-play" id="walkPlay" hidden>▶ 演示步态</button><label class="switch-label"><input type="checkbox" id="measureToggle" checked><span>尺寸标注</span></label></div>
+          <div class="stage-caption"><span>拖动旋转 · 滚轮缩放 · 点身体部位查看对应步骤</span><span>教学示意，非生物力学仿真</span></div>
+        </section>
+        <div id="metricRow" class="metric-row" aria-live="polite"></div>
+        <section class="instruction-card panel">
+          <div class="detail-tabs" role="tablist" aria-label="姿势详情"><button role="tab" aria-selected="true" class="active" data-detail="steps">分步指导</button><button role="tab" aria-selected="false" data-detail="tradeoffs">优劣与自查</button><button role="tab" aria-selected="false" data-detail="sources">参考依据</button></div>
+          <div id="detailContent"></div>
+        </section>
+        <section class="wellbeing panel" aria-label="呼吸与换姿提醒">
+          <div class="breathing-block"><div class="breath-orb" id="breathOrb"><span id="breathPhase">自然</span></div><div class="breath-main"><h3>先松下来，再找位置</h3><p id="breathDescription">各姿势没有统一的“正确呼吸频率”。自然呼吸就好。</p><div class="breath-controls"><select id="breathMode" aria-label="呼吸方式"><option value="natural">自然呼吸 · 默认</option><option value="paced">舒适节拍 · 清醒时可选</option></select><button class="small-btn" id="breathStart" hidden>开始节拍</button></div><div id="breathSettings" class="breath-settings" hidden><label>吸气 <input id="inhaleSeconds" type="number" min="2" max="6" step="0.5" value="3"> 秒</label><label>呼气 <input id="exhaleSeconds" type="number" min="2" max="6" step="0.5" value="4"> 秒</label><span id="breathRate">动画约 8.6 次/分</span><p>只供清醒时轻柔跟随；不屏息、不用力深吸。不舒服立即停下，恢复自然呼吸。</p></div></div></div>
+          <div class="reminder-block"><span class="eyebrow">A LITTLE BREAK</span><h3>给身体留个逗号</h3><div class="timer-controls"><label><input type="number" id="timerMinutes" min="1" max="120" value="25" aria-label="提醒间隔分钟"> 分钟</label><button id="timerStart" class="small-btn">开启提醒</button></div><p id="timerStatus" aria-live="polite">间隔由你决定，不是医学规定。</p></div>
+        </section>
+        <p class="bottom-note">🪞 以 AI 为镜：身体的反馈比“摆得标准”更重要。<button data-page="guide" class="inline-link">了解模型边界 ↗</button></p>
+      </section>
+      <aside class="properties panel">
+        <div class="properties-title"><div><span class="eyebrow">MAKE IT YOURS</span><h2>按你的身体试调</h2></div><span class="unit-chip">cm</span></div>
+        <label class="height-input"><span>身高 <small>成人演示</small></span><div><input id="heightNumber" type="number" min="140" max="205" step="1" value="170" aria-label="身高厘米"><span>cm</span></div></label>
+        <input id="heightRange" type="range" min="140" max="205" step="1" value="170" aria-label="调整身高">
+        <div class="range-endpoints"><span>140 cm</span><span>205 cm</span></div>
+        <label class="auto-toggle"><input type="checkbox" id="autoFitToggle" checked> 身高变化时联动适配工位</label>
+        <details class="calibration"><summary>实际尺寸校准 <span>更贴近自己 ↗</span></summary><label class="check-line"><input type="checkbox" id="calibrated"> 使用我的坐姿实测值</label><div class="calibration-fields"><label>腘窝高 <input type="number" id="popliteal" min="28" max="60" step="0.5" value="43"><small>穿常用鞋、脚掌落地，从地面量到膝后折痕。</small></label><label>坐姿眼高 <input type="number" id="eyeSeat" min="50" max="100" step="0.5" value="75"><small>坐稳后，从受压后的椅面量到眼部水平线。</small></label><label>坐姿肘高 <input type="number" id="elbowSeat" min="12" max="40" step="0.5" value="25"><small>肩放松、前臂近水平，从椅面量到肘下方。</small></label></div><p>实测仍需现场试调；站姿尺寸目前仍按身高示意。</p></details>
+        <div class="divider"></div>
+        <div class="parameter-heading"><h3 id="parameterTitle">工位参数</h3><button id="autoFitBtn" class="inline-link">按身体适配 ↺</button></div>
+        <div id="parameterControls"></div>
+        <p class="parameter-note" id="parameterNote"></p>
+        <div class="diagnostics" id="diagnostics"></div>
+        <div class="save-area"><button id="savePlanBtn" class="primary-btn">＋ 保存当前方案</button><button id="printBtn" class="text-btn">打印姿势卡 / 保存为 PDF ↗</button><span>仅存于本机浏览器，不上传身体数据。</span></div>
+      </aside>
+    </section>
+    <section id="plansPage" class="page-section" hidden>
+      <div class="page-heading"><div><span class="eyebrow">YOUR PERSONAL COLLECTION</span><h1>把舒服的分寸，记下来。</h1><p>保存参数，也记录身体的感受。它们是观察记录，不是医疗结论。</p></div><div class="page-actions"><button class="secondary-btn" id="importBtn">导入备份</button><button class="primary-btn" id="exportBtn">导出全部方案 ↗</button><input id="importFile" type="file" accept="application/json,.json" hidden></div></div>
+      <div class="plans-bar"><h2>个人方案 <span id="savedCount">0</span></h2><button id="compareBtn" class="secondary-btn" disabled>选择 2 个方案进行对照</button></div>
+      <div id="plansList" class="plans-grid"></div>
+      <section class="favorites-section"><h2>收藏的姿势</h2><div id="savedFavorites" class="saved-favorites"></div></section>
+      <div class="privacy-note"><b>你的数据留在你这里。</b> 导出的 JSON 包含身高、参数与备注，请妥善保管。清理浏览器、移动文件夹或更换浏览器可能使本地记录不可见；定期导出备份更稳妥。</div>
+    </section>
+    <section id="guidePage" class="page-section" hidden>
+      <div class="page-heading"><div><span class="eyebrow">UNDERSTAND, NOT OVERCORRECT</span><h1>看懂姿势，不迷信“标准”。</h1><p>这是一份交互式生活指南，不是诊断、康复处方或人体测量软件。</p></div><button class="secondary-btn" data-page="lab">回到实验室 ↗</button></div>
+      <div class="guide-grid"><article class="panel guide-card"><span class="card-number">01</span><h2>先选情境，再调支撑</h2><p>从左侧选择行、住、坐、卧。支持卡片和紧凑列表，搜索“唐僧睡”“正坐”也能找到相关条目。“住”在此作为站立与静立分类。</p><p>在右侧调整身高。工位会给出试调起点；能够测量腘窝高、坐姿眼高和肘高时，启用“实际尺寸校准”。</p></article><article class="panel guide-card"><span class="card-number">02</span><h2>模型告诉你关系，不是答案</h2><p>拖动旋转，滚轮缩放；点击身体部位查看相关步骤。睡姿的步骤用于逐一定位与自查，模型展示的是完成姿势，不是起卧转移动作动画。</p><p>高亮只指出当前步骤关注的位置，不显示疼痛、受力或穴位。左右手以模型本人的左右为准，不以屏幕方向为准。</p></article><article class="panel guide-card"><span class="card-number">03</span><h2>推算、实测与证据分开</h2><p>未校准时使用产品内的简化比例：腘窝高 ≈ 身高 × 0.25，坐姿眼高 ≈ 身高 × 0.44，坐姿肘高 ≈ 身高 × 0.145。站姿眼高 ≈ 身高 × 0.936，站姿肘高 ≈ 身高 × 0.63。</p><p><strong>这些不是医学公式或官方人体测量标准。</strong> 椅高起点约为腘窝高 − 2 至腘窝高 cm。最终以脚部支撑、肩部放松和实际视线确认；提示阈值也是界面试调规则，不是诊断界限。</p></article><article class="panel guide-card"><span class="card-number">04</span><h2>床垫与呼吸，拒绝假精确</h2><p>软硬 1–5 档仅是项目内部的相对档位，不能对应品牌标签。模型没有体重、材料和组织力学输入，不能预测真实下陷或压强。枕高表示受压后高度的示意，不是购买建议。</p><p>默认自然呼吸。节拍只是清醒时可选的轻柔提示，频率由秒数算出，不代表最优值；不用于睡着后的呼吸控制或疾病治疗。</p></article></div>
+      <section class="safety-banner"><div class="safety-icon">!</div><div><h2>什么时候不要继续调姿势？</h2><p>出现疼痛、麻木、刺痛、眩晕或呼吸不适时，先停止并换到安全、舒适的位置。症状持续、反复或明显加重，应就医评估。反复憋醒、被观察到呼吸暂停，不应只靠换睡姿解决。</p><p>本版面向一般成人的教育演示，不将成人比例和步骤直接套用于儿童、孕期、术后或有活动限制的人群。胸痛、严重呼吸困难、突发无力等急症应及时寻求当地急救。</p></div></section>
+      <div class="source-heading"><h2>参考资料与证据边界</h2><span>资料核对：2026-10-16 · 外部原文需联网</span></div><p class="source-intro">步骤为项目基于一般原则重新编排，不是对原文的逐条翻译。传统文化资料只用于说明形态；不采纳其中未经验证的疗效说法。外部机构不代表为本项目背书。</p><div id="allSources" class="sources-grid"></div>
+    </section>
+  </main>
+  <footer class="site-footer"><span>身有度 SHEN YOU DU <b>·</b> 行住坐卧实验室 v1.0</span><span>少一点僵持，多一点觉察。 <button class="inline-link" data-page="guide">安全说明与来源</button></span></footer>
+  <dialog id="saveDialog"><form id="saveForm"><div class="dialog-heading"><div><span class="eyebrow">SAVE A MOMENT</span><h2>记下当前方案</h2></div><button type="button" class="icon-btn" data-close="saveDialog" aria-label="关闭">×</button></div><label class="form-label">方案名称<input type="text" id="planName" maxlength="60" required placeholder="例如：我的工位 · 调整后"></label><label class="form-label">我的感受 / 下次想试什么<textarea id="planNote" maxlength="1500" rows="4" placeholder="例如：脚掌落地后更轻松；下一次试把屏幕降低一点。请勿填入不必要的敏感信息。"></textarea></label><p class="muted">会保存当前姿势、身体尺寸及场景参数。备注是个人观察，不做自动诊断。</p><div class="dialog-actions"><button type="button" class="secondary-btn" data-close="saveDialog">取消</button><button class="primary-btn" type="submit">保存方案</button></div></form></dialog>
+  <dialog id="compareDialog" class="compare-dialog"><div class="dialog-heading"><div><span class="eyebrow">SIDE BY SIDE</span><h2>并排看，慢慢调整</h2></div><button type="button" class="icon-btn" data-close="compareDialog" aria-label="关闭对照">×</button></div><div id="compareContent"></div><p class="muted">对照展示的是参数与个人记录，不提供“健康分数”或最佳姿势排名。</p></dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  <section id="printSheet" class="print-sheet"></section>
+  <noscript><div class="noscript">本项目需要启用 JavaScript。请解压完整文件夹后，用 Chrome 或 Edge 打开 index.html。</div></noscript>
+<script>
+/* 身有度 | 姿势内容与来源。步骤为项目编排，不是临床操作处方。 */
+(function (root, factory) {
+  const data = factory();
+  if (typeof module === 'object' && module.exports) module.exports = data;
+  else root.PostureData = data;
+})(typeof window !== 'undefined' ? window : globalThis, function () {
+  'use strict';
+  const sources = {
+    oshaChair: { title: 'OSHA · 工作椅与支撑', organization: '美国职业安全与健康管理局', type: '工作环境指导', url: 'https://www.osha.gov/etools/computer-workstations/components/chairs', note: '脚掌获得支撑；肩部放松；椅背提供合适支撑。并未给出仅由身高决定的唯一椅高。' },
+    oshaMonitor: { title: 'OSHA · 显示器位置', organization: '美国职业安全与健康管理局', type: '工作环境指导', url: 'https://www.osha.gov/etools/computer-workstations/components/monitors', note: '屏幕上缘在眼平或略低处；常用观看距离约 50–100 cm。应兼顾字号、视力和镜片。' },
+    oshaPosition: { title: 'OSHA · 中性工作姿势', organization: '美国职业安全与健康管理局', type: '工作环境指导', url: 'https://www.osha.gov/etools/computer-workstations/positions', note: '手腕与前臂自然对齐，肘靠近身体，双脚有支撑；持续保持同一姿势并不理想。' },
+    mayoOffice: { title: 'Mayo Clinic · 办公人体工学', organization: 'Mayo Clinic', type: '患者教育', url: 'https://www.mayoclinic.org/healthy-lifestyle/adult-health/in-depth/office-ergonomics/art-20046169', note: '先调整椅子和支撑，再安置输入设备、屏幕与常用物品。' },
+    mayoSleep: { title: 'Mayo Clinic · 睡姿与背部舒适', organization: 'Mayo Clinic', type: '患者教育', url: 'https://www.mayoclinic.org/diseases-conditions/back-pain/in-depth/sleeping-positions/art-20546852', note: '侧卧可在膝间放枕，仰卧可尝试膝下支撑；枕头应支撑颈部。俯卧可能增加背部负担。' },
+    mayoApnea: { title: 'Mayo Clinic · 阻塞性睡眠呼吸暂停', organization: 'Mayo Clinic', type: '患者教育', url: 'https://www.mayoclinic.org/diseases-conditions/obstructive-sleep-apnea/diagnosis-treatment/drc-20352095', note: '有呼吸暂停或憋醒时应就医；体位调整不能替代已开具的治疗。' },
+    mattressTrial: { title: 'Kovacs 等 · 床垫硬度随机试验（2003）', organization: 'The Lancet / PubMed', type: '原始研究', url: 'https://pubmed.ncbi.nlm.nih.gov/14630439/', note: '针对慢性非特异性腰痛受试者，中等硬度床垫的部分结局优于硬床垫。不能推导出所有人都应选同一硬度。' },
+    refluxStudy: { title: 'Schuitenmaker 等 · 夜间反流与卧位（2022）', organization: 'American Journal of Gastroenterology / PubMed', type: '原始研究', url: 'https://pubmed.ncbi.nlm.nih.gov/34928874/', note: '在该研究人群中，左侧卧与较短的夜间食管酸暴露时间相关；不是人人适用的治疗承诺。' },
+    nhsBreath: { title: 'NHS · 温和的呼吸练习', organization: '英国国家医疗服务体系', type: '患者教育', url: 'https://www.nhs.uk/mental-health/self-help/guides-tools-and-activities/breathing-exercises-for-stress/', note: '以舒适为限，不用力吸深、不勉强计数。本项目节拍是可选界面工具，不是医疗呼吸处方。' },
+    posture: { title: 'MedlinePlus · 姿势基础', organization: '美国国家医学图书馆', type: '健康教育', url: 'https://medlineplus.gov/guidetogoodposture.html', note: '静态与动态姿势都需要关注；经常改变位置，维持自然的脊柱曲线，不把“挺直”理解成僵硬。' },
+    walking: { title: 'Mayo Clinic · 步行技巧', organization: 'Mayo Clinic', type: '健康教育', url: 'https://www.mayoclinic.org/healthy-lifestyle/fitness/in-depth/walking/art-20046261', note: '视线向前，颈肩放松，自然摆臂。步态模型只演示交替迈步，不分析个人步态。' },
+    lingyin: { title: '灵隐寺 · 吉祥卧的传统描述', organization: '灵隐寺', type: '文化资料（非医学证据）', url: 'https://www.lingyinsi.org/detail_7315.html', note: '用于说明吉祥卧的右侧卧文化形态。原文涉及健康效果的说法不作为本项目医学依据；项目采用枕头承头的舒适改良版。' },
+    knee: { title: 'NHS · 膝关节疼痛', organization: '英国国家医疗服务体系', type: '患者教育', url: 'https://www.nhs.uk/symptoms/knee-pain/', note: '膝部疼痛、肿胀或负重困难不应靠强忍姿势解决；明显症状需要评估。' }
+  };
+  const S = (title, text, focus) => ({ title, text, focus });
+  const postures = [
+    {
+      id: 'office', name: '电脑工位坐姿', en: 'DESK / SITTING', category: 'sit', scene: 'office', badge: '工作日常', aliases: '程序员 办公 电脑 工位 坐高 桌高 视线',
+      brief: '先让脚有着落，再让双手和视线找到位置。',
+      principle: '让家具适应你，而不是让身体迁就家具。',
+      benefits: ['有支撑的双脚、前臂和背部，能减少持续悬空用力。', '输入设备与屏幕分别调整，避免为了看清而一直前探。'],
+      cautions: ['“端正”不是收腹挺胸、整天不动；舒适姿势也需要变化。', '身高推算只是起点，腿长、坐高、鞋底和桌面条件会影响实际尺寸。'],
+      steps: [S('先坐稳、双脚落地', '臀部坐入椅面，双脚自然放到地面。脚掌悬空时，先调整椅高或增加稳固脚踏，不用脚尖勉强支撑。', 'legs'), S('让靠背接住身体', '把背部轻靠到靠背上，腰部得到舒适支持；不要为了“坐直”而持续绷住腰背。', 'torso'), S('放好左手', '左上臂自然靠近身体，前臂朝键盘方向放置。肩膀不耸起，手腕不要大幅向上折。', 'leftArm'), S('放好右手', '右手轻放鼠标或键盘，鼠标靠近身体。不要为了够鼠标，长期把右肩向前伸出去。', 'rightArm'), S('最后调整视线', '把屏幕置于正前方，上缘在眼平或略低。先把字调清楚，再微调距离；双光或渐进镜片需要另行试调。', 'head'), S('给身体换个位置', '恢复自然呼吸，检查脚、肩和下巴是否放松。按自己的任务节奏换姿势、起身走动，不必守着一种形状。', 'all')],
+      checkpoints: ['双脚是否有稳定支撑？', '输入时肩膀是否放松？', '是否能不伸脖子就看清？'], sources: ['oshaChair', 'oshaMonitor', 'oshaPosition', 'mayoOffice'], evidence: '一般指导'
+    },
+    {
+      id: 'bench', name: '公园长椅坐姿', en: 'PARK / REST', category: 'sit', scene: 'bench', badge: '户外休息', aliases: '公园 长凳 长椅 坐',
+      brief: '椅子不能调，就调整支撑与停留方式。', principle: '不是每张椅子都合身；不必硬坐出“标准答案”。',
+      benefits: ['背靠长椅、双脚落地，是一个容易尝试的休息起点。', '适时起身或换位置，不必长时间依赖同一个受力点。'], cautions: ['固定座高可能不适合你的腿长；脚悬空时不建议一直脚尖撑地。', '长椅太深时不要为了碰到靠背，强行把腿压在椅缘上。'],
+      steps: [S('检查长椅', '先确认椅面稳固、干燥。尽量选脚下平坦的位置，观察座面高度是否合适。', 'environment'), S('坐到有支撑的位置', '缓慢坐下，让臀部稳定。背部能舒服接触靠背就轻靠；够不到时换位置，不强行后挤。', 'torso'), S('双脚自然落下', '让脚掌有支撑，膝盖朝自然的方向。没有合适脚踏时，优先换更合身的椅子。', 'legs'), S('双手松放', '左右手分别轻放大腿或身旁，手指自然弯曲，肩膀放松。', 'arms'), S('抬眼休息一会儿', '视线自然看向前方，正常呼吸。觉得压迫或发麻就换姿势，不用忍着。', 'head')], checkpoints: ['椅缘是否顶住大腿后侧？', '双脚是否落地？', '需要换张椅子吗？'], sources: ['oshaChair', 'posture'], evidence: '一般原则改编'
+    },
+    {
+      id: 'upright', name: '椅上端坐 · 正坐', en: 'CHAIR / AWARENESS', category: 'sit', scene: 'chair', badge: '安静片刻', aliases: '正坐 端坐 冥想 椅上 端正',
+      brief: '头轻轻向上，身体不用硬挺。', principle: '端正而不僵，安静而不憋。',
+      benefits: ['无需地面坐姿的髋膝活动度，容易利用现成椅子。', '双手与双脚都有着落，适合观察身体是否在多余用力。'], cautions: ['不是“脊柱越直越好”，不要主动抹平自然曲线。', '端坐不等于治疗颈腰痛，也不要求长时间坚持。'],
+      steps: [S('找一把稳固的椅子', '先让双脚落地，坐到稳定的位置。椅背可以使用，端坐不要求悬空挺背。', 'legs'), S('整理躯干', '轻轻找回舒服的中间位置，头在躯干上方；不要挺胸、夹紧肩胛或憋住腹部。', 'torso'), S('安放左手', '左手掌轻放左大腿，手指自然放松，手肘不必向外支开。', 'leftArm'), S('安放右手', '右手掌轻放右大腿，双肩自然下沉，不把手掌用力压进腿里。', 'rightArm'), S('视线和呼吸松下来', '眼睛自然睁开或轻闭，正常呼吸。想换姿势就调整，不用完成固定时长。', 'head')], checkpoints: ['是否在用力挺胸？', '下巴、肩膀是否放松？', '能否自然呼吸？'], sources: ['posture', 'nhsBreath'], evidence: '一般原则改编'
+    },
+    {
+      id: 'seiza', name: '跪坐 · 传统正坐', en: 'KNEELING / TRADITION', category: 'sit', scene: 'seiza', badge: '文化姿势', aliases: '正坐 日式 跪坐 正座 跪 脚背',
+      brief: '认识传统坐法，但不把酸麻当作进步。', principle: '文化姿势可以了解；疼痛不是需要突破的关卡。',
+      benefits: ['便于理解“正坐”在传统跪坐语境中的身体形态。', '使用软垫或较高坐垫，可以探索是否有更舒服的支撑。'], cautions: ['深屈膝和脚背接触会让部分人不适；已有膝踝症状者不要勉强尝试。', '麻木、针刺感或疼痛时立即改变姿势；不设“必须坚持几分钟”的目标。'],
+      steps: [S('先决定是否适合尝试', '膝踝有疼痛、肿胀、术后限制，或无法舒适跪下时，直接改用“椅上端坐”。模型只是形态展示。', 'legs'), S('铺垫、准备支撑', '在稳定地面铺软垫；需要时在臀部下方放稳固坐垫，减少过深下沉。不要用不稳物品叠高。', 'environment'), S('缓慢落座', '在没有疼痛的范围内屈膝，脚背自然向后，臀部轻落到脚跟附近的支撑上，不向下硬压。', 'legs'), S('手放大腿', '左手放左大腿、右手放右大腿，肩膀放松；不靠按压双腿强行维持躯干。', 'arms'), S('及时退出', '保持正常呼吸。一有酸麻或不舒服，先借助稳定支撑缓慢起身，改到椅子上。', 'all')], checkpoints: ['膝踝是否完全舒适？', '是否出现麻木或针刺感？', '椅上端坐会不会更合适？'], sources: ['posture', 'knee'], evidence: '形态示意 / 谨慎尝试'
+    },
+    {
+      id: 'cross', name: '垫上简易盘坐', en: 'FLOOR / EASY SITTING', category: 'sit', scene: 'cross', badge: '地面坐姿', aliases: '盘腿 盘坐 打坐 垫子 冥想',
+      brief: '坐垫抬高一点，不把双腿拧成目标。', principle: '能轻松退出的姿势，才值得继续探索。',
+      benefits: ['坐垫可为骨盆提供支撑，便于探索地面坐姿。', '不要求莲花坐或双膝贴地，强调可调整而不是摆造型。'], cautions: ['不要用手强压膝盖下沉；髋膝不适时改坐椅子。', '模型不是柔韧性测量，左右侧舒适度可能不同。'],
+      steps: [S('放稳坐垫', '将坐垫放在平整稳定的地面，身旁保留起身空间。', 'environment'), S('双腿松松交叠', '坐稳后，让双腿在前方自然交叠，不把脚搬到大腿上，也不强压膝盖。', 'legs'), S('寻找轻松的躯干位置', '适当增加坐垫高度，让身体更容易立起来；仍需用力硬挺就改用椅子。', 'torso'), S('双手轻放', '左右手放在各自大腿或膝部附近，手掌放松，不用力向下压。', 'arms'), S('随时调整', '自然呼吸。可以换腿或换坐姿；出现麻木、刺痛就结束。', 'all')], checkpoints: ['是否强行压膝？', '坐垫是否稳定？', '双腿是否有麻木？'], sources: ['posture', 'knee'], evidence: '一般原则改编'
+    },
+    {
+      id: 'stand', name: '自然站立', en: 'STANDING / EVERYDAY', category: 'stand', scene: 'stand', badge: '日常姿势', aliases: '站 住 站立 自然 排队',
+      brief: '轻松地站着，不把自己站成一块木板。', principle: '站稳不是锁死；允许细小、自然的重心变化。',
+      benefits: ['可作为观察脚下支撑、头肩位置的起点。', '能与坐姿、行走交替，不需要复杂器材。'], cautions: ['不要用力锁死膝盖或过度挺腰。', '站立不是对抗久坐的唯一答案，也不适合长时间一动不动。'],
+      steps: [S('让双脚找到位置', '双脚按舒适距离分开，脚掌自然接触地面；不必追求完全相同的脚尖角度。', 'legs'), S('膝盖保持自然', '膝盖放在轻松的位置，不用力顶向后方，也不用刻意半蹲。', 'legs'), S('放松腰背与肩膀', '头轻轻位于身体上方，肩膀自然放下，不挺胸收腹到呼吸受限。', 'torso'), S('手臂自然下垂', '左右手臂放在身体两侧，手指不用伸直绷紧。', 'arms'), S('允许变化', '正常呼吸，间或换脚、走动或坐下，不把“静止”当作考核。', 'all')], checkpoints: ['膝盖是否被顶死？', '是否过度挺腰？', '需要走动或坐下吗？'], sources: ['posture'], evidence: '一般指导'
+    },
+    {
+      id: 'standdesk', name: '站立工位', en: 'DESK / STANDING', category: 'stand', scene: 'standdesk', badge: '坐站交替', aliases: '升降桌 站着办公 站立工位',
+      brief: '把工位升高，而不是把肩膀耸起来。', principle: '坐与站轮换，比把一种姿势做到极致更实用。',
+      benefits: ['提供与坐姿不同的工作位置，便于穿插改变姿势。', '输入面和屏幕分开调节，能更贴近站立时的手、眼位置。'], cautions: ['持续站着同样可能疲劳；没有人人适用的固定坐站比例。', '桌子不合适时，不要长期踮脚、抬肩或弯腰去将就。'],
+      steps: [S('先站得自然', '双脚按舒服的距离分开，膝盖不锁死，桌下保留站位空间。', 'legs'), S('调整输入面', '上臂自然垂下，前臂朝键盘方向放置。把输入面调到不必耸肩的位置。', 'environment'), S('左手靠近身体', '左手放键盘，肩膀放松，手腕避免明显折起。', 'leftArm'), S('右手就近操作', '右手在键盘或鼠标附近操作，不向前远伸。', 'rightArm'), S('调整显示器并准备交替', '屏幕上缘约在眼平或略低；调大字号避免探头。疲劳时坐下或走动，不必坚持站满某个时长。', 'head')], checkpoints: ['是否为了桌高而耸肩？', '脚下是否有站位空间？', '什么时候方便换姿势？'], sources: ['oshaPosition', 'oshaMonitor', 'mayoOffice'], evidence: '一般指导'
+    },
+    {
+      id: 'quiet', name: '松静站立 · 觉察', en: 'STANDING / AWARENESS', category: 'stand', scene: 'quiet', badge: '轻柔觉察', aliases: '站桩 静立 松静 觉察 佛 道 内劲',
+      brief: '少一点多余用力，不追求神秘体感。', principle: '松而不垮，静而不僵；不以酸、麻、抖作为功效指标。',
+      benefits: ['提供一个检查下巴、肩膀、膝盖是否紧张的机会。', '不要求闭眼、不要求憋气，不需要追求动作幅度。'], cautions: ['本条目不是武术站桩、内劲或康复课程。', '头晕、明显疲劳、疼痛时停止；平衡不稳者不要独自闭眼站立。'],
+      steps: [S('先保证站得稳', '在平坦处自然站立，旁边有可用的稳固支撑；不需要闭眼。', 'legs'), S('膝盖不锁死', '保持自然站立，不追求低架或明显半蹲。', 'legs'), S('少用一点肩颈力', '下巴、肩膀轻轻放松，头不前顶，腰不过度后拱。', 'torso'), S('双手自然垂放', '手臂垂在两侧，手指自然弯曲，不固定手型。', 'arms'), S('观察，不操控呼吸', '注意到吸气、呼气即可，不刻意把气压向腹部，不屏息。身体想调整时就调整。', 'head')], checkpoints: ['是否在追求酸麻或抖动？', '是否用力控制呼吸？', '能否轻松地结束？'], sources: ['posture', 'nhsBreath'], evidence: '觉察练习 / 非疗效声明'
+    },
+    {
+      id: 'walk', name: '自然行走', en: 'WALKING / EVERYDAY', category: 'walk', scene: 'walk', badge: '动态姿势', aliases: '走路 行 步行 摆臂 步态',
+      brief: '抬眼看路，双臂自然摆起来。', principle: '先走得稳、走得舒服，再谈节奏和距离。',
+      benefits: ['交替迈步与自然摆臂，提供静坐之外的活动方式。', '可用慢速模型观察左右腿与相对侧手臂的配合。'], cautions: ['演示步频不是个人运动处方，也不能判断内外八、足弓或步态异常。', '疼痛、眩晕或平衡障碍时应停止，不照着模型强行改变步态。'],
+      steps: [S('先看清前方', '选平坦安全的路线，视线自然向前，留意地面障碍，不一直盯着手机。', 'head'), S('肩颈自然放松', '头在躯干上方，不挺胸到腰部僵硬，手臂自然垂下。', 'torso'), S('迈出舒服的一步', '按自己舒服的步幅向前迈步，不追求大步跨出去，也不故意重踩地面。', 'legs'), S('让手臂自然配合', '一侧腿向前时，对侧手臂自然向前摆动。手肘略弯，不用刻意摆到固定高度。', 'arms'), S('按舒适节奏继续', '正常呼吸。步频滑块只控制模型播放速度，别为了追上数字而改变身体节奏。', 'all')], checkpoints: ['是否能看清前方？', '肩膀是否过紧？', '是否走得稳、没有疼痛？'], sources: ['walking', 'posture'], evidence: '一般指导'
+    }
+  ];
+  function side(id, name, direction, extra) {
+    const right = direction === '右', lower = right ? '右' : '左', upper = right ? '左' : '右';
+    return Object.assign({
+      id, name, en: (right ? 'RIGHT' : 'LEFT') + ' SIDE / SLEEP', category: 'lie', scene: 'sleep', side: direction, badge: '常见睡姿', aliases: direction + '侧卧 睡觉 睡姿 床垫 枕头',
+      brief: '让枕头填好头肩间的空隙，不让手臂代替枕头。', principle: '有支撑、能放松，比一定睡哪一边更重要。',
+      benefits: ['头枕与膝间支撑可帮助寻找舒适的排列。', right ? '喜欢右侧卧的人可以以此作为调整枕头和手臂的位置起点。' : '夜间反流人群中的研究提示，左侧卧可能有利；具体仍需结合个人情况。'],
+      cautions: ['下侧肩臂受压不舒服时，应换边或重新调整，而不是强忍。', '持续打鼾伴憋醒、明显日间嗜睡或疼痛，需要专业评估。'],
+      steps: [S('整理好支撑物', '准备合适头枕及可选膝间枕，移走不稳定物品；选择自己能安全上、下床的位置。', 'environment'), S('转为' + direction + '侧卧', '在舒适范围内转向' + direction + '侧，让肩和骨盆大致朝向同一边，不把上半身与下半身拧向相反方向。', 'torso'), S('让头靠枕，不靠手', '把枕头移到头颈下方，试调受压后的高度，让头不过度向床面垂下或被顶起。屏幕中的枕高是示意参数。', 'head'), S('放好下侧' + lower + '手', '把' + lower + '上臂稍放到身体前方，肘部自然弯曲，手掌轻放在枕前或身前；不要把整只手臂压在头下。', right ? 'rightArm' : 'leftArm'), S('放好上侧' + upper + '手', '把' + upper + '手轻放在身前、抱枕上或大腿侧，选择肩膀不被向前拉扯的位置。', right ? 'leftArm' : 'rightArm'), S('腿稍弯，恢复自然呼吸', '双腿舒适地微屈，需要时在膝间加枕，不强行并紧。放松下巴，正常呼吸，夜间可以自然翻身。', 'legs')],
+      checkpoints: ['头是否被枕头顶歪或垂下？', '下侧手臂是否被压麻？', '肩膀和骨盆是否舒服？'], sources: ['mayoSleep', 'mattressTrial'].concat(right ? [] : ['refluxStudy']), evidence: '一般指导'
+    }, extra || {});
+  }
+  postures.push(side('left', '左侧卧', '左'));
+  postures.push(side('right', '右侧卧', '右'));
+  postures.push({
+    id: 'supine', name: '仰卧 · 膝下支撑', en: 'BACK / SLEEP', category: 'lie', scene: 'sleep', badge: '常见睡姿', aliases: '仰卧 平躺 朝上 睡觉 床垫', brief: '把头颈接住，需要时给膝下加一点支撑。', principle: '平躺不是把腰硬压平，也不是让下巴顶向胸口。',
+    benefits: ['可以尝试膝下放枕，寻找腰背更轻松的位置。', '双手可放身侧，不必承受身体重量。'], cautions: ['有阻塞性睡眠呼吸暂停的人，仰卧可能不合适；遵循个人治疗建议。', '枕头过高可能让颈部持续前屈；不能从身高直接算出最优枕高。'],
+    steps: [S('先准备枕头', '准备头枕及可选膝下枕；床垫不是越硬越好，应实际观察舒适度。', 'environment'), S('舒服地躺下', '用自己熟悉且安全的方式躺好；术后或起卧困难时按专业人员指导操作，模型不教授移乘。', 'torso'), S('托住头颈', '头放到枕上，试调高度，让颈部舒服、不明显低头。不要强行把腰压到床面。', 'head'), S('安放左手、右手', '双手分别轻放身旁或腹部附近，肩膀自然放松，不要求固定手印，也不用力压腹。', 'arms'), S('按需支撑膝下', '在膝下放一个舒适的枕头，让双腿自然放松；不舒服就撤掉或换姿势。', 'legs'), S('自然呼吸与翻身', '不控制睡着后的呼吸，也不要求整晚保持仰卧。若反复憋醒或有呼吸暂停，请就医。', 'all')], checkpoints: ['下巴是否被枕头推向胸口？', '膝下支撑是否舒服？', '是否有打鼾伴憋醒？'], sources: ['mayoSleep', 'mayoApnea', 'mattressTrial'], evidence: '一般指导'
+  });
+  postures.push({
+    id: 'prone', name: '俯卧 · 注意颈腰', en: 'STOMACH / SLEEP', category: 'lie', scene: 'sleep', badge: '注意适配', aliases: '趴着睡 俯卧 趴睡 朝下', brief: '收录常见姿势，不意味着推荐你去适应它。', principle: '睡得习惯与身体舒服，不一定是同一回事。',
+    benefits: ['帮助识别自己实际采用的姿势，便于记录醒来后的感受。', '提供调整支撑的讨论起点，而不是要求从侧卧改为俯卧。'], cautions: ['俯卧常需将头转向一侧，可能增加颈部与腰背不适。', '本项目不主动推荐俯卧，更不能把它当作呼吸疾病的治疗方法。'],
+    steps: [S('先考虑替代姿势', '先看看侧卧或仰卧是否更舒服。不需要为了学习条目而刻意俯卧。', 'all'), S('仅观察习惯姿势', '已经习惯俯卧时，在清醒、能随时调整的情况下观察支撑；保证口鼻不被床品遮住。', 'head'), S('试调头部支撑', '避免厚枕把颈部进一步顶起；不把脸直接埋进枕头，颈部不舒服就换姿势。', 'head'), S('手臂不要压在头下', '左右手臂自然放在身旁或舒适的位置，不用手臂承受头部重量，不追求对称。', 'arms'), S('观察腹部与骨盆支撑', '必要时可尝试在下腹与髋部下放薄支撑，观察是否舒服；如果更不舒服，撤掉并调整姿势。', 'torso'), S('出现不适就换姿势', '自然呼吸。醒后反复颈腰痛，或呼吸不畅，应寻求专业建议，不靠调参数硬撑。', 'all')], checkpoints: ['口鼻是否完全通畅？', '颈部是否被扭得不舒服？', '侧卧是否更舒适？'], sources: ['mayoSleep'], evidence: '了解为主 / 非主动推荐'
+  });
+  postures.push(side('fetal', '蜷曲侧卧 · 放松版', '左', { en: 'CURLED SIDE / SLEEP', badge: '常见变式', aliases: '胎儿式 蜷缩 蜷曲 婴儿式 睡姿', brief: '可以微微蜷曲，不必把自己紧紧抱成一团。', principle: '留出舒适呼吸和翻身的空间。', cautions: ['不把膝盖用力拉向胸口，也不强行低头缩颈。', '不要求整夜固定蜷曲；出现肩、髋或膝部压迫就调整。'], evidence: '一般原则改编' }));
+  postures.push(side('auspicious', '吉祥卧 · 唐僧睡', '右', {
+    en: 'RIGHT SIDE / TRADITION', badge: '舒适改良版', aliases: '唐僧睡 吉祥卧 吉祥睡 狮子卧 佛 道 睡功 右侧',
+    brief: '保留右侧微屈的形态，让枕头而不是手臂承头。', principle: '尊重传统，也把文化说法与医学证据分开。',
+    benefits: ['帮助理解传统吉祥卧的右侧微屈形态。', '改用头枕承头，可以避免刻意用手掌或手臂托住头部。'], cautions: ['“唐僧睡”不是统一医学术语，也没有“包治失眠、必然秒睡”的可靠保证。', '传统动作存在不同说法；此处是本项目舒适改良版，不复制按穴、压耳或强制舌位。'],
+    steps: [S('先准备枕头', '放好能够舒适承托头颈的枕头。此版本让枕头承重，不模仿影视里用手掌撑头。', 'environment'), S('轻轻转向右侧', '右侧身体朝床面，肩与骨盆大致同向。上半身保持舒适，不强行弯成固定弧度。', 'torso'), S('头落到枕上', '让头颈靠枕支撑，调整受压后的枕高，不要为了摆出造型使颈部侧折。', 'head'), S('右手轻放枕前', '右上臂略向身体前方，右肘自然弯曲；右手轻放在枕前、脸前的舒适位置，不塞到头下，不按压耳部。', 'rightArm'), S('左手轻放大腿侧', '左手自然放在左大腿侧，或者放身前的抱枕上；肩膀不前拉，手掌不用力压腿。', 'leftArm'), S('双腿微屈，松开要求', '双腿轻轻弯曲，需要时加膝间枕。下巴放松，正常呼吸；不屏息、不强制舌顶上腭，不要求整夜不翻身。', 'legs')],
+    checkpoints: ['头部是不是由枕头承重？', '右手臂有没有受压？', '有没有为了“标准”而硬撑？'], sources: ['lingyin', 'mayoSleep', 'nhsBreath'], evidence: '传统形态 + 舒适改良'
+  }));
+  const categories = [{id:'all',name:'全部姿势',short:'全'}, {id:'walk',name:'行 · 行走',short:'行'}, {id:'stand',name:'住 · 站立',short:'住'}, {id:'sit',name:'坐 · 落座',short:'坐'}, {id:'lie',name:'卧 · 睡眠',short:'卧'}];
+  return { version: 1, reviewed: '2026-10-16', sources, postures, categories };
+});
+
+</script>
+<script>
+/* 纯函数：尺寸起点、参数校验、方案导入。无 DOM，便于独立测试。 */
+(function (root, factory) {
+  const api = factory();
+  if (typeof module === 'object' && module.exports) module.exports = api;
+  else root.PostureCore = api;
+})(typeof window !== 'undefined' ? window : globalThis, function () {
+  'use strict';
+  const limits = Object.freeze({height:[140,205],popliteal:[28,60],eyeSeat:[50,100],elbowSeat:[12,40],seat:[25,65],desk:[45,135],screen:[75,195],distance:[40,100],backAngle:[90,120],footrest:[0,25],firmness:[1,5],pillow:[1,18],pad:[3,25],cadence:[40,120]});
+  const DEFAULT_PROFILE = {height:170,calibrated:false,popliteal:43,eyeSeat:75,elbowSeat:25};
+  const clamp = (value, min, max) => Math.min(max, Math.max(min,value));
+  const round = (value, digits=1) => Math.round(value * 10**digits)/10**digits;
+  function bounded(value, key, fallback) { const n = Number(value); return Number.isFinite(n) ? clamp(n,...limits[key]) : fallback; }
+  function cleanProfile(p={}) {
+    return {height:bounded(p.height,'height',170),calibrated:p.calibrated===true,popliteal:bounded(p.popliteal,'popliteal',43),eyeSeat:bounded(p.eyeSeat,'eyeSeat',75),elbowSeat:bounded(p.elbowSeat,'elbowSeat',25)};
+  }
+  function dimensions(profile) {
+    const p=cleanProfile(profile), h=p.height;
+    // 产品内的简化比例，只产生试调起点，不是人体测量标准或医学公式。
+    return {popliteal: p.calibrated?p.popliteal:round(h*.25), eyeSeat:p.calibrated?p.eyeSeat:round(h*.44), elbowSeat:p.calibrated?p.elbowSeat:round(h*.145), standingEye:round(h*.936), standingElbow:round(h*.63), measured:p.calibrated};
+  }
+  function defaults(profile, posture) {
+    const d=dimensions(profile), standing=posture.scene==='standdesk';
+    const seat=round(clamp(d.popliteal-1,25,65));
+    return {seat,desk:round(standing?d.standingElbow:seat+d.elbowSeat),screen:round((standing?d.standingEye:seat+d.eyeSeat)-2),distance:65,backAngle:105,footrest:0,firmness:3,pillow:posture.id==='supine'?7:posture.id==='prone'?3:9,kneePillow:posture.id!=='prone',pad:posture.scene==='seiza'?9:12,cadence:80};
+  }
+  function cleanParams(params={}, base={}) {
+    const out={};
+    Object.keys(limits).filter(k=>!['height','popliteal','eyeSeat','elbowSeat'].includes(k)).forEach(k=>{out[k]=bounded(params[k],k,base[k] ?? ({seat:42,desk:67,screen:115,distance:65,backAngle:105,footrest:0,firmness:3,pillow:9,pad:12,cadence:80})[k]);});
+    out.firmness=Math.round(out.firmness); out.kneePillow=typeof params.kneePillow==='boolean'?params.kneePillow:(base.kneePillow??true);return out;
+  }
+  function reference(profile, posture, params) {
+    const d=dimensions(profile), s=cleanParams(params), stand=posture.scene==='standdesk';
+    const eye=round(stand?d.standingEye:s.seat+d.eyeSeat), elbow=round(stand?d.standingElbow:s.seat+d.elbowSeat);
+    return {seatLow:round(d.popliteal-2),seatHigh:round(d.popliteal),eye,elbow,screenTop:round(eye-2),footGap:round(Math.max(0,s.seat-d.popliteal-s.footrest)),viewAngle:round(Math.atan2(eye-(s.screen-16),s.distance)*180/Math.PI), d};
+  }
+  function diagnostics(profile, posture, params) {
+    const s=cleanParams(params), r=reference(profile,posture,s), out=[];
+    const seatScenes=['office','bench','chair'];
+    if(seatScenes.includes(posture.scene)){
+      if(r.footGap>2) out.push({level:'warn',text:`椅面偏高的示意：脚下约差 ${r.footGap} cm。先确认脚掌能否有稳定支撑。`});
+      else if(s.seat < r.d.popliteal-5) out.push({level:'warn',text:'椅面明显低于当前腿长起点。留意膝髋是否过度弯曲、起身是否费力。'});
+      else out.push({level:'ok',text:'当前座高接近试调区间。仍要用双脚落地、椅缘不顶腿来确认。'});
+    }
+    if(['office','standdesk'].includes(posture.scene)){
+      if(s.screen>r.eye+2) out.push({level:'warn',text:'屏幕上缘高于当前眼高示意。试着下调，避免仰头；镜片需求另行考虑。'});
+      else if(s.screen<r.eye-15) out.push({level:'warn',text:'屏幕整体位置较低。留意是否需要持续低头或向前探。'});
+      else out.push({level:'ok',text:'屏幕上缘接近眼平或略低。再用实际字号、距离与视力微调。'});
+      if(Math.abs(s.desk-r.elbow)>5) out.push({level:'warn',text:'输入面与自然肘高差距较大。检查是否耸肩、伸手或折腕。'});
+      if(s.distance<50) out.push({level:'warn',text:'当前屏距小于 50 cm。优先试调字号和位置，不要硬凑近。'});
+    }
+    if(posture.category==='lie'){
+      out.push({level:'info',text:'1–5 档仅为本项目相对软硬，不对应品牌等级；凹陷是夸张示意，不是人体压力或真实沉降计算。'});
+      if(s.firmness<=2) out.push({level:'warn',text:'偏软时留意躯干下陷后的排列与翻身难易；并不是软床一定不好。'});
+      if(s.firmness>=4) out.push({level:'info',text:'偏硬时留意肩、髋接触处是否不舒服；硬度不等于支撑效果。'});
+      if(s.pillow>=14) out.push({level:'warn',text:'当前受压后枕高较高。观察颈部是否被顶歪，不以模型代替实际试躺。'});
+      if(posture.id==='prone')out.push({level:'warn',text:'俯卧用于认识常见习惯，不主动推荐；保证口鼻不被床品遮挡。'});
+    }
+    if(posture.id==='seiza'||posture.id==='cross')out.push({level:'warn',text:'不强压膝踝，不追求坚持时长；麻木、刺痛或疼痛时停止并换姿势。'});
+    if(out.length===0)out.push({level:'info',text:'这里展示形态，不做身体诊断；舒服、可调整、可退出，比形状整齐更重要。'});
+    return out;
+  }
+  function escapeHtml(text) {return String(text).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+  function makeSnapshot(name, posture, profile, params, note='') {return {id:'p-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,8),name:String(name||posture.name).trim().slice(0,60),postureId:posture.id,profile:cleanProfile(profile),params:cleanParams(params,defaults(profile,posture)),note:String(note).slice(0,1500),created:new Date().toISOString()};}
+  function parseBackup(text, postures) {
+    if(typeof text!=='string'||text.length>2_000_000)throw new Error('文件过大；请使用 2 MB 以内的项目备份 JSON。');
+    let raw;try{raw=JSON.parse(text);}catch(e){throw new Error('不是有效的 JSON 文件，原有方案没有改变。');}
+    if(!raw||raw.app!=='shenyodu-posture-lab'||raw.version!==1||!Array.isArray(raw.plans))throw new Error('备份格式或版本不匹配，原有方案没有改变。');
+    if(raw.plans.length>100)throw new Error('单次最多导入 100 个方案。');
+    const ids=new Set(postures.map(p=>p.id));
+    const plans=raw.plans.map((p,i)=>{
+      if(!p||!ids.has(p.postureId)||typeof p.name!=='string'||!p.profile||!p.params)throw new Error(`第 ${i+1} 个方案缺少必要字段或姿势不存在。`);
+      if(!Number.isFinite(p.profile.height)||p.profile.height<140||p.profile.height>205)throw new Error(`第 ${i+1} 个方案的身高超出成人演示范围。`);
+      for(const key of ['popliteal','eyeSeat','elbowSeat'])if(p.profile[key]!==undefined&&(!Number.isFinite(p.profile[key])||p.profile[key]<limits[key][0]||p.profile[key]>limits[key][1]))throw new Error(`第 ${i+1} 个方案的实测 ${key} 数值无效。`);
+      for(const [key,value] of Object.entries(p.params))if(Object.prototype.hasOwnProperty.call(limits,key)&&(!Number.isFinite(value)||value<limits[key][0]||value>limits[key][1]))throw new Error(`第 ${i+1} 个方案的 ${key} 数值无效。`);
+      const posture=postures.find(x=>x.id===p.postureId), result=makeSnapshot(p.name,posture,p.profile,p.params,p.note||'');
+      if(typeof p.created==='string'&&!Number.isNaN(Date.parse(p.created)))result.created=new Date(p.created).toISOString();
+      return result;
+    });
+    return {plans,favorites:Array.isArray(raw.favorites)?[...new Set(raw.favorites.filter(id=>ids.has(id)))]:[]};
+  }
+  function buildBackup(plans,favorites) {return JSON.stringify({app:'shenyodu-posture-lab',version:1,exported:new Date().toISOString(),plans,favorites},null,2);}
+  return {limits,DEFAULT_PROFILE,clamp,round,bounded,cleanProfile,dimensions,defaults,cleanParams,reference,diagnostics,escapeHtml,makeSnapshot,parseBackup,buildBackup};
+});
+
+</script>
+<script>
+/*
+ * 零第三方运行时的轻量 3D 场景。WebGL 绘制；不支持 WebGL 时使用同一几何数据的 Canvas 备用绘制。
+ * 人体是参数化教学模型，不是人体测量、关节受力、床垫压力或医疗仿真。
+ */
+(function (root) {
+  'use strict';
+  const C = root.PostureCore;
+  const V={add:(a,b)=>a.map((v,i)=>v+b[i]),sub:(a,b)=>a.map((v,i)=>v-b[i]),mul:(a,s)=>a.map(v=>v*s),dot:(a,b)=>a.reduce((s,v,i)=>s+v*b[i],0),cross:(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]],len:a=>Math.hypot(...a),norm:a=>{const l=Math.hypot(...a)||1;return a.map(v=>v/l);},mix:(a,b,t)=>a.map((v,i)=>v+(b[i]-v)*t)};
+  const AXES=[[1,0,0],[0,1,0],[0,0,1]], rgb=h=>[parseInt(h.slice(1,3),16)/255,parseInt(h.slice(3,5),16)/255,parseInt(h.slice(5,7),16)/255];
+  const P={shirt:'#497d6b',pants:'#566b70',skin:'#debda2',joint:'#bac9bf',highlight:'#dba75a',wood:'#c6a780',woodLight:'#dfc8a9',metal:'#526663',chair:'#859b8c',cream:'#f6f3e9',bed:'#c3d0bf',floor:'#e7ede6',line:'#91b3a0',dark:'#243e3c',screen:'#36534e',key:'#a4b9ab'};
+  function matMul(a,b){const o=new Float32Array(16);for(let c=0;c<4;c++)for(let r=0;r<4;r++){let s=0;for(let k=0;k<4;k++)s+=a[k*4+r]*b[c*4+k];o[c*4+r]=s;}return o;}
+  function perspective(fov,aspect,near,far){const f=1/Math.tan(fov/2),nf=1/(near-far);return new Float32Array([f/aspect,0,0,0,0,f,0,0,0,0,(far+near)*nf,-1,0,0,2*far*near*nf,0]);}
+  function lookAt(eye,target){const z=V.norm(V.sub(eye,target)),x=V.norm(V.cross([0,1,0],z)),y=V.cross(z,x);return new Float32Array([x[0],y[0],z[0],0,x[1],y[1],z[1],0,x[2],y[2],z[2],0,-V.dot(x,eye),-V.dot(y,eye),-V.dot(z,eye),1]);}
+  function applyMatrix(m,p){return [m[0]*p[0]+m[4]*p[1]+m[8]*p[2]+m[12],m[1]*p[0]+m[5]*p[1]+m[9]*p[2]+m[13],m[2]*p[0]+m[6]*p[1]+m[10]*p[2]+m[14],m[3]*p[0]+m[7]*p[1]+m[11]*p[2]+m[15]];}
+  function basisPoint(center,basis,local){let q=center.slice();for(let i=0;i<3;i++)q=V.add(q,V.mul(basis[i],local[i]));return q;}
+  class Geometry {
+    constructor(focus='none'){this.data=[];this.focus=focus;}
+    color(color,part){const selected=this.focus===part||(this.focus==='arms'&&['leftArm','rightArm'].includes(part));return rgb(selected&&this.focus!=='none'&&this.focus!=='all'?P.highlight:color);}
+    tri(a,b,c,color,part,ns){const col=this.color(color,part),norm=V.norm(V.cross(V.sub(b,a),V.sub(c,a)));[a,b,c].forEach((p,i)=>this.data.push(...p,...(ns?ns[i]:norm),...col));}
+    quad(a,b,c,d,color,part,normal){const n=normal?[normal,normal,normal]:null;this.tri(a,b,c,color,part,n);this.tri(a,c,d,color,part,n);}
+    box(center,size,color,part='environment',basis=AXES,openTop=false){
+      const pt=(x,y,z)=>basisPoint(center,basis,[x*size[0]/2,y*size[1]/2,z*size[2]/2]);
+      [[0,1],[0,-1],[1,1],[1,-1],[2,1],[2,-1]].filter(([axis,sign])=>!(openTop&&axis===1&&sign===1)).forEach(([axis,sign])=>{const others=[0,1,2].filter(v=>v!==axis),corners=[[-1,-1],[1,-1],[1,1],[-1,1]].map(pair=>{const v=[0,0,0];v[axis]=sign;v[others[0]]=pair[0];v[others[1]]=pair[1];return pt(...v);});this.quad(...corners,color,part,V.mul(basis[axis],sign));});
+    }
+    ellipsoid(center,radii,color,part='environment',basis=AXES,lon=16,lat=10){
+      const point=(a,b)=>{const u=[Math.cos(a)*Math.cos(b),Math.sin(a),Math.cos(a)*Math.sin(b)],pos=basisPoint(center,basis,u.map((v,i)=>v*radii[i]));let norm=[0,0,0];for(let i=0;i<3;i++)norm=V.add(norm,V.mul(basis[i],u[i]/Math.max(.001,radii[i])));return {pos,n:V.norm(norm)};};
+      for(let j=0;j<lat;j++)for(let i=0;i<lon;i++){const a=-Math.PI/2+j*Math.PI/lat,b=i*2*Math.PI/lon,da=Math.PI/lat,db=2*Math.PI/lon,p=point(a,b),q=point(a+da,b),r=point(a+da,b+db),s=point(a,b+db);this.tri(p.pos,q.pos,r.pos,color,part,[p.n,q.n,r.n]);this.tri(p.pos,r.pos,s.pos,color,part,[p.n,r.n,s.n]);}
+    }
+    cylinder(a,b,r,color,part='environment',r2=r,n=12){
+      const axis=V.norm(V.sub(b,a));if(V.len(V.sub(b,a))<.00001)return;
+      const u=V.norm(V.cross(axis,Math.abs(axis[1])>.9?[1,0,0]:[0,1,0])),v=V.cross(axis,u);
+      for(let i=0;i<n;i++){const t=i*2*Math.PI/n,tt=(i+1)*2*Math.PI/n,dir=V.add(V.mul(u,Math.cos(t)),V.mul(v,Math.sin(t))),dir2=V.add(V.mul(u,Math.cos(tt)),V.mul(v,Math.sin(tt))),p=V.add(a,V.mul(dir,r)),q=V.add(b,V.mul(dir,r2)),rr=V.add(b,V.mul(dir2,r2)),s=V.add(a,V.mul(dir2,r));this.tri(p,q,rr,color,part,[dir,dir,dir2]);this.tri(p,rr,s,color,part,[dir,dir2,dir2]);this.tri(a,s,p,color,part,[V.mul(axis,-1),V.mul(axis,-1),V.mul(axis,-1)]);this.tri(b,q,rr,color,part,[axis,axis,axis]);}
+    }
+    disc(center,rx,rz,color){const n=64;for(let i=0;i<n;i++){const a=i*2*Math.PI/n,b=(i+1)*2*Math.PI/n;this.tri(center,[center[0]+rx*Math.cos(a),center[1],center[2]+rz*Math.sin(a)],[center[0]+rx*Math.cos(b),center[1],center[2]+rz*Math.sin(b)],color,'decor',[[0,1,0],[0,1,0],[0,1,0]]);}}
+  }
+  function twoBone(start,target,l1,l2){const d=V.sub(target,start),dist=C.clamp(V.len(d),Math.abs(l1-l2)+.002,l1+l2-.002),dir=V.norm(d),end=V.add(start,V.mul(dir,dist));let pole=[0,-1,-.2];pole=V.norm(V.sub(pole,V.mul(dir,V.dot(pole,dir))));const a=(l1*l1-l2*l2+dist*dist)/(2*dist),h=Math.sqrt(Math.max(0,l1*l1-a*a));return {elbow:V.add(V.add(start,V.mul(dir,a)),V.mul(pole,h)),end};}
+  class SceneView {
+    constructor(canvas,labelHost,onPart,onNotice){
+      this.canvas=canvas;this.labelHost=labelHost;this.onPart=onPart;this.onNotice=onNotice;this.focus='none';this.measures=true;this.playing=false;this.azimuth=-1.08;this.elevation=.29;this.radius=3.35;this.target=[0,.83,.18];this.matrix=null;this.anchors=[];this.bodyPoints={};this.frame=0;this.lastPoseBuild=0;this.renderCount=0;this.gl=null;this.vertices=null;this.data=null;
+      try{this.gl=canvas.getContext('webgl',{antialias:true,alpha:false,preserveDrawingBuffer:true});if(this.gl)this.initGL();}catch(e){this.gl=null;const replacement=canvas.cloneNode();canvas.replaceWith(replacement);this.canvas=replacement;}
+      if(!this.gl){this.ctx=this.canvas.getContext('2d');if(onNotice)onNotice('已启用兼容绘图模式：仍可拖动旋转，动态演示可能较慢。');}
+      this.canvas.addEventListener('webglcontextlost',e=>{e.preventDefault();this.lost=true;if(onNotice)onNotice('图形显示暂时中断；内容与方案仍可使用。可尝试刷新页面。');});
+      this.canvas.addEventListener('webglcontextrestored',()=>{this.lost=false;this.initGL();this.upload();this.invalidate();});
+      this.bindControls();this.observer=new ResizeObserver(()=>this.resize());this.observer.observe(this.canvas.parentElement);this.resize();
+    }
+    initGL(){
+      const gl=this.gl,vs=`attribute vec3 aPosition;attribute vec3 aNormal;attribute vec3 aColor;uniform mat4 uMatrix;varying vec3 vColor;varying vec3 vNormal;void main(){gl_Position=uMatrix*vec4(aPosition,1.0);vNormal=aNormal;vColor=aColor;}`;
+      const fs=`precision mediump float;varying vec3 vColor;varying vec3 vNormal;void main(){vec3 n=normalize(vNormal);float key=max(0.0,dot(n,normalize(vec3(-0.65,1.0,0.7))));float fill=max(0.0,dot(n,normalize(vec3(0.9,0.4,-0.5))));float light=0.61+0.30*key+0.09*fill;gl_FragColor=vec4(vColor*light,1.0);}`;
+      const shader=(type,text)=>{const s=gl.createShader(type);gl.shaderSource(s,text);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS)){const error=gl.getShaderInfoLog(s);gl.deleteShader(s);throw new Error(error);}return s;};
+      const vert=shader(gl.VERTEX_SHADER,vs),frag=shader(gl.FRAGMENT_SHADER,fs);this.program=gl.createProgram();gl.attachShader(this.program,vert);gl.attachShader(this.program,frag);gl.linkProgram(this.program);gl.deleteShader(vert);gl.deleteShader(frag);if(!gl.getProgramParameter(this.program,gl.LINK_STATUS))throw new Error('无法建立 3D 绘制程序');
+      gl.useProgram(this.program);this.buffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,this.buffer);['aPosition','aNormal','aColor'].forEach((name,i)=>{const loc=gl.getAttribLocation(this.program,name);gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,3,gl.FLOAT,false,36,i*12);});this.uMatrix=gl.getUniformLocation(this.program,'uMatrix');gl.enable(gl.DEPTH_TEST);gl.clearColor(.933,.949,.924,1);
+    }
+    bindControls(){
+      const pointers=new Map();let previous=null,down=null,pinch=null;
+      this.canvas.addEventListener('pointerdown',e=>{this.canvas.focus({preventScroll:true});this.canvas.setPointerCapture(e.pointerId);pointers.set(e.pointerId,[e.clientX,e.clientY]);down=[e.clientX,e.clientY];previous=[e.clientX,e.clientY];if(pointers.size===2){const a=[...pointers.values()];pinch=Math.hypot(a[0][0]-a[1][0],a[0][1]-a[1][1]);}});
+      this.canvas.addEventListener('pointermove',e=>{if(!pointers.has(e.pointerId))return;pointers.set(e.pointerId,[e.clientX,e.clientY]);if(pointers.size===2){const a=[...pointers.values()],d=Math.hypot(a[0][0]-a[1][0],a[0][1]-a[1][1]);if(pinch)this.radius=C.clamp(this.radius*(pinch/d),1.4,7);pinch=d;}else if(previous){this.azimuth-=(e.clientX-previous[0])*.008;this.elevation=C.clamp(this.elevation+(e.clientY-previous[1])*.006,.06,1.43);}previous=[e.clientX,e.clientY];this.invalidate();});
+      const finish=e=>{if(down&&Math.hypot(e.clientX-down[0],e.clientY-down[1])<6&&pointers.size===1)this.pick(e.clientX,e.clientY);pointers.delete(e.pointerId);previous=null;down=null;pinch=null;};
+      this.canvas.addEventListener('pointerup',finish);this.canvas.addEventListener('pointercancel',()=>{pointers.clear();previous=down=pinch=null;});
+      this.canvas.addEventListener('wheel',e=>{e.preventDefault();this.radius=C.clamp(this.radius*Math.exp(e.deltaY*.001),1.4,7);this.invalidate();},{passive:false});
+      this.canvas.addEventListener('keydown',e=>{if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','+','-','Home'].includes(e.key))return;e.preventDefault();if(e.key==='ArrowLeft')this.azimuth-=.15;if(e.key==='ArrowRight')this.azimuth+=.15;if(e.key==='ArrowUp')this.elevation=C.clamp(this.elevation+.1,.06,1.43);if(e.key==='ArrowDown')this.elevation=C.clamp(this.elevation-.1,.06,1.43);if(e.key==='+')this.radius=C.clamp(this.radius-.2,1.4,7);if(e.key==='-')this.radius=C.clamp(this.radius+.2,1.4,7);if(e.key==='Home')this.camera('home');this.invalidate();});
+    }
+    resize(){const rect=this.canvas.parentElement.getBoundingClientRect();this.width=Math.max(100,rect.width);this.height=Math.max(100,rect.height);const dpr=Math.min(root.devicePixelRatio||1,1.7);this.canvas.width=Math.round(this.width*dpr);this.canvas.height=Math.round(this.height*dpr);this.canvas.style.width=this.width+'px';this.canvas.style.height=this.height+'px';if(this.gl)this.gl.viewport(0,0,this.canvas.width,this.canvas.height);this.invalidate();}
+    camera(view){if(view==='home'){this.azimuth=this.posture?.category==='lie'?-1.0:-1.66;this.elevation=this.posture?.category==='lie'?.57:.29;this.radius=(this.posture?.category==='lie'?3.45:this.posture?.category==='sit'?2.9:3.35)*(this.profile?.height||170)/170;}if(view==='front'){this.azimuth=0;this.elevation=.15;}if(view==='side'){this.azimuth=-Math.PI/2;this.elevation=.12;}if(view==='top'){this.azimuth=0;this.elevation=1.43;}this.invalidate();}
+    update(posture,profile,params,focus='none',measures=true){const changed=this.posture?.id!==posture.id;this.posture=posture;this.profile=profile;this.params=params;this.focus=focus;this.measures=measures;this.target=posture.category==='lie'?[0,.55,0]:posture.scene==='seiza'||posture.scene==='cross'?[0,.63,.05]:posture.category==='sit'?[0,(params.seat+C.dimensions(profile).eyeSeat)*.006,.12]:[0,profile.height/210,0];if(changed){this.playing=false;this.camera('home');}this.build(0);this.invalidate();}
+    setPlaying(value){this.playing=value&&this.posture?.id==='walk';this.invalidate();}
+    upload(){if(this.gl&&!this.lost&&this.vertices){this.gl.bindBuffer(this.gl.ARRAY_BUFFER,this.buffer);this.gl.bufferData(this.gl.ARRAY_BUFFER,this.vertices,this.gl.DYNAMIC_DRAW);}}
+    build(time){
+      if(!this.posture)return;const p=this.posture,s=this.params,h=this.profile.height/100,g=new Geometry(this.focus);this.anchors=[];this.bodyPoints={};
+      g.disc([0,-.018,.1],1.65,1.45,P.floor);g.disc([0,-.015,.1],1.45,1.24,'#e2e9df');
+      // 台面上的细刻线是空间参照，并不代表真实测量刻度。
+      for(let i=-4;i<=4;i++){g.box([i*.3,-.012,.1],[.003,.003,2.3],'#d2ddd1','decor');g.box([0,-.012,i*.3+.1],[2.65,.003,.003],'#d2ddd1','decor');}
+      if(p.category==='lie')this.sleepScene(g,h,p,s);else this.uprightScene(g,h,p,s,time);
+      this.vertices=new Float32Array(g.data);this.vertexCount=this.vertices.length/9;this.upload();this.makeLabels();this.data=g;this.lastPoseBuild=time;
+    }
+    human(g,h,points,basis,options={}){
+      const left=basis[0],up=basis[1],front=basis[2],headBasis=options.headBasis||basis;
+      const hip=points.hip,shoulderCenter=V.mix(points.leftShoulder,points.rightShoulder,.5),trunk=V.sub(shoulderCenter,hip),trunkUp=V.norm(trunk),trunkFront=V.norm(V.cross(left,trunkUp));
+      g.ellipsoid(V.mix(hip,shoulderCenter,.56),[h*.114,V.len(trunk)*.69,h*.069],P.shirt,'torso',[left,trunkUp,trunkFront]);
+      g.ellipsoid(hip,[h*.104,h*.067,h*.077],P.pants,'torso',basis);
+      const neck=V.add(shoulderCenter,V.mul(up,h*.046));g.cylinder(shoulderCenter,neck,h*.033,P.skin,'head');g.cylinder(neck,points.head,h*.028,P.skin,'head');
+      g.ellipsoid(points.head,[h*.055,h*.069,h*.061],P.skin,'head',headBasis,20,12);
+      const face=V.add(points.head,V.mul(headBasis[2],h*.059));g.ellipsoid(V.add(face,V.mul(headBasis[1],h*.001)),[h*.009,h*.012,h*.014],P.skin,'head',headBasis,10,6);
+      for(const sign of [-1,1]){const eye=V.add(V.add(face,V.mul(headBasis[0],sign*h*.018)),V.mul(headBasis[1],h*.019));g.ellipsoid(eye,[h*.0036,h*.0025,h*.0027],P.dark,'head',headBasis,8,6);}
+      ['left','right'].forEach(side=>{const part=side==='left'?'leftArm':'rightArm',a=points[side+'Shoulder'],b=points[side+'Elbow'],c=points[side+'Hand'];g.ellipsoid(a,[h*.047,h*.047,h*.047],P.shirt,part,AXES,12,8);g.cylinder(a,b,h*.043,P.shirt,part,h*.036);g.ellipsoid(b,[h*.033,h*.034,h*.034],P.skin,part,AXES,12,8);g.cylinder(b,c,h*.030,P.skin,part,h*.023);const handUp=V.norm(V.sub(c,b)),handFront=V.norm(V.cross(left,handUp));g.ellipsoid(V.add(c,V.mul(handUp,h*.021)),[h*.027,h*.048,h*.016],P.skin,part,[left,handUp,handFront],12,8);});
+      ['left','right'].forEach(side=>{const start=V.add(hip,V.mul(left,(side==='left'?1:-1)*h*.072)),k=points[side+'Knee'],a=points[side+'Ankle'];g.cylinder(start,k,h*.058,P.pants,'legs',h*.040);g.ellipsoid(k,[h*.042,h*.042,h*.042],P.pants,'legs',AXES,12,8);g.cylinder(k,a,h*.039,P.pants,'legs',h*.024);const foot=points[side+'Foot']||V.add(a,V.mul(front,h*.045));g.ellipsoid(foot,[h*.037,h*.025,h*.076],options.bare?P.skin:P.cream,'legs',points.footBasis||basis,12,8);});
+      this.bodyPoints={head:points.head,torso:V.mix(hip,shoulderCenter,.5),leftArm:points.leftElbow,rightArm:points.rightElbow,legs:points.leftKnee};
+    }
+    uprightScene(g,h,p,s,time){
+      const d=C.dimensions(this.profile),seat=s.seat/100,isChair=['office','bench','chair'].includes(p.scene),floorSit=['seiza','cross'].includes(p.scene),isDesk=['office','standdesk'].includes(p.scene);let hip,head,shoulderY,shoulderZ,up=[0,1,0],front=[0,0,1],points={};
+      if(isChair){
+        const lean=p.scene==='office'?(s.backAngle-90)*Math.PI/180:5*Math.PI/180;hip=[0,seat+.06*h,-.015];shoulderY=seat+d.eyeSeat/100-.136*h;shoulderZ=-.015-Math.sin(lean)*(shoulderY-hip[1]);up=[0,Math.cos(lean),-Math.sin(lean)];front=[0,Math.sin(lean),Math.cos(lean)];head=[0,seat+d.eyeSeat/100-.018*h,shoulderZ-.015*h];
+        const footBase=Math.max(s.footrest/100,seat-d.popliteal/100),kneeY=Math.max(seat+.032*h,footBase+d.popliteal/100+.025*h),kneeZ=Math.sqrt(Math.max(.018,(h*.245)**2-(kneeY-hip[1])**2));
+        [-1,1].forEach(sign=>{const side=sign===1?'left':'right';points[side+'Knee']=[sign*.09*h,kneeY,kneeZ];points[side+'Ankle']=[sign*.09*h,footBase+.033*h,kneeZ+.018];points[side+'Foot']=[sign*.09*h,footBase+.025*h,kneeZ+.064*h];});
+        this.chair(g,p.scene,s,h,lean);if(s.footrest>0)g.box([0,s.footrest/200,points.leftFoot[2]],[.57,s.footrest/100,.35],P.woodLight,'environment');
+        this.measure(g,[-.39,0,.08],[-.39,seat,.08],`椅面 ${C.round(s.seat)} cm`,'seat');
+      }else if(floorSit){
+        const pad=s.pad/100;hip=[0,p.scene==='seiza'?.155+pad:.075+pad,0];shoulderY=hip[1]+h*.28;shoulderZ=0;head=[0,hip[1]+h*.403,.014];g.box([0,.013,.10],[1.02,.026,.96],'#b2c4aa','environment');g.ellipsoid([0,pad/2+.025,-.025],[.28,pad/2,.26],P.cream,'environment');
+        if(p.scene==='seiza')[-1,1].forEach(sign=>{const side=sign===1?'left':'right';points[side+'Knee']=[sign*.075*h,.07,.36];points[side+'Ankle']=[sign*.068*h,.056,-.22];points[side+'Foot']=[sign*.068*h,.052,-.28];});
+        else [-1,1].forEach(sign=>{const side=sign===1?'left':'right';points[side+'Knee']=[sign*.23*h,.12,.24];points[side+'Ankle']=[-sign*.11*h,.075+(sign===1?.035:0),.38];points[side+'Foot']=[-sign*.12*h,.064+(sign===1?.035:0),.42];});
+        this.measure(g,[-.47,.025,0],[-.47,pad+.025,0],`坐垫 ${s.pad} cm`,'pad');
+      }else{
+        hip=[0,h*.545,0];shoulderY=h*.818;shoulderZ=0;head=[0,h*.918,0];
+        const phase=time*s.cadence/60*Math.PI,stride=p.scene==='walk'?Math.sin(phase)*h*.15:0;
+        [-1,1].forEach(sign=>{const side=sign===1?'left':'right',z=sign*stride,lift=p.scene==='walk'?Math.max(0,Math.cos(phase+(sign===1?0:Math.PI)))*h*.045:0;points[side+'Knee']=[sign*.071*h,h*.287+lift*.45,z*.43];points[side+'Ankle']=[sign*.072*h,h*.039+lift,z];points[side+'Foot']=[sign*.072*h,h*.025+lift,z+.048*h];});
+        if(p.scene==='walk'){for(let i=-4;i<=4;i++)g.box([0,-.007,i*.26],[.018,.005,.10],P.line,'decor');}
+        this.measure(g,[-.52,0,0],[-.52,h,0],`身高 ${this.profile.height} cm`,'height');
+      }
+      points.hip=hip;points.head=head;points.leftShoulder=[h*.112,shoulderY,shoulderZ];points.rightShoulder=[-h*.112,shoulderY,shoulderZ];
+      ['left','right'].forEach(side=>{const sign=side==='left'?1:-1,shoulder=points[side+'Shoulder'];let target;
+        if(isDesk)target=[sign*h*.093,s.desk/100+.02,.29];
+        else if(isChair)target=[sign*h*.09,seat+.07*h,.29];
+        else if(p.scene==='cross')target=V.add(points[side+'Knee'],[0,.055,-.02]);
+        else if(p.scene==='seiza')target=[sign*h*.08,hip[1]-.015,.23];
+        else if(p.scene==='walk'){const swing=-sign*Math.sin(time*s.cadence/60*Math.PI)*h*.145;target=[sign*h*.135,h*.48,swing];}
+        else target=[sign*h*.15,h*.492,.035];
+        const solved=twoBone(shoulder,target,h*.18,h*.158);points[side+'Elbow']=solved.elbow;points[side+'Hand']=solved.end;
+      });
+      if(isDesk){
+        const eye=isChair?seat+d.eyeSeat/100:d.standingEye/100;head[1]=eye-.018*h;const eyeZ=head[2]+h*.055,screenZ=eyeZ+s.distance/100;this.desk(g,s,screenZ,points,h);this.measure(g,[.78,0,.61],[.78,s.desk/100,.61],`输入面 ${C.round(s.desk)} cm`,'desk');
+        const eyePoint=[0,eye,eyeZ],end=[0,eye,screenZ];g.cylinder(eyePoint,end,.0025,'#88ad92','decor');g.cylinder(eyePoint,[0,s.screen/100-.16,screenZ],.002,'#b5bdad','decor');
+        this.anchors.push({pos:[.14,eye,eyeZ],text:`眼高 ${C.round(eye*100)} cm`,type:'eye'});this.anchors.push({pos:[0,s.screen/100+.035,screenZ],text:`屏顶 ${C.round(s.screen)} cm`,type:'screen'});
+      }
+      this.human(g,h,points,[[1,0,0],up,front],{bare:floorSit});
+    }
+    chair(g,scene,s,h,lean){const seat=s.seat/100;
+      if(scene==='bench'){
+        for(let i=0;i<5;i++){g.box([0,seat-.025,-.13+i*.09],[1.55,.05,.073],i%2?P.wood:P.woodLight);g.box([0,seat+.18+i*.062,-.205],[1.55,.049,.045],P.wood);}
+        for(const x of [-.58,.58]){g.box([x,seat/2-.025,.08],[.055,seat-.05,.055],P.metal);g.box([x,seat+.22,-.23],[.048,.52,.048],P.metal);g.box([x,.035,.08],[.11,.05,.52],P.metal);}
+        this.plant(g,[1.02,0,-.5],.75);
+      }else{
+        g.box([0,seat-.035,.06],[.55,.07,.54],P.chair);g.ellipsoid([0,seat-.005,.065],[.28,.026,.27],P.chair);
+        const up=[0,Math.cos(lean),-Math.sin(lean)],front=[0,Math.sin(lean),Math.cos(lean)];g.box([0,seat+.25,-.24-Math.sin(lean)*.15],[.51,.48,.075],P.chair,'environment',[[1,0,0],up,front]);g.box([0,seat*.53,-.08],[.07,Math.max(.05,seat-.15),.07],P.metal);
+        if(scene==='office'){
+          for(let i=0;i<5;i++){const a=i*2*Math.PI/5;g.cylinder([0,.065,-.08],[Math.cos(a)*.3,.065,-.08+Math.sin(a)*.3],.022,P.metal);g.ellipsoid([Math.cos(a)*.3,.042,-.08+Math.sin(a)*.3],[.039,.04,.032],P.metal);}
+          for(const x of [-.30,.30]){g.box([x,seat+.15,0],[.03,.26,.03],P.metal);g.box([x,seat+.28,.02],[.07,.035,.3],P.chair);}
+        }else for(const x of [-.22,.22])for(const z of [-.15,.25])g.box([x,seat/2-.045,z],[.043,seat-.09,.043],P.wood);
+      }
+    }
+    desk(g,s,screenZ,points,h){const top=s.desk/100-.01,back=Math.max(.76,screenZ+.11),front=.21;g.box([0,top-.025,(back+front)/2],[1.35,.05,back-front],P.woodLight);
+      for(const x of [-.60,.60]){g.box([x,top/2-.025,(back+front)/2],[.043,top-.05,.12],P.metal);g.box([x,.023,(back+front)/2],[.075,.045,back-front],P.metal);}
+      const screenTop=s.screen/100;g.box([0,screenTop-.16,screenZ],[.58,.335,.023],P.dark);g.box([0,screenTop-.16,screenZ-.014],[.541,.294,.006],P.screen);
+      // 屏幕是装饰性工作场景，不依赖外部图片或网络内容。
+      for(let row=0;row<6;row++){const z=screenZ-.019;g.box([-.18,screenTop-.065-row*.034,z],[.048,.006,.004],'#96b6a1');g.box([-.075,screenTop-.065-row*.034,z],[.105+((row%3)*.02),.006,.004],row%2?'#c4bb96':'#789b91');}
+      g.box([.153,screenTop-.17,screenZ-.019],[.11,.18,.004],'#42685b');g.box([0,top+.012,screenZ],[.29,.023,.19],P.metal);g.cylinder([0,top+.023,screenZ],[0,screenTop-.32,screenZ],.018,P.metal);
+      g.box([-.04,top+.038,.391],[.40,.018,.16],P.dark);for(let j=0;j<4;j++)for(let i=0;i<10;i++)g.box([-.217+i*.039,top+.05,.336+j*.033],[.03,.007,.026],P.key);
+      g.ellipsoid([-.32,top+.043,.38],[.035,.020,.058],P.metal);
+      this.plant(g,[.51,top,.68],.33);
+    }
+    plant(g,base,scale){const pos=(x,y,z)=>V.add(base,[x*scale,y*scale,z*scale]);g.cylinder(pos(0,0,0),pos(0,.24,0),.105*scale,P.cream,'decor',.14*scale);for(let i=0;i<5;i++){const a=i*2.1,end=pos(Math.cos(a)*.21,.52+i*.045,Math.sin(a)*.19);g.cylinder(pos(0,.20,0),end,.008*scale,P.shirt,'decor');const direction=V.norm(V.sub(end,pos(0,.20,0))),side=V.norm(V.cross(direction,[1,0,0]));g.ellipsoid(end,[.065*scale,.17*scale,.025*scale],i%2?'#7c9d77':'#6d947a','decor',[side,direction,V.norm(V.cross(side,direction))],10,6);}}
+    sleepScene(g,h,p,s){
+      const top=.54,length=Math.max(2.12,h+.22),width=1.18,sink=(5-s.firmness)*.009,side=p.id!=='supine'&&p.id!=='prone',right=p.side==='右';
+      g.box([0,.29,0],[width+.08,.13,length+.06],P.woodLight);for(const x of [-.48,.48])for(const z of [-length*.39,length*.39])g.box([x,.12,z],[.08,.24,.08],P.wood);
+      g.box([0,.445,0],[width,.19,length],P.bed,'environment',AXES,true);g.box([0,.68,-length/2-.04],[width+.08,.65,.07],P.woodLight);
+      const surface=(x,z)=>top-sink*(Math.exp(-((x/.34)**2+((z+.43)/.27)**2))+.78*Math.exp(-((x/.34)**2+(z/.27)**2)));
+      const nx=18,nz=28;for(let ix=0;ix<nx;ix++)for(let iz=0;iz<nz;iz++){const x=-width/2+ix*width/nx,z=-length/2+iz*length/nz,dx=width/nx,dz=length/nz;g.quad([x,surface(x,z),z],[x+dx,surface(x+dx,z),z],[x+dx,surface(x+dx,z+dz),z+dz],[x,surface(x,z+dz),z+dz],P.cream,'environment',[0,1,0]);}
+      // 软硬的凹陷仅为教学放大示意，不是材料或人体的有限元计算。
+      const left=side?(right?[0,1,0]:[0,-1,0]):p.id==='prone'?[-1,0,0]:[1,0,0],up=[0,0,-1],front=side?(right?[-1,0,0]:[1,0,0]):p.id==='prone'?[0,-1,0]:[0,1,0];
+      const bodyBase=top+(side?.14*h:.073*h)-sink*.62,origin=[0,bodyBase,.045],T=(x,y,z)=>basisPoint(origin,[left,up,front],[x,y,z]),points={hip:T(0,0,0)};
+      if(side)points.hip[1]-=.03*h;
+      points.leftShoulder=T(.105*h,.275*h,0);points.rightShoulder=T(-.105*h,.275*h,0);
+      const pillowHeight=s.pillow/100,headZ=.045-h*.402;g.ellipsoid([0,top+pillowHeight/2,headZ],[.32,pillowHeight/2,.21],P.cream,'environment',AXES,20,10);
+      points.head=T(0,.402*h,0);points.head[1]=top+pillowHeight+(side?.055*h:.061*h);
+      const curled=p.id==='fetal',flex=curled?.23*h:side?.14*h:.015*h,legDrop=curled?.15*h:.245*h;
+      [-1,1].forEach(sign=>{const name=sign===1?'left':'right';points[name+'Knee']=T(sign*.07*h,-legDrop,flex);points[name+'Ankle']=T(sign*.07*h,-(curled?.37:side?.47:.50)*h,curled?.28*h:side?.17*h:0);points[name+'Foot']=V.add(points[name+'Ankle'],V.mul(front,.04*h));});
+      if(side){const lower=right?'right':'left',upper=right?'left':'right';points[lower+'Knee'][1]=top+.041*h;points[lower+'Ankle'][1]=top+.029*h;points[lower+'Foot'][1]=top+.037*h;points[upper+'Knee'][1]=points[lower+'Knee'][1]+.10*h;points[upper+'Ankle'][1]=points[lower+'Ankle'][1]+.081*h;points[upper+'Foot'][1]=points[lower+'Foot'][1]+.081*h;}
+      if(side&&s.kneePillow){const upper=right?'left':'right';points[upper+'Knee'][1]+=.02;points[upper+'Ankle'][1]+=.012;g.ellipsoid(V.mix(points.leftKnee,points.rightKnee,.5),[.15,.073,.19],P.cream,'environment');}
+      if(p.id==='supine'&&s.kneePillow){points.leftKnee[1]+=.058;points.rightKnee[1]+=.058;g.ellipsoid([0,top+.042,points.leftKnee[2]],[.30,.068,.19],P.cream,'environment');}
+      if(p.id==='prone'&&s.kneePillow)g.ellipsoid([0,top+.019,.02],[.27,.032,.22],P.cream,'environment');
+      ['left','right'].forEach(name=>{const sign=name==='left'?1:-1;if(side){const lower=(right&&name==='right')||(!right&&name==='left');points[name+'Elbow']=T(sign*.105*h,.15*h,.16*h);points[name+'Hand']=T(sign*.105*h,.30*h,.23*h);
+          if(!lower){points[name+'Elbow']=T(sign*.13*h,.12*h,.10*h);points[name+'Hand']=T(sign*.10*h,-.07*h,.13*h);}
+          if(p.id==='auspicious'&&name==='left'){points.leftElbow=T(.14*h,.07*h,.03*h);points.leftHand=T(.11*h,-.16*h,.07*h);}
+        }else{points[name+'Elbow']=T(sign*.145*h,.10*h,0);points[name+'Hand']=T(sign*.145*h,-.07*h,0);}});
+      this.human(g,h,points,[left,up,front],{bare:true,headBasis:p.id==='prone'?[[0,1,0],[0,0,-1],[-1,0,0]]:null});
+      this.anchors.push({pos:[-.43,top+.02,-.28],text:`床垫 ${s.firmness} / 5 · 相对硬度`,type:'mattress'});this.anchors.push({pos:[.28,top+pillowHeight+.06,headZ],text:`受压后枕高 ${s.pillow} cm`,type:'pillow'});
+      if(this.focus==='leftArm'||this.focus==='rightArm'||this.focus==='arms'){this.anchors.push({pos:points.leftHand,text:'左手 L',type:'leftHand'});this.anchors.push({pos:points.rightHand,text:'右手 R',type:'rightHand'});}
+      this.measure(g,[.73,.34,.63],[.73,top,.63],'床垫变形为示意','bed');
+    }
+    measure(g,a,b,text,type){if(this.measures){g.cylinder(a,b,.0025,P.line,'decor');g.cylinder(V.add(a,[-.036,0,0]),V.add(a,[.036,0,0]),.0025,P.line,'decor');g.cylinder(V.add(b,[-.036,0,0]),V.add(b,[.036,0,0]),.0025,P.line,'decor');}this.anchors.push({pos:V.mix(a,b,.65),text,type});}
+    makeLabels(){this.labelHost.replaceChildren();if(!this.measures)return;this.anchors.forEach(a=>{const el=document.createElement('span');el.className='scene-label '+a.type;el.textContent=a.text;this.labelHost.appendChild(el);a.element=el;});}
+    project(p){if(!this.matrix)return null;const q=applyMatrix(this.matrix,p);return {x:(q[0]/q[3]+1)*this.width/2,y:(1-q[1]/q[3])*this.height/2,depth:q[2]/q[3],visible:q[3]>0&&q[2]/q[3]<1};}
+    pick(clientX,clientY){const rect=this.canvas.getBoundingClientRect(),x=clientX-rect.left,y=clientY-rect.top;let best=null,dist=30;Object.entries(this.bodyPoints).forEach(([part,point])=>{const q=this.project(point);if(q&&q.visible){const d=Math.hypot(q.x-x,q.y-y);if(d<dist){best=part;dist=d;}}});if(best&&this.onPart)this.onPart(best);}
+    invalidate(){if(!this.frame)this.frame=requestAnimationFrame(t=>{this.frame=0;this.draw(t/1000);if(this.playing&&!document.hidden)this.invalidate();});}
+    draw(time=0){if(!this.vertices||this.lost)return;if(this.playing&&time-this.lastPoseBuild>.045)this.build(time);
+      const eye=[this.target[0]+Math.sin(this.azimuth)*Math.cos(this.elevation)*this.radius,this.target[1]+Math.sin(this.elevation)*this.radius,this.target[2]+Math.cos(this.azimuth)*Math.cos(this.elevation)*this.radius];this.matrix=matMul(perspective(40*Math.PI/180,this.width/this.height,.05,30),lookAt(eye,this.target));
+      if(this.gl){const gl=this.gl;gl.useProgram(this.program);gl.uniformMatrix4fv(this.uMatrix,false,this.matrix);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);gl.drawArrays(gl.TRIANGLES,0,this.vertexCount);}else this.drawFallback();
+      this.anchors.forEach(a=>{if(!a.element)return;const q=this.project(a.pos);a.element.style.display=q&&q.visible?'block':'none';if(q){const x=C.clamp(q.x,8,this.width-160),y=C.clamp(q.y,12,this.height-45);a.element.style.transform=`translate(${x}px,${y}px)`;}});this.renderCount++;
+    }
+    drawFallback(){
+      // 软件深度缓冲：不能只按三角形平均深度排序，否则床面/桌面会错误遮挡人体。
+      const ctx=this.ctx;if(!ctx)return;
+      const scale=Math.min(1.25,this.canvas.width/this.width),w=Math.round(this.width*scale),h=Math.round(this.height*scale),n=w*h;
+      if(!this.soft||this.soft.w!==w||this.soft.h!==h){const surface=document.createElement('canvas');surface.width=w;surface.height=h;const sctx=surface.getContext('2d');this.soft={w,h,surface,sctx,image:sctx.createImageData(w,h),depth:new Float32Array(n)};}
+      const {image,depth,surface,sctx}=this.soft,pixels=image.data;depth.fill(Infinity);
+      for(let i=0;i<pixels.length;i+=4){pixels[i]=238;pixels[i+1]=242;pixels[i+2]=235;pixels[i+3]=255;}
+      const v=this.vertices,m=this.matrix,key=V.norm([-.65,1,.7]),fill=V.norm([.9,.4,-.5]);
+      const projectVertex=i=>{const q=applyMatrix(m,[v[i],v[i+1],v[i+2]]),light=.61+.30*Math.max(0,v[i+3]*key[0]+v[i+4]*key[1]+v[i+5]*key[2])+.09*Math.max(0,v[i+3]*fill[0]+v[i+4]*fill[1]+v[i+5]*fill[2]);return {x:(q[0]/q[3]+1)*w/2,y:(1-q[1]/q[3])*h/2,z:q[2]/q[3],q:q[3],light};};
+      for(let i=0;i<v.length;i+=27){const a=projectVertex(i),b=projectVertex(i+9),c=projectVertex(i+18);if(a.q<=0||b.q<=0||c.q<=0)continue;
+        const den=(b.y-c.y)*(a.x-c.x)+(c.x-b.x)*(a.y-c.y);if(Math.abs(den)<.00001)continue;
+        const minX=Math.max(0,Math.floor(Math.min(a.x,b.x,c.x))),maxX=Math.min(w-1,Math.ceil(Math.max(a.x,b.x,c.x))),minY=Math.max(0,Math.floor(Math.min(a.y,b.y,c.y))),maxY=Math.min(h-1,Math.ceil(Math.max(a.y,b.y,c.y)));if(minX>maxX||minY>maxY)continue;
+        const dx0=(b.y-c.y)/den,dy0=(c.x-b.x)/den,dx1=(c.y-a.y)/den,dy1=(a.x-c.x)/den,base0=((b.y-c.y)*(minX+.5-c.x)+(c.x-b.x)*(minY+.5-c.y))/den,base1=((c.y-a.y)*(minX+.5-c.x)+(a.x-c.x)*(minY+.5-c.y))/den;
+        const cr=v[i+6]*255,cg=v[i+7]*255,cb=v[i+8]*255;
+        for(let y=minY;y<=maxY;y++){let p0=base0+(y-minY)*dy0,p1=base1+(y-minY)*dy1,idx=y*w+minX;
+          for(let x=minX;x<=maxX;x++,idx++,p0+=dx0,p1+=dx1){const p2=1-p0-p1;if(p0<-.00001||p1<-.00001||p2<-.00001)continue;const z=p0*a.z+p1*b.z+p2*c.z;if(z>=depth[idx]||z< -1||z>1)continue;depth[idx]=z;const light=p0*a.light+p1*b.light+p2*c.light,j=idx*4;pixels[j]=cr*light;pixels[j+1]=cg*light;pixels[j+2]=cb*light;}
+        }
+      }
+      sctx.putImageData(image,0,0);ctx.setTransform(1,0,0,1,0,0);ctx.drawImage(surface,0,0,this.canvas.width,this.canvas.height);
+    }
+    exportCanvas(){this.draw(performance.now()/1000);const out=document.createElement('canvas');out.width=this.canvas.width;out.height=this.canvas.height+112;const ctx=out.getContext('2d');ctx.fillStyle='#eef2eb';ctx.fillRect(0,0,out.width,out.height);ctx.drawImage(this.canvas,0,80);ctx.fillStyle='#244b40';ctx.font='bold 24px sans-serif';ctx.fillText('身有度 · '+this.posture.name,28,38);ctx.font='14px sans-serif';ctx.fillText(`成人教学示意 | 身高 ${this.profile.height} cm | 非医疗诊断、非压力仿真`,28,63);ctx.font='13px sans-serif';ctx.fillText(this.anchors.map(a=>a.text).join(' · '),28,out.height-15);return out;}
+    dispose(){this.observer.disconnect();cancelAnimationFrame(this.frame);if(this.gl){this.gl.deleteBuffer(this.buffer);this.gl.deleteProgram(this.program);}}
+  }
+  root.PostureScene=SceneView;
+})(window);
+
+</script>
+<script>
+/* 身有度 UI：无服务器、无网络请求、无账号。 */
+(function () {
+  'use strict';
+  const D=window.PostureData,C=window.PostureCore,$=id=>document.getElementById(id),esc=C.escapeHtml;
+  const STORAGE_KEY='shenyodu.posture-lab.v1',idSet=new Set(D.postures.map(p=>p.id));
+  const state={page:'lab',postureId:'office',profile:{...C.DEFAULT_PROFILE},configs:{},favorites:[],plans:[],category:'all',query:'',favoriteOnly:false,view:'cards',detail:'steps',step:0,focus:'none',measures:true,autoFit:true,compared:new Set()};
+  const fmt=n=>Number(n).toLocaleString('zh-CN',{maximumFractionDigits:1}),posture=()=>D.postures.find(p=>p.id===state.postureId),params=()=>state.configs[state.postureId];
+  let storageOK=true,saveTimer=0,toastTimer=0,compareViews=[];
+  function showStorageWarning(message){$('storageWarning').hidden=false;$('storageWarning').textContent=message;}
+  function load(){try{const text=localStorage.getItem(STORAGE_KEY);if(!text)return;const raw=JSON.parse(text);if(!raw||raw.version!==1)throw new Error('版本不同');state.profile=C.cleanProfile(raw.profile||{});if(idSet.has(raw.postureId))state.postureId=raw.postureId;state.view=raw.view==='list'?'list':'cards';state.autoFit=raw.autoFit!==false;
+      D.postures.forEach(p=>{if(raw.configs&&raw.configs[p.id])state.configs[p.id]=C.cleanParams(raw.configs[p.id],C.defaults(state.profile,p));});
+      const valid=C.parseBackup(JSON.stringify({app:'shenyodu-posture-lab',version:1,plans:raw.plans||[],favorites:raw.favorites||[]}),D.postures);state.plans=valid.plans;state.favorites=valid.favorites;
+    }catch(e){storageOK=false;showStorageWarning('本地记录无法完整读取，当前使用可用设置。原始存储没有被自动覆盖；请先导出当前方案。');}}
+  load();D.postures.forEach(p=>{if(!state.configs[p.id])state.configs[p.id]=C.defaults(state.profile,p);});
+  function persist(immediate=false){const write=()=>{try{localStorage.setItem(STORAGE_KEY,JSON.stringify({version:1,profile:state.profile,postureId:state.postureId,configs:state.configs,favorites:state.favorites,plans:state.plans,view:state.view,autoFit:state.autoFit}));storageOK=true;$('storageWarning').hidden=true;return true;}catch(e){storageOK=false;showStorageWarning('浏览器未能保存本地记录：当前仍可使用，但关闭后可能丢失。请到“我的方案”导出 JSON 备份。');return false;}};clearTimeout(saveTimer);if(immediate)return write();saveTimer=setTimeout(write,250);return storageOK;}
+  function toast(message){clearTimeout(toastTimer);$('toast').textContent=message;$('toast').hidden=false;toastTimer=setTimeout(()=>$('toast').hidden=true,4200);}
+  function icon(p){const style='fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"';let body='';
+    if(p.category==='lie'){body='<path d="M4 34h40M7 34v6m34-6v6M6 29h37"/><ellipse cx="12" cy="23" rx="4" ry="4"/>';body+=p.id==='supine'?'<path d="m16 26 14 0 10 1m-17-1 9-6 10 6"/>':p.id==='prone'?'<path d="m16 26 13-2 12 3m-22-2-4 5"/>':'<path d="m16 26 12-1 7-6 5 8m-12-2 5 6 7-2m-20-3-2-5-5 3"/>';}
+    else if(p.scene==='seiza'||p.scene==='cross'){body='<circle cx="24" cy="11" r="4"/><path d="m24 16-1 14m0-9-9 9m9-9 10 9M9 41h30"/>';body+=p.scene==='cross'?'<path d="m23 30-12 6 18 3 8-5-14-4"/>':'<path d="m23 30 7 6-12 3 15 0"/>';}
+    else if(p.category==='sit'){body='<circle cx="19" cy="10" r="4"/><path d="m19 16-2 14 15 0 1 11h7M10 18v17h20m-20 0v7m17-7v7"/>';body+=p.scene==='office'?'<path d="m19 21 8 4h8M36 15h8v9h-8zm4 10v4m-5 0h10"/>':'<path d="m19 21 8 8"/>';}
+    else{body='<circle cx="24" cy="9" r="4"/>';body+=p.category==='walk'?'<path d="m23 15 2 12-10 14m10-14 11 10m-11-20-8 8-7-3m15-4 9 8 7-2"/>':'<path d="m24 15 0 14m0-12-9 12m9-12 10 12m-10 0-7 13m7-13 8 13"/>';body+='<path d="M9 44h32" stroke-width="1" opacity=".4"/>';}
+    return `<svg viewBox="0 0 48 48" aria-hidden="true"><g ${style}>${body}</g></svg>`;
+  }
+  function selectPosture(id){if(!idSet.has(id))return;state.postureId=id;state.step=0;state.focus='none';state.detail='steps';renderLab();renderLibrary();persist();if(state.page!=='lab')setPage('lab');}
+  function renderLibrary(){const filtered=D.postures.filter(p=>(state.category==='all'||p.category===state.category)&&(!state.favoriteOnly||state.favorites.includes(p.id))&&(`${p.name} ${p.aliases} ${p.brief}`).toLowerCase().includes(state.query.toLowerCase().trim()));
+    $('libraryCount').textContent=String(filtered.length);$('favoriteCount').textContent=String(state.favorites.length);$('postureList').classList.toggle('compact',state.view==='list');$('cardView').classList.toggle('active',state.view==='cards');$('listView').classList.toggle('active',state.view==='list');$('cardView').setAttribute('aria-pressed',String(state.view==='cards'));$('listView').setAttribute('aria-pressed',String(state.view==='list'));
+    $('categoryTabs').innerHTML=D.categories.map(cat=>`<button data-category="${cat.id}" class="${state.category===cat.id?'active':''}" aria-pressed="${state.category===cat.id}" title="${cat.name}">${cat.short}</button>`).join('');
+    $('favoriteFilter').classList.toggle('active',state.favoriteOnly);$('favoriteFilter').setAttribute('aria-pressed',String(state.favoriteOnly));
+    $('postureList').innerHTML=filtered.length?filtered.map(p=>`<button class="posture-card ${p.id===state.postureId?'active':''}" data-posture="${p.id}" aria-pressed="${p.id===state.postureId}"><span class="pose-thumb">${icon(p)}</span><span class="card-text"><b>${esc(p.name)}</b><small>${esc(p.badge)} · ${p.steps.length} 步指导</small></span>${state.favorites.includes(p.id)?'<span class="tiny-star">★</span>':''}</button>`).join(''):'<div class="empty-state"><span class="empty-symbol">⌕</span><p>没有找到匹配的条目。<br>试试其他关键词或切回“全”。</p><button class="small-btn" data-clear-search>清除筛选</button></div>';
+  }
+  const scene=new window.PostureScene($('sceneCanvas'),$('sceneLabels'),part=>{const p=posture(),index=p.steps.findIndex(s=>s.focus===part||(part.endsWith('Arm')&&s.focus==='arms'));state.step=index>=0?index:0;state.focus=part;state.detail='steps';renderDetails();updateScene();},notice=>{$('sceneNotice').textContent=notice;$('sceneNotice').hidden=false;});
+  function updateScene(){scene.update(posture(),state.profile,params(),state.focus,state.measures);}
+  function syncProfile(){['heightNumber','heightRange'].forEach(id=>$(id).value=state.profile.height);$('calibrated').checked=state.profile.calibrated;$('autoFitToggle').checked=state.autoFit;['popliteal','eyeSeat','elbowSeat'].forEach(k=>{$(k).value=state.profile[k];$(k).disabled=!state.profile.calibrated;});}
+  function renderLab(){const p=posture();$('poseEnglish').textContent=p.en;$('poseName').textContent=p.name;$('poseBrief').textContent=p.brief;$('sceneBadge').textContent=p.badge;$('walkPlay').hidden=p.id!=='walk';$('walkPlay').textContent='▶ 演示步态';$('favoriteBtn').textContent=state.favorites.includes(p.id)?'★':'☆';$('favoriteBtn').classList.toggle('active',state.favorites.includes(p.id));$('favoriteBtn').setAttribute('aria-pressed',String(state.favorites.includes(p.id)));$('measureToggle').checked=state.measures;syncProfile();renderParameters();renderMetrics();renderDiagnostics();renderDetails();updateScene();updatePlanCount();document.querySelectorAll('[data-camera]').forEach(b=>b.classList.toggle('active',b.dataset.camera==='home'));}
+  const specs={seat:{label:'椅面高度',unit:'cm',step:.1,note:'指坐下受压后，椅面到地面的高度。'},desk:{label:'键盘输入面高度',unit:'cm',step:.1,note:'不是桌架标称高度；以实际操作面为准。'},screen:{label:'屏幕上缘距地',unit:'cm',step:.1,note:'通常在眼平或略低；镜片需求需单独考虑。'},distance:{label:'眼到屏幕距离',unit:'cm',step:1,note:'先调大字号，再选能看清的舒适距离。'},backAngle:{label:'靠背与座面夹角',unit:'°',step:1,note:'可试调的示意参数，不是强制关节角度。'},footrest:{label:'脚踏高度',unit:'cm',step:.5,note:'0 表示不用脚踏；实际物品需稳固。'},pillow:{label:'受压后枕高',unit:'cm',step:.5,note:'演示承托关系；不能仅由身高求最优值。'},pad:{label:'坐垫高度',unit:'cm',step:.5,note:'不能用加高掩盖膝踝疼痛，必要时改坐椅子。'},cadence:{label:'模型演示步频',unit:'步/分',step:1,note:'仅控制播放速度，不是运动训练目标。'}};
+  function paramKeys(p){if(p.scene==='office')return ['seat','desk','screen','distance','backAngle','footrest'];if(p.scene==='standdesk')return ['desk','screen','distance'];if(['bench','chair'].includes(p.scene))return ['seat','footrest'];if(['seiza','cross'].includes(p.scene))return ['pad'];if(p.category==='lie')return ['pillow'];if(p.id==='walk')return ['cadence'];return [];}
+  function renderParameters(){const p=posture(),s=params(),keys=paramKeys(p);$('parameterTitle').textContent=p.category==='lie'?'睡眠支撑':p.id==='walk'?'步态演示':p.scene==='seiza'||p.scene==='cross'?'坐垫参数':p.scene==='bench'?'长椅与支撑':p.category==='stand'&&p.id!=='standdesk'?'觉察重点':'工位与座椅';$('autoFitBtn').textContent=p.category==='lie'||p.scene==='seiza'||p.scene==='cross'||p.id==='walk'?'恢复示例 ↺':'按身体适配 ↺';
+    let html='';if(p.category==='lie')html=`<div class="parameter"><label><span>床垫相对硬度</span><span class="parameter-value" id="firmnessValue">${s.firmness} / 5</span></label><div class="firmness-scale">${[1,2,3,4,5].map(v=>`<button data-firmness="${v}" aria-label="床垫相对硬度 ${v} 档" aria-pressed="${s.firmness===v}" class="${s.firmness===v?'active':''}">${v}</button>`).join('')}</div><div class="firmness-labels"><span>软 · 更明显的示意下陷</span><span>硬</span></div></div>`;
+    html+=keys.map(key=>{const spec=specs[key],limit=C.limits[key];return `<div class="parameter"><label for="param-${key}"><span>${spec.label}</span><span class="parameter-value"><input id="param-${key}" type="number" data-param="${key}" min="${limit[0]}" max="${limit[1]}" step="${spec.step}" value="${s[key]}" aria-label="${spec.label}"><span>${spec.unit}</span></span></label><input type="range" data-range="${key}" min="${limit[0]}" max="${limit[1]}" step="${spec.step}" value="${s[key]}" aria-label="拖动调整${spec.label}"><p>${spec.note}</p></div>`;}).join('');
+    if(p.category==='lie'){const pillowName=p.id==='supine'?'膝下支撑枕':p.id==='prone'?'下腹薄支撑（可选）':'膝间支撑枕';html+=`<label class="parameter-switch"><span>${pillowName}</span><input type="checkbox" id="kneePillow" ${s.kneePillow?'checked':''}></label>`;}
+    if(!keys.length)html='<div class="evidence-note">不追求固定角度。<br>膝盖不锁死，肩膀与下巴放松；需要时换脚、走动或坐下。</div>';
+    $('parameterControls').innerHTML=html;
+    $('parameterNote').textContent=p.category==='lie'?'软硬为自定义相对档位，不对应商品等级。模型凹陷仅解释关系，不计算真实压强、材料支撑或个人最优枕高。':p.scene==='bench'?'公园长椅通常无法调节。这里用于比较尺寸；现实中可以换更合身的长椅，而不是改造公共设施。':state.profile.calibrated?'坐姿使用你的实测值；站姿仍按身高比例示意。家具最终需要现场试调。':'身高比例只给出试调起点。没有“一个身高对应唯一椅高”的公式；有条件时使用实际尺寸校准。';
+  }
+  function renderMetrics(){const p=posture(),s=params(),r=C.reference(state.profile,p,s);let entries=[];
+    if(['office','standdesk'].includes(p.scene)){entries=p.scene==='office'?[['椅高试调起点',`${fmt(r.seatLow)}–${fmt(r.seatHigh)}`,'cm',r.d.measured?'基于腘窝实测，仍需确认':'基于比例，不是唯一答案'],['当前坐姿眼高',fmt(r.eye),'cm','相对地面 · 模型示意'],['屏幕中心俯视角',fmt(r.viewAngle),'°','正值向下，负值向上 · 示意']]:[['自然肘高起点',fmt(r.elbow),'cm','由身高简化估算'],['当前站姿眼高',fmt(r.eye),'cm','相对地面 · 模型示意'],['屏幕中心俯视角',fmt(r.viewAngle),'°','正值向下，负值向上 · 示意']];}
+    else if(p.category==='lie'){const names=['柔软','偏软','适中','偏硬','较硬'];entries=[['床垫相对硬度',names[s.firmness-1],`${s.firmness} / 5`,'项目档位 ≠ 商品标准'],['受压后枕高',fmt(s.pillow),'cm','试躺确认，非购买处方'],['额外支撑',s.kneePillow?'已开启':'未使用','',p.id==='supine'?'膝下支撑示意':p.id==='prone'?'下腹薄支撑示意':'膝间支撑示意']];}
+    else if(['bench','chair'].includes(p.scene))entries=[['椅高试调起点',`${fmt(r.seatLow)}–${fmt(r.seatHigh)}`,'cm',r.d.measured?'基于实测':'简化比例，需现场确认'],['当前椅面高度',fmt(s.seat),'cm','坐下受压后的高度'],['当前坐姿眼高',fmt(r.eye),'cm','相对地面 · 示意']];
+    else if(['seiza','cross'].includes(p.scene))entries=[['当前身体模型',fmt(state.profile.height),'cm','成人参数化示意'],['坐垫高度',fmt(s.pad),'cm','不能替代膝踝舒适自查'],['最重要的反馈','不硬撑','','麻木、疼痛时退出']];
+    else entries=[['当前身体模型',fmt(state.profile.height),'cm','成人参数化示意'],['站姿眼高起点',fmt(r.d.standingEye),'cm','按身高估算，非实测'],p.id==='walk'?['模型演示步频',fmt(s.cadence),'步/分','不是训练目标']:['重要原则','可变化','','不把身体站成木板']];
+    $('metricRow').innerHTML=entries.map(([title,value,unit,note])=>`<div class="metric"><span>${title}</span><strong>${value}<small>${unit}</small></strong><em>${note}</em></div>`).join('');
+  }
+  function renderDiagnostics(){$('diagnostics').innerHTML=C.diagnostics(state.profile,posture(),params()).map(d=>`<div class="diagnostic ${d.level}"><span class="status-symbol">${d.level==='warn'?'!':d.level==='ok'?'✓':'i'}</span><span>${esc(d.text)}</span></div>`).join('');}
+  const focusNames={head:'头颈',torso:'躯干',arms:'双臂',leftArm:'左臂',rightArm:'右臂',legs:'双腿',environment:'支撑物',all:'整体',none:'点步骤可高亮'};
+  function renderDetails(){const p=posture();document.querySelectorAll('[data-detail]').forEach(b=>{const active=b.dataset.detail===state.detail;b.classList.toggle('active',active);b.setAttribute('aria-selected',String(active));});
+    if(state.detail==='steps'){
+      const step=p.steps[state.step];$('detailContent').innerHTML=`<div class="step-track">${p.steps.map((s,i)=>`<button data-step="${i}" class="step-item ${state.step===i?'active':i<state.step?'done':''}" aria-label="第 ${i+1} 步：${esc(s.title)}" ${state.step===i?'aria-current="step"':''}><span>${String(i+1).padStart(2,'0')}</span><small>${esc(s.title.replace(/先|让|准备好/g,'').slice(0,6))}</small></button>`).join('')}</div><div class="current-step"><span class="step-big-number">${String(state.step+1).padStart(2,'0')}</span><div><h3>${esc(step.title)}</h3><p>${esc(step.text)}</p></div></div><div class="step-bottom"><span class="step-hint">${state.focus==='none'?'点步骤 → 高亮相应部位':'当前关注：'+focusNames[state.focus]}<br>模型为完成姿势，不是起卧转移动画。</span><div class="step-buttons"><button class="small-btn" id="prevStep" ${state.step===0?'disabled':''}>← 上一步</button><button class="small-btn strong" id="nextStep">${state.step===p.steps.length-1?'重新查看 ↺':'下一步 →'}</button></div></div>`;
+    }else if(state.detail==='tradeoffs'){
+      $('detailContent').innerHTML=`<div class="tradeoff-grid"><div class="tradeoff-column"><h3>✓ 可以帮助你理解</h3><ul>${p.benefits.map(t=>`<li>${esc(t)}</li>`).join('')}</ul></div><div class="tradeoff-column warn"><h3>! 局限与注意</h3><ul>${p.cautions.map(t=>`<li>${esc(t)}</li>`).join('')}</ul></div></div><div class="self-check"><h3>此刻的身体自查 <span class="check-saved">· 仅作当下观察</span></h3>${p.checkpoints.map((t,i)=>`<label><input type="checkbox" data-check="${i}"> ${esc(t)}</label>`).join('')}</div><div class="evidence-note">${esc(p.principle)}</div>`;
+    }else{
+      $('detailContent').innerHTML=p.sources.map((id,i)=>{const s=D.sources[id];return `<div class="source-inline"><span class="source-num">${String(i+1).padStart(2,'0')}</span><div><a href="${s.url}" target="_blank" rel="noopener noreferrer">${esc(s.title)} ↗</a><p>${esc(s.note)}</p></div></div>`;}).join('')+`<div class="evidence-note">内容性质：${esc(p.evidence)}。步骤为本项目编排，非原文处方。外部原文需联网；核对日期 ${D.reviewed}。</div>`;
+    }
+  }
+  function changeStep(index){state.step=C.clamp(index,0,posture().steps.length-1);state.focus=posture().steps[state.step].focus;renderDetails();updateScene();}
+  function changeParameter(key,value){if(!C.limits[key])return;const fallback=params()[key];params()[key]=C.bounded(value,key,fallback);document.querySelectorAll(`[data-param="${key}"],[data-range="${key}"]`).forEach(el=>el.value=params()[key]);renderMetrics();renderDiagnostics();updateScene();persist();}
+  function profileChanged(){state.profile=C.cleanProfile(state.profile);if(state.autoFit){D.postures.filter(p=>['office','bench','chair','standdesk'].includes(p.scene)).forEach(p=>{const start=C.defaults(state.profile,p);for(const key of ['seat','desk','screen'])state.configs[p.id][key]=start[key];});}syncProfile();renderParameters();renderMetrics();renderDiagnostics();updateScene();persist();}
+  function toggleFavorite(id){state.favorites=state.favorites.includes(id)?state.favorites.filter(v=>v!==id):[...state.favorites,id];renderLibrary();$('favoriteBtn').textContent=state.favorites.includes(state.postureId)?'★':'☆';$('favoriteBtn').classList.toggle('active',state.favorites.includes(state.postureId));$('favoriteBtn').setAttribute('aria-pressed',String(state.favorites.includes(state.postureId)));persist();}
+  function setPage(page){if(!['lab','plans','guide'].includes(page))return;state.page=page;['lab','plans','guide'].forEach(id=>$(id+'Page').hidden=id!==page);document.querySelectorAll('.main-nav [data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===page));if(page==='plans')renderPlans();if(page==='lab')requestAnimationFrame(()=>scene.resize());else{scene.setPlaying(false);$('walkPlay').textContent='▶ 演示步态';}stopBreathing();try{history.replaceState(null,'','#'+page);}catch(e){}window.scrollTo({top:0,behavior:'instant'});}
+  function updatePlanCount(){$('planCount').textContent=String(state.plans.length);$('savedCount').textContent=String(state.plans.length);}
+  function planSummary(plan){const p=D.postures.find(x=>x.id===plan.postureId),s=plan.params;return p.category==='lie'?[`${plan.profile.height} cm`,`硬度 ${s.firmness}/5`,`枕高 ${fmt(s.pillow)} cm`]:['office','bench','chair'].includes(p.scene)?[`${plan.profile.height} cm`,`椅高 ${fmt(s.seat)} cm`,p.badge]:[`${plan.profile.height} cm`,p.badge];}
+  function renderPlans(){updatePlanCount();state.compared=new Set([...state.compared].filter(id=>state.plans.some(p=>p.id===id)));$('compareBtn').disabled=state.compared.size!==2;$('compareBtn').textContent=state.compared.size===2?'对照这 2 个方案 ↗':`选择 2 个方案进行对照${state.compared.size?'（已选 1 个）':''}`;
+    $('plansList').innerHTML=state.plans.length?state.plans.map(plan=>{const p=D.postures.find(x=>x.id===plan.postureId);return `<article class="plan-card ${state.compared.has(plan.id)?'selected':''}"><label class="plan-select"><input type="checkbox" data-compare-id="${plan.id}" ${state.compared.has(plan.id)?'checked':''}> 加入对照</label><div class="plan-top"><span class="pose-thumb">${icon(p)}</span><div><h3>${esc(plan.name)}</h3><p>${esc(p.name)}</p></div></div><div class="plan-meta">${planSummary(plan).map(t=>`<span>${esc(t)}</span>`).join('')}</div><p class="plan-note">${esc(plan.note||'还没有记录感受。应用方案后，可以另存并补充观察。')}</p><p class="plan-date">${new Date(plan.created).toLocaleString('zh-CN',{hour12:false})}</p><div class="plan-actions"><button class="small-btn strong" data-apply-plan="${plan.id}">应用方案 ↗</button><button class="delete-plan" data-delete-plan="${plan.id}">删除</button></div></article>`;}).join(''):'<div class="empty-state"><span class="empty-symbol">▤</span><h3>给自己留一份合身的记录。</h3><p>先在实验室调整参数，再点“保存当前方案”。</p><button class="primary-btn" data-page="lab">去调整第一个方案 →</button></div>';
+    $('savedFavorites').innerHTML=state.favorites.length?state.favorites.map(id=>{const p=D.postures.find(p=>p.id===id);return `<button class="favorite-chip" data-posture="${id}">★ ${esc(p.name)}</button>`;}).join(''):'<p>在姿势名称右侧点击 ☆，喜欢的条目会收在这里。</p>';
+  }
+  function applyPlan(id){const plan=state.plans.find(p=>p.id===id);if(!plan)return;state.profile=C.cleanProfile(plan.profile);state.postureId=plan.postureId;state.configs[plan.postureId]=C.cleanParams(plan.params,C.defaults(state.profile,posture()));state.step=0;state.focus='none';state.detail='steps';syncProfile();renderLibrary();renderLab();persist();setPage('lab');toast('已应用方案，身材与场景参数已恢复。');}
+  function openCompare(){if(state.compared.size!==2)return;const pair=[...state.compared].map(id=>state.plans.find(p=>p.id===id));
+    const rows=plan=>{const p=D.postures.find(x=>x.id===plan.postureId),fields=[['身高',`${fmt(plan.profile.height)} cm`],['坐姿参数来源',plan.profile.calibrated?'使用个人实测':'身高简化比例']];paramKeys(p).forEach(k=>fields.push([specs[k].label,`${fmt(plan.params[k])} ${specs[k].unit}`]));if(p.category==='lie')fields.push(['床垫相对硬度',`${plan.params.firmness} / 5`],['额外支撑',plan.params.kneePillow?'已开启':'未使用']);return fields;};
+    $('compareContent').innerHTML=`<div class="comparison-grid">${pair.map((plan,i)=>{const p=D.postures.find(x=>x.id===plan.postureId),other=Object.fromEntries(rows(pair[1-i]));return `<article class="comparison-card"><span class="eyebrow">${i===0?'A':'B'} / PERSONAL SETUP</span><h3>${esc(plan.name)}</h3><p>${esc(p.name)}</p><div class="mini-view"><canvas id="compareCanvas${i}" tabindex="0" aria-label="方案 ${i===0?'A':'B'} 的三维模型"></canvas><div id="compareLabels${i}" class="scene-labels"></div></div><table class="comparison-table"><tbody>${rows(plan).map(([key,val])=>`<tr class="${other[key]!==val?'different':''}"><td>${esc(key)}</td><td>${esc(val)}</td></tr>`).join('')}</tbody></table><p class="comparison-note">${esc(plan.note||'暂无个人感受记录。')}</p></article>`;}).join('')}</div>`;
+    $('compareDialog').showModal();requestAnimationFrame(()=>{if(!$('compareDialog').open)return;compareViews=pair.map((plan,i)=>{const v=new window.PostureScene($('compareCanvas'+i),$('compareLabels'+i),null,null),p=D.postures.find(x=>x.id===plan.postureId);v.update(p,plan.profile,plan.params,'none',false);v.radius*=1.12;v.invalidate();return v;});});
+  }
+  $('compareDialog').addEventListener('close',()=>{compareViews.forEach(v=>v.dispose());compareViews=[];$('compareContent').replaceChildren();});
+  function download(blob,name){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),15000);}
+  function filenameDate(){const d=new Date();return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');}
+  function makePrint(){const p=posture(),s=params(),r=C.reference(state.profile,p,s),data=[['身高',fmt(state.profile.height)+' cm'],['坐姿尺寸来源',state.profile.calibrated?'使用个人实测值':'简化比例估算，非精确测量'],...paramKeys(p).map(k=>[specs[k].label,fmt(s[k])+' '+specs[k].unit])];if(p.category==='lie')data.push(['床垫硬度',s.firmness+' / 5，仅为项目相对档位'],['额外支撑',s.kneePillow?'已开启':'未使用']);
+    $('printSheet').innerHTML=`<h1>身有度 · ${esc(p.name)}</h1><p class="print-sub">成人姿势教育卡 · ${filenameDate()} · 教学示意，非医疗处方</p><p>${esc(p.principle)}</p><table>${data.map(([a,b])=>`<tr><td>${esc(a)}</td><td>${esc(b)}</td></tr>`).join('')}</table><h2>一步步定位与自查</h2><ol>${p.steps.map(s=>`<li><b>${esc(s.title)}</b><p>${esc(s.text)}</p></li>`).join('')}</ol><h2>优点与局限</h2><p>${p.benefits.map(esc).join('；')}</p><p>${p.cautions.map(esc).join('；')}</p><div class="print-warning"><b>边界与安全：</b>身高只提供试调起点；枕高与床垫软硬不能据此诊断或选出最优值。自然呼吸，不追求统一频率。疼痛、麻木、头晕或呼吸不适时停止；明显或反复症状请寻求专业评估。模型并非起卧转移动作指导。</div><h2>资料依据</h2><div class="print-sources">${p.sources.map(id=>{const src=D.sources[id];return `<p>${esc(src.title)}：<a href="${src.url}">${src.url}</a></p>`;}).join('')}<p>资料核对 ${D.reviewed}；步骤为项目编排。文化资料不作为疗效证据。</p></div>`;
+  }
+  document.addEventListener('click',e=>{
+    const button=e.target.closest('button');if(!button)return;
+    if(button.dataset.page)setPage(button.dataset.page);
+    if(button.dataset.posture)selectPosture(button.dataset.posture);
+    if(button.dataset.category){state.category=button.dataset.category;renderLibrary();}
+    if(button.hasAttribute('data-clear-search')){state.category='all';state.query='';state.favoriteOnly=false;$('searchInput').value='';renderLibrary();}
+    if(button.dataset.camera){scene.camera(button.dataset.camera);document.querySelectorAll('[data-camera]').forEach(b=>b.classList.toggle('active',b===button));}
+    if(button.dataset.detail){state.detail=button.dataset.detail;renderDetails();}
+    if(button.dataset.step!==undefined)changeStep(Number(button.dataset.step));
+    if(button.dataset.firmness){params().firmness=Number(button.dataset.firmness);renderParameters();renderMetrics();renderDiagnostics();updateScene();persist();}
+    if(button.dataset.close)$(button.dataset.close).close();
+    if(button.dataset.applyPlan)applyPlan(button.dataset.applyPlan);
+    if(button.dataset.deletePlan){const plan=state.plans.find(p=>p.id===button.dataset.deletePlan);if(plan&&window.confirm(`删除“${plan.name}”？此操作不会删除其他方案。`)){state.plans=state.plans.filter(p=>p.id!==plan.id);state.compared.delete(plan.id);persist();renderPlans();toast('该方案已删除。');}}
+    if(button.id==='prevStep')changeStep(state.step-1);
+    if(button.id==='nextStep')changeStep((state.step+1)%posture().steps.length);
+  });
+  $('searchInput').addEventListener('input',e=>{state.query=e.target.value;renderLibrary();});
+  $('favoriteFilter').addEventListener('click',()=>{state.favoriteOnly=!state.favoriteOnly;renderLibrary();});
+  $('favoriteBtn').addEventListener('click',()=>toggleFavorite(state.postureId));
+  $('cardView').addEventListener('click',()=>{state.view='cards';renderLibrary();persist();});$('listView').addEventListener('click',()=>{state.view='list';renderLibrary();persist();});
+  $('heightRange').addEventListener('input',e=>{state.profile.height=C.bounded(e.target.value,'height',170);profileChanged();});
+  $('heightNumber').addEventListener('change',e=>{state.profile.height=e.target.value===''?state.profile.height:C.bounded(e.target.value,'height',state.profile.height);profileChanged();});
+  $('calibrated').addEventListener('change',e=>{state.profile.calibrated=e.target.checked;profileChanged();});
+  ['popliteal','eyeSeat','elbowSeat'].forEach(k=>$(k).addEventListener('change',e=>{state.profile[k]=e.target.value===''?state.profile[k]:C.bounded(e.target.value,k,state.profile[k]);profileChanged();}));
+  $('autoFitToggle').addEventListener('change',e=>{state.autoFit=e.target.checked;persist();toast(state.autoFit?'已开启联动；下次改变身高或实测值时适配工位。':'已关闭联动；改变身高时会保留现有家具尺寸。');});
+  $('parameterControls').addEventListener('input',e=>{if(e.target.dataset.range)changeParameter(e.target.dataset.range,e.target.value);});
+  $('parameterControls').addEventListener('change',e=>{if(e.target.dataset.param)changeParameter(e.target.dataset.param,e.target.value===''?params()[e.target.dataset.param]:e.target.value);if(e.target.id==='kneePillow'){params().kneePillow=e.target.checked;renderMetrics();renderDiagnostics();updateScene();persist();}});
+  $('autoFitBtn').addEventListener('click',()=>{state.configs[state.postureId]=C.defaults(state.profile,posture());renderParameters();renderMetrics();renderDiagnostics();updateScene();persist();toast(posture().category==='lie'?'已恢复教学示例参数，不代表个人最优方案。':'已应用试调起点，请用真实支撑和舒适感确认。');});
+  $('measureToggle').addEventListener('change',e=>{state.measures=e.target.checked;updateScene();});
+  $('walkPlay').addEventListener('click',()=>{scene.setPlaying(!scene.playing);$('walkPlay').textContent=scene.playing?'Ⅱ 暂停演示':'▶ 演示步态';});
+  $('captureBtn').addEventListener('click',()=>{try{scene.exportCanvas().toBlob(blob=>{if(!blob){toast('未能生成视图，请尝试刷新后重试。');return;}download(blob,'身有度-'+posture().name+'-'+filenameDate()+'.png');toast('已生成当前视角 PNG。');},'image/png');}catch(e){toast('当前浏览器无法导出画布，请使用浏览器截图。');}});
+  $('savePlanBtn').addEventListener('click',()=>{if(state.plans.length>=100){toast('本机最多保留 100 个方案，请先导出并整理已有方案。');return;}$('planName').value=`${posture().name} · ${fmt(state.profile.height)} cm`;$('planNote').value='';$('saveDialog').showModal();});
+  $('planName').addEventListener('input',()=>$('planName').setCustomValidity(''));
+  $('saveForm').addEventListener('submit',e=>{e.preventDefault();if(!$('planName').value.trim()){$('planName').setCustomValidity('请填写非空的方案名称。');$('planName').reportValidity();return;}state.plans.unshift(C.makeSnapshot($('planName').value,posture(),state.profile,params(),$('planNote').value));const saved=persist(true);updatePlanCount();$('saveDialog').close();toast(saved?'方案已保存，可在“我的方案”查看与对照。':'方案已保留在本次会话；本地存储不可用，请立即导出备份。');});
+  $('plansList').addEventListener('change',e=>{const id=e.target.dataset.compareId;if(!id)return;if(e.target.checked){if(state.compared.size>=2){e.target.checked=false;toast('一次对照 2 个方案，请先取消其中一个。');return;}state.compared.add(id);}else state.compared.delete(id);renderPlans();});
+  $('compareBtn').addEventListener('click',openCompare);
+  $('exportBtn').addEventListener('click',()=>{download(new Blob([C.buildBackup(state.plans,state.favorites)],{type:'application/json;charset=utf-8'}),'身有度-方案备份-'+filenameDate()+'.json');toast(`已导出 ${state.plans.length} 个方案和 ${state.favorites.length} 个收藏。`);});
+  $('importBtn').addEventListener('click',()=>$('importFile').click());
+  $('importFile').addEventListener('change',async e=>{const file=e.target.files[0];if(!file)return;try{if(file.size>2_000_000)throw new Error('文件超过 2 MB，请导入本项目生成的小型 JSON 备份。');const result=C.parseBackup(await file.text(),D.postures),signature=p=>JSON.stringify([p.name,p.postureId,p.profile,p.params,p.note,p.created]),known=new Set(state.plans.map(signature)),newPlans=[];for(const p of result.plans){const key=signature(p);if(!known.has(key)){newPlans.push(p);known.add(key);}}if(state.plans.length+newPlans.length>100)throw new Error('合并后超过 100 个方案，请先整理现有记录。');state.plans=[...newPlans,...state.plans];state.favorites=[...new Set([...state.favorites,...result.favorites])];persist(true);renderPlans();renderLibrary();toast(`已导入 ${newPlans.length} 个新方案；重复方案已跳过。${storageOK?'':'本地存储不可用，请保留备份文件。'}`);}catch(error){toast(error.message||'导入失败，原有方案未改变。');}finally{e.target.value='';}});
+  $('printBtn').addEventListener('click',()=>{makePrint();window.print();});window.addEventListener('beforeprint',makePrint);
+  $('helpBtn').addEventListener('click',()=>setPage('guide'));
+  $('allSources').innerHTML=Object.values(D.sources).map(s=>`<article class="source-card"><span class="source-type">${esc(s.type)}</span><a href="${s.url}" target="_blank" rel="noopener noreferrer">${esc(s.title)} ↗</a><p>${esc(s.note)}</p><small>${esc(s.organization)} · 原文需联网</small></article>`).join('');
+  // 呼吸提示仅在清醒时自愿启用，默认无强制节拍，不含屏息阶段。
+  let breathing=false,breathSince=0;
+  function stopBreathing(){breathing=false;$('breathStart').textContent='开始节拍';$('breathOrb').style.transform='scale(1)';$('breathPhase').textContent='自然';}
+  function updateBreathRate(){const a=C.clamp(Number($('inhaleSeconds').value)||3,2,6),b=C.clamp(Number($('exhaleSeconds').value)||4,2,6);$('inhaleSeconds').value=a;$('exhaleSeconds').value=b;$('breathRate').textContent=`动画约 ${fmt(60/(a+b))} 次/分 · 不是目标频率`;if(breathing)breathSince=Date.now();}
+  $('breathMode').addEventListener('change',e=>{stopBreathing();const paced=e.target.value==='paced';$('breathSettings').hidden=!paced;$('breathStart').hidden=!paced;$('breathDescription').textContent=paced?'只在舒服时轻柔跟随；感觉气不够、头晕或胸闷就停下。':'各姿势没有统一的“正确呼吸频率”。自然呼吸就好。';updateBreathRate();});
+  ['inhaleSeconds','exhaleSeconds'].forEach(id=>$(id).addEventListener('change',updateBreathRate));
+  $('breathStart').addEventListener('click',()=>{if(breathing){stopBreathing();return;}breathing=true;breathSince=Date.now();$('breathStart').textContent='停止节拍';});
+  let timerEnd=0;function stopTimer(){timerEnd=0;$('timerStart').textContent='开启提醒';$('timerMinutes').disabled=false;}
+  $('timerStart').addEventListener('click',()=>{if(timerEnd){stopTimer();$('timerStatus').textContent='提醒已停止；仍可以随时换姿势。';return;}const minutes=C.clamp(Math.round(Number($('timerMinutes').value)||25),1,120);$('timerMinutes').value=minutes;timerEnd=Date.now()+minutes*60000;$('timerMinutes').disabled=true;$('timerStart').textContent='停止提醒';$('timerStatus').textContent=`${minutes}:00 后提醒你换个姿势。`;});
+  setInterval(()=>{if(breathing&&!document.hidden){const a=Number($('inhaleSeconds').value),b=Number($('exhaleSeconds').value),t=((Date.now()-breathSince)/1000)%(a+b),isIn=t<a,progress=isIn?t/a:1-(t-a)/b;$('breathPhase').textContent=isIn?'轻吸':'缓呼';$('breathOrb').style.transform=`scale(${1+.17*Math.sin(progress*Math.PI/2)})`;}
+    if(timerEnd){const remaining=Math.max(0,timerEnd-Date.now()),sec=Math.ceil(remaining/1000);$('timerStatus').textContent=`${String(Math.floor(sec/60)).padStart(2,'0')}:${String(sec%60).padStart(2,'0')} 后，给身体换个位置。`;if(remaining===0){stopTimer();$('timerStatus').textContent='✓ 到时间了，起身走走或换个舒服的姿势。';toast('到时间了：看看脚、肩和下巴，给身体换个位置。');}}},120);
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden&&state.page==='lab')scene.invalidate();if(document.hidden)stopBreathing();});
+  window.addEventListener('pagehide',()=>{clearTimeout(saveTimer);if(storageOK)persist(true);});
+  renderLibrary();renderLab();const hash=location.hash.slice(1);if(['plans','guide'].includes(hash))setPage(hash);
+  // 只读调试入口，便于离线回归测试，不触发网络访问。
+  window.PostureLab={getState:()=>JSON.parse(JSON.stringify({...state,compared:[...state.compared]})),getSceneInfo:()=>({vertices:scene.vertexCount,webgl:!!scene.gl,renderCount:scene.renderCount,playing:scene.playing,finite:scene.vertices?scene.vertices.every(Number.isFinite):false}),version:'1.0.0'};
+})();
+
+</script>
+</body>
+</html>

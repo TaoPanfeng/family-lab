@@ -1,0 +1,28 @@
+{
+  "testedAt": "2026-10-16T03:26:06Z",
+  "method": "Python http.client on loopback; not browser URL navigation",
+  "total": 5,
+  "passed": 5,
+  "results": [
+    {
+      "name": "本机 HTTP 首页返回与交付 HTML 完全相同的字节",
+      "pass": true
+    },
+    {
+      "name": "不存在的资源返回 404",
+      "pass": true
+    },
+    {
+      "name": "编码后的目录穿越请求被拒绝",
+      "pass": true
+    },
+    {
+      "name": "非法 URL 转义返回 400",
+      "pass": true
+    },
+    {
+      "name": "源码可通过本机开发服务读取",
+      "pass": true
+    }
+  ]
+}

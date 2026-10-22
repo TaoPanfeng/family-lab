@@ -1,0 +1,9 @@
+{
+  "name": "guanshi-history-explorer",
+  "version": "1.0.0",
+  "private": true,
+  "description": "观史：完全离线的亲子历史互动项目",
+  "scripts": {"test": "node --test tests/*.test.cjs", "test:data": "node --test tests/core-data.test.cjs", "verify": "node tests/verify-package.cjs"},
+  "devDependencies": {"jsdom": "26.1.0"},
+  "engines": {"node": ">=18"}
+}

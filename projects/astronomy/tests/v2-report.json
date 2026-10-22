@@ -1,0 +1,208 @@
+{
+  "timestamp": "2026-10-16T03:26:06.083Z",
+  "node": "v22.16.0",
+  "passed": 50,
+  "total": 50,
+  "results": [
+    {
+      "name": "45° 太阳高度：1 米杆投 1 米影",
+      "pass": true
+    },
+    {
+      "name": "杆高加倍：影长严格加倍",
+      "pass": true
+    },
+    {
+      "name": "太阳在天顶：影长为零",
+      "pass": true
+    },
+    {
+      "name": "正午太阳在地平线下：不输出伪影长",
+      "pass": true
+    },
+    {
+      "name": "正午高度等于 0：无有限地面日影",
+      "pass": true
+    },
+    {
+      "name": "同一杆高：太阳升高影子变短",
+      "pass": true
+    },
+    {
+      "name": "南北纬正午影子方向正确",
+      "pass": true
+    },
+    {
+      "name": "非法纬度、赤纬、杆高拒绝",
+      "pass": true
+    },
+    {
+      "name": "同日钟点不同：正午几何不直接使用时角",
+      "pass": true
+    },
+    {
+      "name": "对照实验共享同一 UTC 时刻",
+      "pass": true
+    },
+    {
+      "name": "扶正后的赤纬基本为零",
+      "pass": true
+    },
+    {
+      "name": "上海夏季左右白昼不同",
+      "pass": true
+    },
+    {
+      "name": "相同倾角的对照：日照一致",
+      "pass": true
+    },
+    {
+      "name": "对照不会篡改真实星历",
+      "pass": true
+    },
+    {
+      "name": "对照后日期前进再返回，结果可复现",
+      "pass": true
+    },
+    {
+      "name": "假设与真实状态标记隔离",
+      "pass": true
+    },
+    {
+      "name": "对照倾角越界被拒绝",
+      "pass": true
+    },
+    {
+      "name": "月相时间轴包含前后 15 天",
+      "pass": true
+    },
+    {
+      "name": "日食时间轴使用事件全过程加边距",
+      "pass": true
+    },
+    {
+      "name": "四季时间轴按所选时区确定年界",
+      "pass": true
+    },
+    {
+      "name": "影子模式每步 7 天",
+      "pass": true
+    },
+    {
+      "name": "范围起点不越过星历边界",
+      "pass": true
+    },
+    {
+      "name": "范围终点不越过星历边界",
+      "pass": true
+    },
+    {
+      "name": "拖动范围两端与中点准确",
+      "pass": true
+    },
+    {
+      "name": "时间轴越界钳制，无效数字拒绝",
+      "pass": true
+    },
+    {
+      "name": "学习模式只接受三个入口",
+      "pass": true
+    },
+    {
+      "name": "学习参数的非法取值拒绝",
+      "pass": true
+    },
+    {
+      "name": "记录保留原场景与用户文字",
+      "pass": true
+    },
+    {
+      "name": "记录通过调用方的场景验证器",
+      "pass": true
+    },
+    {
+      "name": "用户输入长度有上限",
+      "pass": true
+    },
+    {
+      "name": "外部缩略图 URL 不被接受",
+      "pass": true
+    },
+    {
+      "name": "危险图片 data 类型不被接受",
+      "pass": true
+    },
+    {
+      "name": "备份版本与数组结构严格校验",
+      "pass": true
+    },
+    {
+      "name": "完整手记可 JSON 往返",
+      "pass": true
+    },
+    {
+      "name": "同一个备份不能有重复标识",
+      "pass": true
+    },
+    {
+      "name": "重复导入不覆盖已有文字",
+      "pass": true
+    },
+    {
+      "name": "合并仅增加新记录",
+      "pass": true
+    },
+    {
+      "name": "40 条容量限制：失败不修改原列表",
+      "pass": true
+    },
+    {
+      "name": "存储可用时成功保存并读取（适配器测试）",
+      "pass": true
+    },
+    {
+      "name": "再次创建适配器可读取同一后端数据",
+      "pass": true
+    },
+    {
+      "name": "浏览器禁止存储：降为内存且明确返回未持久化",
+      "pass": true
+    },
+    {
+      "name": "配额耗尽不谎称保存成功",
+      "pass": true
+    },
+    {
+      "name": "损坏的本地 JSON 可安全降级",
+      "pass": true
+    },
+    {
+      "name": "动态月食上下文可保存恢复",
+      "pass": true
+    },
+    {
+      "name": "同一民用日期只改钟点，正午赤纬与时刻相同",
+      "pass": true
+    },
+    {
+      "name": "正午求解落在太阳上中天附近",
+      "pass": true
+    },
+    {
+      "name": "正午不是固定的钟表 12 点",
+      "pass": true
+    },
+    {
+      "name": "正午求解的星历边界受保护",
+      "pass": true
+    },
+    {
+      "name": "非法正午经度及时区被拒绝",
+      "pass": true
+    },
+    {
+      "name": "V2 所有源码可单独语法检查",
+      "pass": true
+    }
+  ]
+}

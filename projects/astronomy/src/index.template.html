@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="离线交互式日地月三维科学实验室。时间旅行、月相、四季、日食与月食。">
+  <title>日月地 V2 · 从好奇到发现</title>
+  <style>/*__CSS__*/</style>
+</head>
+<body>
+<div id="boot"><div class="boot-orbit"><i></i><b></b></div><strong>日月地 · 时空实验室</strong><p>正在展开你的宇宙…</p></div>
+<div id="app" aria-busy="true">
+  <header class="header">
+    <div class="brand"><button id="menu-btn" class="icon-button mobile-menu" title="打开视角和图层设置" aria-label="打开视角和图层设置" data-icon="menu"></button>
+      <svg class="brand-mark" viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="8" fill="currentColor"/><ellipse cx="22" cy="22" rx="20" ry="9" fill="none" stroke="currentColor" stroke-width="1.3" transform="rotate(-35 22 22)"/><circle cx="38" cy="12" r="3" fill="#f4c278"/></svg>
+      <div><h1>日月地<span>·</span>时空实验室</h1><p>SUN · EARTH · MOON</p></div>
+    </div>
+    <div class="header-center"><i class="status-dot"></i><span>你的下一站，是宇宙</span><b>OFFLINE</b></div>
+    <div class="header-actions"><button id="kids-btn" class="text-button" aria-pressed="false"><span data-icon="sparkle"></span><span>小小探索员</span></button><button id="save-btn" class="icon-button" data-icon="bookmark" title="收藏、导入或导出场景" aria-label="收藏、导入或导出场景"></button><button id="help-btn" class="icon-button" data-icon="help" title="使用帮助与精度说明" aria-label="使用帮助与精度说明"></button></div>
+  </header>
+  <div id="mobile-shade" hidden></div>
+  <main class="workspace">
+    <aside class="sidebar" id="sidebar">
+      <div class="section-caption">观察视角 <span>01 / EXPLORE</span></div>
+      <nav class="view-nav" aria-label="观察视角">
+        <button data-view="overview"><span data-icon="orbit"></span><div><strong>宇宙总览</strong><small>一眼看见日地月</small></div><span class="view-key">1</span></button>
+        <button data-view="earthmoon" class="active" aria-pressed="true"><span data-icon="globe"></span><div><strong>地月之间</strong><small>靠近我们的蓝色家园</small></div><span class="view-key">2</span></button>
+        <button data-view="ground"><span data-icon="telescope"></span><div><strong>站在地球上</strong><small>从你的地点仰望天空</small></div><span class="view-key">3</span></button>
+      </nav>
+      <div class="sidebar-divider"></div>
+      <div class="section-caption">让原理显形 <span>LAYERS</span></div>
+      <div class="switches">
+        <label class="switch-row"><span><i data-icon="orbit"></i>运行轨道</span><input id="layer-orbits" type="checkbox" checked><i class="switch"></i></label>
+        <label class="switch-row"><span><i data-icon="axis"></i>地轴与光线</span><input id="layer-axis" type="checkbox" checked><i class="switch"></i></label>
+        <label class="switch-row"><span><i data-icon="eclipse"></i>真实几何食影</span><input id="layer-shadows" type="checkbox" checked><i class="switch"></i></label>
+        <label class="switch-row"><span><i data-icon="tag"></i>天体标签</span><input id="layer-labels" type="checkbox" checked><i class="switch"></i></label>
+        <label class="switch-row"><span><i data-icon="stars"></i>背景星点</span><input id="layer-stars" type="checkbox" checked><i class="switch"></i></label>
+        <label class="switch-row"><span><i data-icon="cone"></i>示意影锥</span><input id="layer-cones" type="checkbox"><i class="switch"></i></label>
+      </div>
+      <div class="sidebar-divider"></div>
+      <div class="section-caption">显示尺度 <span>SCALE</span></div>
+      <div class="scale-choice"><button id="scale-demo" class="active">教学放大</button><button id="scale-real">真实地月比</button></div>
+      <label class="slider-heading" for="body-scale"><span>天体显示大小</span><b id="scale-value">100%</b></label>
+      <input id="body-scale" class="range" type="range" min="0.65" max="1.65" step="0.05" value="1" aria-label="天体显示大小">
+      <p class="micro-note" id="scale-note">放大只影响画面，不改变天体位置数据与食现象的计算。</p>
+      <div class="sidebar-bottom"><div class="tiny-orbits"><i></i><b></b></div><strong>从“看见”，到“看懂”。</strong><p>拖动画面换个角度。<br>拖动时间，发现变化。</p><button id="tour-btn" class="link-button">开始一次小探索 <span>↗</span></button></div>
+    </aside>
+    <section class="stage" id="stage" aria-label="三维观察窗口">
+      <div class="stage-top"><div><div class="overline" id="view-overline">THE EARTH–MOON SYSTEM</div><h2 id="view-title">地月之间</h2><p id="view-subtitle">一轮月相，是一场阳光与视角的相遇。</p></div>
+        <div class="stage-badges"><span id="mode-badge" class="pill"><i></i>真实天象</span><span id="scale-badge" class="pill subtle">大小 / 距离为示意</span></div>
+      </div>
+      <div id="scene-host"></div>
+      <div id="experiment-banner" hidden><span data-icon="flask"></span><strong>假设实验</strong>改变了自然条件；日期仅作参考时钟，不是真实天象预测。</div>
+      <div id="ground-tools" class="ground-tools" hidden><button data-track="sun" class="active">追踪太阳</button><button data-track="moon">追踪月亮</button><button data-track="horizon">地平线全景</button></div>
+      <div class="scene-bottom"><div class="scene-legend"><span><i class="sun-dot"></i>太阳</span><span><i class="earth-dot"></i>地球</span><span><i class="moon-dot"></i>月球</span><small id="scene-note">拖动旋转 · 滚轮缩放</small></div>
+        <div class="camera-tools"><button id="zoom-out" class="icon-button" data-icon="minus" title="缩小" aria-label="缩小"></button><button id="zoom-in" class="icon-button" data-icon="plus" title="放大" aria-label="放大"></button><i></i><button id="top-view" class="icon-button" data-icon="top" title="俯视黄道面" aria-label="俯视黄道面"></button><button id="reset-camera" class="icon-button" data-icon="reset" title="重置镜头 R" aria-label="重置镜头"></button><button id="capture-btn" class="icon-button" data-icon="camera" title="保存观测图" aria-label="保存观测图"></button></div>
+      </div>
+      <div id="scene-error" class="scene-error" hidden></div>
+    </section>
+    <aside class="inspector">
+      <div class="panel-tabs" role="tablist" aria-label="探索面板"><button data-tab="observe" role="tab" aria-selected="true" class="active">此刻</button><button data-tab="events" role="tab" aria-selected="false">天象</button><button data-tab="seasons" role="tab" aria-selected="false">四季</button><button data-tab="lab" role="tab" aria-selected="false">实验</button></div>
+      <div class="panel-scroll">
+        <section id="panel-observe" class="panel active" role="tabpanel">
+          <div class="panel-heading"><span class="section-caption">今天的月亮</span><span class="tiny-tag" id="waxing-tag">正在变圆</span></div>
+          <div class="phase-hero"><canvas id="phase-canvas" width="220" height="220" aria-label="同一时刻从地球看到的月相"></canvas><div><h3 id="phase-name">—</h3><div class="phase-percentage"><span id="phase-value">—</span><small>% 受光</small></div><p>地心视角 · 北朝上示意</p></div></div>
+          <div class="phase-strip" aria-label="一个月的月相"><span data-phase="0" title="跳到下一次新月">●</span><span data-phase="90" title="跳到下一次上弦月">◐</span><span data-phase="180" title="跳到下一次满月">○</span><span data-phase="270" title="跳到下一次下弦月">◑</span><span data-phase="0" title="跳到下一次新月">●</span></div>
+          <div class="stat-grid"><div><span>地月距离</span><strong id="moon-distance">—</strong><small>千米</small></div><div><span>日地距离</span><strong id="sun-distance">—</strong><small>天文单位 AU</small></div></div>
+          <div class="location-block"><div class="panel-heading"><span class="section-caption">从哪里仰望？</span><span data-icon="pin"></span></div><label class="sr-only" for="city-select">观测地点</label><select id="city-select"></select>
+            <div class="coordinates"><label>纬度（北纬为正）<input id="latitude" type="number" min="-90" max="90" step="0.0001" value="31.2304"></label><label>经度（东经为正）<input id="longitude" type="number" min="-180" max="180" step="0.0001" value="121.4737"></label></div>
+            <p class="micro-note">自定义坐标按海拔 0 米计算；内置地点使用预设海拔。</p>
+          </div>
+          <div class="altitudes"><div><span><i class="sun-dot"></i>太阳高度</span><strong id="sun-altitude">—</strong><small id="sun-visible">—</small></div><div><span><i class="moon-dot"></i>月亮高度</span><strong id="moon-altitude">—</strong><small id="moon-visible">—</small></div></div>
+          <div class="daylength"><div><span>当前纬度的日照长度估算</span><b id="day-length">—</b></div><div class="day-bar"><i id="day-bar-fill"></i></div><div class="day-caption"><span>夜晚</span><span>白昼</span></div></div>
+          <div id="instant-event" class="insight-card"><span data-icon="sparkle"></span><div><strong>天空正在发生什么？</strong><p id="instant-text">—</p></div></div>
+          <p class="precision-note">位置由离线星历驱动。月面、云层、背景星点是视觉示意；不是实时天气或实测星图。</p>
+        </section>
+        <section id="panel-events" class="panel" role="tabpanel" hidden>
+          <div class="panel-heading"><span class="section-caption">天象剧场</span><span class="tiny-tag">真实事件</span></div>
+          <p class="panel-intro">不是看一段视频，而是走进一个可以暂停、换地点、换视角的天象现场。</p>
+          <div id="event-detail" hidden></div>
+          <div id="event-catalog"></div>
+          <div class="sidebar-divider"></div>
+          <div class="panel-heading"><span class="section-caption">从当前时间出发</span><button id="search-events" class="link-button">搜索下一场 ↗</button></div>
+          <div id="upcoming-events"><p class="micro-note">搜索后列出下一次日食、月食和四种主要月相。日食标题指全球事件，不代表当地可见。</p></div>
+          <div class="safety-note">⚠ 现实中观测太阳必须使用合适的专用安全防护。不要照着屏幕演示直接用眼睛或普通望远镜看太阳。</div>
+        </section>
+        <section id="panel-seasons" class="panel" role="tabpanel" hidden>
+          <div class="panel-heading"><span class="section-caption">一束阳光的一年</span><span id="season-year" class="tiny-tag">2026</span></div>
+          <div class="season-heading"><span id="north-season">—</span><p id="season-summary">—</p></div>
+          <canvas id="season-orbit" width="500" height="330" aria-label="二分二至和当前太阳黄经示意"></canvas>
+          <div id="season-buttons" class="season-buttons"></div>
+          <div class="stat-grid"><div><span>太阳直射纬度</span><strong id="subsolar-lat">—</strong><small>赤纬近似</small></div><div><span>正午太阳高度</span><strong id="noon-alt">—</strong><small>几何估算</small></div></div>
+          <div class="panel-heading chart-heading"><span class="section-caption">同一地点，白昼有多长？</span></div>
+          <canvas id="daylight-chart" width="600" height="260" aria-label="所选纬度一年中白昼长度的变化"></canvas>
+          <div class="insight-card"><span data-icon="sun"></span><div><strong>不是“靠近太阳，就变热”。</strong><p id="season-explanation">四季的主要原因，是地轴倾斜改变了太阳高度和昼夜长短。南北半球的天文季节相反。</p></div></div>
+          <p class="precision-note">这里采用天文四季（以二分二至为界）。白昼长度采用太阳中心高度 −0.833° 的简化估算，不计地形和实际气象。</p>
+        </section>
+        <section id="panel-lab" class="panel" role="tabpanel" hidden>
+          <div class="panel-heading"><span class="section-caption">宇宙也可以做实验</span><span data-icon="flask"></span></div>
+          <p class="panel-intro">先猜一猜，再动手。你改变的不是日期，而是这个世界的规则。</p>
+          <label class="switch-row lab-switch"><span>开启假设实验</span><input id="experiment-toggle" type="checkbox"><i class="switch"></i></label>
+          <div id="experiment-controls">
+            <label class="slider-heading" for="tilt-slider"><span>地轴倾角</span><b id="tilt-value">23.44°</b></label><input id="tilt-slider" class="range amber" type="range" min="0" max="45" step="0.1" value="23.4" disabled><div class="range-labels"><span>0° · 扶正</span><span>45°</span></div>
+            <label class="slider-heading" for="inclination-slider"><span>月球轨道倾角参数</span><b id="inclination-value">5.15°</b></label><input id="inclination-slider" class="range amber" type="range" min="0" max="15" step="0.1" value="5.145" disabled><div class="range-labels"><span>0° · 共面</span><span>15°</span></div>
+            <div class="experiment-presets"><button id="upright-earth">扶正地轴</button><button id="flat-moon">压平月球轨道</button></div>
+            <button id="restore-reality" class="primary-button full">恢复真实天象</button>
+          </div>
+          <div class="experiment-result" id="experiment-result">真实模式中，地轴和轨道由天文状态决定。开启实验后才能修改。</div>
+          <p class="precision-note">实验是几何 / 运动学假设，不是引力积分或气候模拟。月轨倾角通过缩放真实黄纬演示；真实日期预报和事件搜索在此模式停用。</p>
+          <div class="sidebar-divider"></div>
+          <div class="panel-heading"><span class="section-caption">想一想，再选答案</span><button id="next-quiz" class="link-button">换一题 ↻</button></div>
+          <div id="quiz"></div>
+        </section>
+      </div>
+    </aside>
+  </main>
+  <footer class="time-machine">
+    <div class="time-controls">
+      <div class="date-controls"><span class="control-label">抵达时间</span><label class="sr-only" for="date-input">年月日和时分秒</label><input type="datetime-local" id="date-input" step="1"><label class="sr-only" for="timezone">时区（固定偏移）</label><select id="timezone"><option value="8">北京 UTC+8</option><option value="0">UTC±0</option><option value="9">UTC+9</option><option value="5.5">UTC+5:30</option><option value="-4">UTC−4</option><option value="-5">UTC−5</option><option value="-7">UTC−7</option><option value="-8">UTC−8</option><option value="10">UTC+10</option><option value="12">UTC+12</option></select><button id="now-btn" class="text-button compact">此刻</button></div>
+      <div class="playback"><button id="previous-day" class="icon-button" data-icon="back" title="前一天 [" aria-label="前一天"></button><button id="reverse-btn" class="icon-button" data-icon="reverse" title="倒放" aria-label="切换倒放" aria-pressed="false"></button><button id="play-btn" class="play-button" data-icon="play" title="播放 / 暂停 空格" aria-label="播放"></button><button id="next-day" class="icon-button" data-icon="forward" title="后一天 ]" aria-label="后一天"></button></div>
+      <div class="speed-controls"><label for="speed">时间流速</label><select id="speed"><option value="1">1 秒 = 1 秒</option><option value="60">1 秒 = 1 分钟</option><option value="600">1 秒 = 10 分钟</option><option value="3600">1 秒 = 1 小时</option><option value="21600" selected>1 秒 = 6 小时</option><option value="86400">1 秒 = 1 天</option><option value="604800">1 秒 = 7 天</option><option value="2592000">1 秒 = 30 天</option></select></div>
+    </div>
+    <div class="year-timeline"><div class="year-control"><button id="previous-year" title="上一年" aria-label="上一年">‹</button><strong id="timeline-year">2026</strong><button id="next-year" title="下一年" aria-label="下一年">›</button></div><div class="timeline-track"><label class="sr-only" for="year-slider">在当前年份内移动时间</label><input id="year-slider" type="range" min="0" max="10000" step="1" value="0"><div class="month-labels"><span>1 月</span><span>2 月</span><span>3 月</span><span>4 月</span><span>5 月</span><span>6 月</span><span>7 月</span><span>8 月</span><span>9 月</span><span>10 月</span><span>11 月</span><span>12 月</span></div></div><label class="autoslow"><input id="auto-slow" type="checkbox" checked><span>临近食事件减速</span></label></div>
+    <div class="status-line"><span id="clock-status"><i class="status-dot"></i>已暂停 · 时间由你掌控</span><span id="utc-status">—</span><span class="status-right">1900—2100 · 教学模型 <button id="about-btn">精度与来源 ↗</button></span></div>
+  </footer>
+</div>
+<div id="toast" role="status" aria-live="polite" hidden></div>
+<dialog id="modal"><div class="modal-head"><h2 id="modal-title"></h2><button id="close-modal" class="icon-button" data-icon="close" title="关闭" aria-label="关闭"></button></div><div id="modal-body"></div></dialog>
+<input id="import-file" type="file" accept=".json,application/json" hidden>
+<noscript>请在浏览器中启用 JavaScript，才能运行交互式三维实验室。</noscript>
+<script>/*__VENDOR__*/</script>
+<script>/*__DATA__*/</script>
+<script>/*__CODE__*/</script>
+</body>
+</html>

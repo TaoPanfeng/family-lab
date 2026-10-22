@@ -1,0 +1,82 @@
+[
+  {
+    "id": "astronomy",
+    "name": "日月地",
+    "subtitle": "时空实验室",
+    "english": "SPACE & TIME",
+    "entry": "projects/astronomy/日月地实验室.html",
+    "question": "月亮为什么每天都不一样？",
+    "description": "拨动时间，看日月食、四季与影子；从太空和地面，观察同一个世界。",
+    "tags": [
+      "三维天象",
+      "时间控制",
+      "亲子共玩"
+    ],
+    "license": "AGPL-3.0-or-later",
+    "importedVersion": "2.0.0"
+  },
+  {
+    "id": "physics",
+    "name": "物理",
+    "subtitle": "观物实验室",
+    "english": "HOW THINGS WORK",
+    "entry": "projects/physics/index.html",
+    "question": "水流和落体，藏着同一个规律？",
+    "description": "改变一个条件，让现象、数值和公式一起回答。",
+    "tags": [
+      "可调实验",
+      "公式地图",
+      "A/B 对照"
+    ],
+    "license": "MIT",
+    "importedVersion": "1.0.0"
+  },
+  {
+    "id": "chemistry",
+    "name": "化学",
+    "subtitle": "万物探索馆",
+    "english": "A WORLD OF PARTICLES",
+    "entry": "projects/chemistry/chemistry-explorer.html",
+    "question": "看不见的粒子，怎样改变世界？",
+    "description": "搭建虚拟实验，认识元素与原子，理解生活里的化学。",
+    "tags": [
+      "虚拟实验",
+      "元素周期表",
+      "原子与同位素"
+    ],
+    "license": "MIT",
+    "importedVersion": "1.0.0"
+  },
+  {
+    "id": "history",
+    "name": "历史",
+    "subtitle": "观史探索馆",
+    "english": "A JOURNEY THROUGH TIME",
+    "entry": "projects/history/index.html",
+    "question": "沿着时间，看看山河与人。",
+    "description": "放大朝代长河，读人物、地图与转折，也读成就背后的代价。",
+    "tags": [
+      "朝代时间轴",
+      "人物档案",
+      "地图演变"
+    ],
+    "license": "MIT",
+    "importedVersion": "1.0.0"
+  },
+  {
+    "id": "posture",
+    "name": "坐卧",
+    "subtitle": "身有度实验室",
+    "english": "MOVE · REST · NOTICE",
+    "entry": "projects/posture/index.html",
+    "question": "让家具适应身体，而不是反过来。",
+    "description": "调整身高与场景，一步一步观察日常姿势，找到适合自己的起点。",
+    "tags": [
+      "人体尺寸",
+      "姿势步骤",
+      "场景调节"
+    ],
+    "license": "MIT",
+    "importedVersion": "1.0.0"
+  }
+]

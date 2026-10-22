@@ -1,0 +1,9 @@
+{
+  "name": "guanwu-physics-lab",
+  "version": "1.0.0",
+  "description": "Offline parent-child physics laboratory with linked formulas and 16 interactive experiments",
+  "private": true,
+  "license": "MIT",
+  "engines": {"node": ">=18"},
+  "scripts": {"build": "node tools/build.cjs", "start": "node tools/serve.cjs", "test": "node --test tests/physics.test.cjs tests/server.test.cjs", "test:browser": "python tests/browser_test.py"}
+}
