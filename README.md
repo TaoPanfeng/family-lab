@@ -4,11 +4,14 @@
 
 ## 直接使用
 
-完整解压，双击根目录 **`index.html`**。点击卡片在新标签页进入原项目。Windows 可运行 `打开首页.cmd`。日常使用不需要 Node.js、Python、npm、账号或启动服务；打开外部资料链接才需要网络。
+```bash
+git clone https://github.com/TaoPanfeng/family-lab.git
+cd family-lab
+```
 
-代码已导入此 GitHub 仓库；克隆后可直接打开根目录 `index.html`。**代码入库不等于网站上线**：部署状态请查看 Actions 和 Settings → Pages。原整合测试记录保留在 `docs/INTEGRATION_REPORT.md`，本次导入记录见 `docs/IMPORT_STATUS.md`。
+克隆后双击根目录 **`index.html`**，或在 Windows 运行 `打开首页.cmd`。点击卡片在新标签页进入原项目。日常使用不需要 Node.js、Python、npm 或启动服务；打开外部参考资料才需要网络。私有仓库的首次克隆使用自己的 GitHub 授权，不要把密码、令牌或私钥提交到聊天或仓库。
 
-## 已整理内容
+五个项目已解压入库，首次导入记录见 `docs/IMPORT_STATUS.md`。**代码入库不等于网站上线**：发布是否完成，以 Actions 中 `deploy` 和发布后的 HTTP 检查结果为准。
 
 | 项目 | 路径 | 运行入口 |
 | --- | --- | --- |
@@ -18,54 +21,72 @@
 | 历史 | `projects/history` | `index.html` |
 | 坐卧 | `projects/posture` | `index.html` |
 
-日月地来源为上传包中的 V2，其余为各自上传版本。根目录与首页不提供多版本选择，未重复收录嵌套 ZIP 或日月地旧应用。原项目内的版本号和历史测试说明仅用于来源追踪，运行界面未因此改写。
+日月地采用原上传包中的 V2，其余采用各自上传版本。首页不再提供多版本选择，未重复收录旧应用及嵌套 ZIP。源码版本标记和历史测试基线仅用于追踪来源，不代表存在第二套应用。
 
-## 后续修改
+## 后续更新
 
-普通使用不需要构建。维护代码时使用 Node.js 22.17+，推荐 Node.js 24：
+提出具体功能需求即可继续维护本仓库，不需要重新上传 ZIP：
 
-```bash
-# 重新生成可直接打开的成品
-npm run build
-# 不需要安装额外依赖的模型、数据、DOM 与入口检查
-npm run test:offline
-# 历史完整 DOM 测试需要锁定的开发依赖；页面运行不需要
-npm --prefix projects/history ci --ignore-scripts
-npm test
+```text
+读取最新代码 → 修改源码及测试 → 中文功能提交
+             → 云端构建、测试 → 自动提交离线成品
+             → Pages 部署及网址检查
 ```
 
-浏览器回归：安装测试依赖 `pip install playwright`，然后 `playwright install chromium`、`python tests/browser-smoke.py`。受限环境可使用 `--inject`，报告将明确不算真实本地文件导航。测试依赖不用于应用运行。
+提交说明应匹配实际修改，例如 `feat(physics): 增加自由落体空气阻力开关`。成品提交会记录对应的源码提交。工作流不会强推，也不会用旧构建覆盖更新的 main。
 
-文件职责：`catalog.json` 管五个项目的名称与入口；`portal/` 管首页模板、样式和示意图；`tools/build-home.cjs` 生成首页及本地源码索引；`projects/` 保存原项目完整内容。
-
-## Git 更新
-
-远端仓库建立后，首次克隆；以后在该克隆目录执行：
+等待对应提交的测试和 `sync-offline` 通过后，在本地仓库执行：
 
 ```bash
 git pull --ff-only
 ```
 
-再重新打开首页。`更新.cmd` 会先检查未提交修改；不会自动 stash、reset 或丢弃本地改动。普通 ZIP 解压目录不是 Git 克隆，更新脚本会明确提示，不会假装更新。
+然后重新打开首页。Windows 也可以双击 `更新.cmd`；它遇到未提交改动会停止，不会自动 stash、reset 或丢弃本地修改。普通 ZIP 解压目录不是 Git 克隆，更新脚本会明确提示。
 
-## GitHub Pages 发布准备
+## 开发与测试
 
-本仓库包含 `.github/workflows/pages.yml`，但配置文件存在不等于已经启用托管。
+普通使用不需要构建。维护者使用 Node.js 22.17+，推荐 Node.js 24：
 
-在具备写入和仓库管理授权的环境中：创建目标仓库，将本项目提交到 `main`，在仓库 **Settings → Pages → Source** 选择 **GitHub Actions**，然后运行发布工作流。工作流先构建和测试，再上传静态站。首次启用后可从 Actions 手动运行；成功后读取部署步骤返回的真实地址，检查首页及五个入口。
+```bash
+npm run build
+npm run test:offline
+npm --prefix projects/history ci --ignore-scripts --no-audit --no-fund
+npm test
+```
 
-GitHub Free 账户的 Pages 需要公开仓库；支持私有仓库 Pages 的其他计划另有条件。不要为了托管擅自把私有代码公开；站点公开性与仓库公开性须分别确认。原始依据：
+浏览器测试使用 Python Playwright 1.57.0。云端固定 Ubuntu 24.04，复用并记录该环境预装的 Chrome 版本，避免重复安装系统依赖。自建环境可安装对应的 Chromium：
+
+```bash
+python -m pip install playwright==1.57.0
+python -m playwright install chromium
+python tests/browser-smoke.py
+python tools/prepare-site.py
+python tests/site-smoke.py
+```
+
+`browser-smoke.py` 默认测试真实 `file://` 导航；`site-smoke.py` 测试 `/family-lab/` HTTP 子路径、五个实际入口和移动布局。两者都支持 `--browser` 指定 Chrome/Chromium。受限环境使用 `--inject` 只代表内容和交互测试，不代表真实文件导航，更不能当作 Windows 双击实测。
+
+`catalog.json` 管名称与入口；`portal/` 管首页；`projects/` 保存五个项目完整内容；`tools/build-home.cjs` 生成首页和源码索引。修改可读源码后必须生成并提交离线成品，不能只改打包结果。
+
+## 静态网站发布
+
+`.github/workflows/pages.yml` 会依次执行构建、模型/DOM、真实 file:// 和 HTTP 浏览器检查，同步离线成品，再发布 GitHub Pages。测试报告和截图保存在对应 Actions 的 artifacts 中。
+
+首次启用 Pages 可能需要仓库所有者在 **Settings → Pages → Source** 选择 **GitHub Actions**。普通 Actions 令牌不具备新建站点需要的仓库管理权限。完成设置后重新运行发布工作流；读取部署步骤返回的真实地址，不能把预计域名当作已上线地址。
+
+GitHub Free 的 Pages 适用于公开仓库；私有仓库需支持该功能的计划。不要为了托管擅自公开代码或变更计费。网站公开性和仓库公开性须分别确认。
+
+官方依据：
+- https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages
 - https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site
-- https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages
+- https://github.com/actions/configure-pages/blob/main/action.yml
 
-本站所有运行路径均为相对路径，不写死仓库名，也不用前端 History API 路由。`source.html` 提供同一副本的源码与许可索引。`tools/prepare-site.py` 只生成 `_site`，不包含账户凭据，也不会自行创建仓库或上传。
+所有运行路径均为相对路径。`source.html` 提供同一副本的源码与许可。`tools/prepare-site.py` 只生成 `_site`，排除 Git、凭据与依赖目录；它本身不会上传网站。
 
-## 记录与安全
+## 记录、安全与许可
 
-各项目的收藏和手记仍由各自浏览器存储管理。换路径、换域名或清理浏览器前先导出已有记录；不承诺自动迁移。保留旧文件夹直到确认资料已备份。
+学习记录仍由各项目保存在当前浏览器。换路径、换域名或清理浏览器前先导出，不承诺自动迁移。确认备份前保留旧文件夹。
 
-化学和物理实验仅为教学模拟；原有安全边界保持不变。坐卧项目不是医疗诊断工具。所有原始许可、科学来源和模型局限均保留。
+化学与物理实验仅为教学模拟；坐卧不是医疗诊断工具。原始许可、科学来源与模型局限均保留。日月地遵循其原有 AGPL-3.0-or-later，不能被首页 MIT 许可覆盖。
 
-## 本次测试
-
-见 `docs/INTEGRATION_REPORT.md`。旧项目自带测试报告仍保留，但不能当作本次新跑的结果。
+原整合测试记录见 `docs/INTEGRATION_REPORT.md`；首次云端导入记录见 `docs/IMPORT_STATUS.md`。旧项目自带报告不能当作本次新跑结果，当前结果以对应 Actions 日志和 artifacts 为准。

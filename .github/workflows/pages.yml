@@ -16,7 +16,7 @@ permissions:
 
 concurrency:
   group: family-lab-publish-${{ github.ref }}
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   inspect:
@@ -42,7 +42,7 @@ jobs:
     needs: inspect
     if: needs.inspect.outputs.ready == 'true'
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
         with:
@@ -59,16 +59,17 @@ jobs:
         run: npm run build
       - name: Run model, data and DOM tests
         run: npm test
-      - name: Install pinned browser test environment
+      - name: Install test driver and verify preinstalled Chrome
+        timeout-minutes: 3
         run: |
           python -m pip install playwright==1.57.0
-          python -m playwright install --with-deps chromium
+          google-chrome --version
       - name: Verify actual local-file navigation and interactions
-        run: python tests/browser-smoke.py --out .qa/browser
+        run: python tests/browser-smoke.py --browser "$(command -v google-chrome)" --out .qa/browser
       - name: Prepare website with corresponding source and licenses
         run: python tools/prepare-site.py
       - name: Verify HTTP subpaths, project entry links and mobile layout
-        run: python tests/site-smoke.py --out .qa/site
+        run: python tests/site-smoke.py --browser "$(command -v google-chrome)" --out .qa/site
       - name: Preserve tested offline outputs
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         uses: actions/upload-artifact@v4
