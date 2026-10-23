@@ -1365,14 +1365,17 @@ globalThis.ASSETS={"earth":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2
   let sessionArmed=false;
   const originalSession=savedSession?JSON.parse(JSON.stringify(savedSession)):null;
   const hadSession=lastSessionValid;
-  const live=()=>app.getLive(), context=()=>({audience:v.audience,topic:v.topic,split:v.split,tilt:v.tilt,height:v.height,eclipseKind:live().selected?.event?.kind||v.eclipseKind,eventTime:live().selected?.event?.time??null});
+  const live=()=>app.getLive(), context=()=>({audience:v.audience,topic:v.topic,split:v.split&&live().state.view!=='ground',tilt:v.tilt,height:v.height,eclipseKind:live().selected?.event?.kind||v.eclipseKind,eventTime:live().selected?.event?.time??null});
   function currentTopic(){return v.topic==='eclipse'&&v.eclipseKind==='lunar'?{...topics.eclipse,title:'月亮怎么走进影子里？',adult:'同一场月食，两个现场',right:'地面 · 追踪月亮',choices:['地球的影子落到了月亮上。','月亮自己关掉了灯。','我还不知道，想看一看。'],observe:'慢慢向前拨时间，看看月亮怎样走进地球背向太阳的影子。',explain:'地球在太阳和月亮之间，地球的影子落到月亮上，这就是月食。它不是平时的月相变化。',family:'孩子控制时间，爸爸提问：“是谁的影子？太阳又在哪个方向？”'}:topics[v.topic];}
 
   function notice(t){app.toast(t,5500);}
   function run(fn){try{const result=fn();if(result&&typeof result.then==='function')result.catch(e=>notice(e.message||'操作未完成'));return result;}catch(e){notice(e.message||'操作未完成，请重试。');return null;}}
   function remember(){if(restoreBusy)return;history.push({scene:app.getState(),context:context(),mission:{...mission}});if(history.length>15)history.shift();$('v2-back').disabled=false;}
   function restoreEntry(entry){
-    app.validateSnapshot(entry.scene);const c=L.validateContext(entry.context);restoreBusy=true;
+    app.validateSnapshot(entry.scene);const c=L.validateContext(entry.context);
+    // Ground snapshots stay single-view, including backups captured between render frames.
+    if(entry.scene.view==='ground')c.split=false;
+    restoreBusy=true;
     try{Object.assign(v,c);app.restoreSnapshot(entry.scene);
       if(c.topic==='eclipse'&&c.eventTime!==null){const e=c.eclipseKind==='lunar'?E.lunarEvent(Math.max(A.MIN,c.eventTime-DAY)):E.solarEvent(Math.max(A.MIN,c.eventTime-DAY));if(e&&Math.abs(e.time-c.eventTime)<DAY)app.setEventContext(e,e.type);}
       mission=entry.mission&&Number.isInteger(entry.mission.step)&&entry.mission.step>=0&&entry.mission.step<=4?{...entry.mission}:{step:0,guess:'',observed:false,initialTime:entry.scene.time,initialTilt:v.tilt,initialHeight:v.height};setAudience(c.audience,false);setTopic(c.topic,{prepare:false,remember:false,resetMission:false});setSplit(c.split,false);resetWindow();dirty=true;}finally{restoreBusy=false;}

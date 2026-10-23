@@ -94,8 +94,16 @@ with sync_playwright() as p:
         t=st()['time'];cam=st()['camera'];topic('moon');page.locator('#v2-back').click();wait();check(st()['time']==t);check(v2()['topic']=='seasons');check(abs(st()['camera']['azimuth']-cam['azimuth'])<1e-8)
     test('返回刚才恢复时间、任务与主镜头',back_restore)
     def ground_restore():
-        ev('LabApp.setMode("ground")');wait();check(not v2()['split']);snap={'scene':st(),'context':{k:v2()[k] for k in ['audience','topic','split','tilt','height','eclipseKind','eventTime']}}
-        topic('moon');ev('(s)=>LabV2.restoreEntry(s)',snap);wait();check(st()['view']=='ground');check(not v2()['split'])
+        # Capture before any render frame; no stale split flag may change camera intent.
+        snap=ev("()=>{LabApp.setMode('ground');return {scene:LabApp.getState(),context:LabV2.getState()};}")
+        check(snap['scene']['view']=='ground');check(not snap['context']['split'])
+        page.wait_for_function("LabApp.getState().view==='ground'&&!LabV2.getState().split")
+        topic('moon');ev('(s)=>LabV2.restoreEntry(s)',snap)
+        page.wait_for_function("LabApp.getState().view==='ground'&&!LabV2.getState().split")
+        check(st()['time']==snap['scene']['time'])
+        # Older backups may contain a stale split flag.
+        snap['context']['split']=True;ev('(s)=>LabV2.restoreEntry(s)',snap)
+        page.wait_for_function("LabApp.getState().view==='ground'&&!LabV2.getState().split")
     test('独立地面场景恢复不会被强制切回太空',ground_restore)
     def shadow():
         topic('shadow');check(page.locator('#v2-shadow-canvas').is_visible());check(v2()['window']['step']==7*86400000);old=float(page.locator('#v2-right-metric').inner_text().split()[0]);realfield('#v2-research-controls .v2-height',2);new=float(page.locator('#v2-right-metric').inner_text().split()[0]);check(abs(new-2*old)<.021);shot('05-noon-shadow.png')
