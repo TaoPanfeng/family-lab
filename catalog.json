@@ -22,11 +22,11 @@
     "english": "HOW THINGS WORK",
     "entry": "projects/physics/index.html",
     "question": "水流和落体，藏着同一个规律？",
-    "description": "改变一个条件，让现象、数值和公式一起回答。",
+    "description": "改变条件，让现象、数值和公式一起回答；新增双缝干涉与齿轮测光速。",
     "tags": [
       "可调实验",
-      "公式地图",
-      "A/B 对照"
+      "双缝干涉",
+      "齿轮测光速"
     ],
     "license": "MIT",
     "importedVersion": "1.0.0"

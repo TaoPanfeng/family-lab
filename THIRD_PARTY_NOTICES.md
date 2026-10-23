@@ -19,3 +19,10 @@
 - 地理、宇宙、武术使用原仓库 `projects/astronomy/vendor/three.r140.min.js`，Three.js MIT 许可见 `projects/astronomy/licenses/THIRD-PARTY-NOTICES.md`，不加载 astronomy 业务源码。
 - 地理与宇宙使用 `projects/history/data/land.js` 中的 Natural Earth 公共领域海岸几何，来源说明保留在历史馆 `docs/THIRD-PARTY-NOTICES.md`。
 - 不包含 BioDigital 商业人体模型、Stellarium 引擎或 CMU 动捕数据。武术所有动作是原创程序化关键帧，不得标成名家示范或真实运动测量。
+
+## 2026-10-23 视觉整改补充
+
+- `projects/geography/countries.js` 新增 177 个国家／地区的离线简化几何，来自环境内 pyogrio 测试夹具所附的 Natural Earth lowres 数据，经坐标小数位简化及中文名称整理。原始快照的发布日期无法确认，不能当作实时或权威边界。Natural Earth 数据为公共领域，政策见 https://www.naturalearthdata.com/about/terms-of-use/ 。
+- `projects/geography/terrain.js` 的山脉轴线为原创教学概化，半透明带宽不是测绘范围；峰高参考逐项给出资料年代，不能称全国最高峰完整排名。
+- 光学、细胞动画、肺部示意、手部几何与软件备用渲染代码均为原创。参考 OpenStax 的科学关系，不复制其插图、商业模型、教材段落或其他网站程序。
+- 更新后的地理球体由原创正射投影绘制，不再依赖 WebGL 地球引擎；宇宙和武术仍使用原附 Three.js。
