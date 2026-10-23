@@ -1,15 +1,14 @@
-"""V2 actual Chromium/WebGL and file-transfer tests.
-This runner's administrator blocks file:// and HTTP navigation. We do not change
-that policy. set_content executes the complete delivered HTML on an opaque page.
-Consequently native localStorage persistence, Windows launch scripts and real
-phone hardware are NOT certified by this test. Storage contracts have Node tests.
+"""Deep astronomy interactions. Main journey uses real file URLs by default.
+--inject is an explicit local-policy fallback, not file/HTTP certification.
+Fault-injected storage and rendering fixtures always use isolated content pages.
 """
 from pathlib import Path
 from playwright.sync_api import sync_playwright
-import json, os, time, traceback, hashlib
+import json, os, time, traceback, hashlib, argparse
 ROOT=Path(__file__).resolve().parents[1]
-OUT=ROOT/'previews';OUT.mkdir(exist_ok=True)
-TMP=ROOT/'tests'/'tmp';TMP.mkdir(exist_ok=True)
+parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--inject',action='store_true');parser.add_argument('--browser');parser.add_argument('--out',default=str(ROOT/'previews'));args=parser.parse_args()
+OUT=Path(args.out);OUT.mkdir(exist_ok=True,parents=True)
+TMP=OUT/'tmp';TMP.mkdir(exist_ok=True)
 results=[];errors=[];requests=[]
 def check(value,message='assertion failed'):
     if not value:raise AssertionError(message)
@@ -21,14 +20,16 @@ def test(name,fn):
         try:page.screenshot(path=str(TMP/f'failure-{len(results)}.png'))
         except:pass
 with sync_playwright() as p:
-    browser=p.chromium.launch(executable_path=os.environ.get('CHROMIUM','/usr/bin/chromium'),headless=True,args=['--no-sandbox','--use-angle=swiftshader','--enable-unsafe-swiftshader'])
+    browser=p.chromium.launch(executable_path=args.browser or os.environ.get('CHROMIUM','/usr/bin/chromium'),headless=True,args=['--no-sandbox','--use-angle=swiftshader','--enable-unsafe-swiftshader'])
     context=browser.new_context(viewport={'width':1440,'height':1000},locale='zh-CN',device_scale_factor=1,accept_downloads=True)
     page=context.new_page();page.set_default_timeout(6500)
     page.on('pageerror',lambda e:errors.append(str(e)))
     page.on('console',lambda m:errors.append(m.text) if m.type=='error' else None)
     page.on('request',lambda r:requests.append(r.url) if r.url.startswith(('http:','https:')) else None)
     html=(ROOT/'日月地实验室.html').read_text(encoding='utf-8')
-    page.set_content(html,wait_until='load',timeout=30000);page.wait_for_function('!!window.LabV2');page.wait_for_timeout(800)
+    if args.inject:page.set_content(html,wait_until='load',timeout=30000)
+    else:page.goto((ROOT/'日月地实验室.html').as_uri(),wait_until='load',timeout=30000)
+    page.wait_for_function('!!window.LabV2');page.wait_for_timeout(800)
     def ev(code,*args):return page.evaluate(code,*args)
     def st():return ev('LabApp.getState()')
     def v2():return ev('LabV2.getState()')
@@ -168,8 +169,8 @@ with sync_playwright() as p:
         page.set_viewport_size({'width':1440,'height':1000});close();ev('LabApp.pause()');page.locator('#v2-notebook').click();page.keyboard.press('Space');check(not ev('LabApp.getLive().state.playing'));page.keyboard.press('Escape');check(not page.locator('#v2-dialog').evaluate('(d)=>d.open'))
     test('对话框中空格不意外播放，Esc 可关闭',keyboard)
     def backup_new_context():
-        # New opaque page has no shared browser localStorage; import is truly from a downloaded file.
-        c2=browser.new_context(viewport={'width':1280,'height':900},locale='zh-CN');p2=c2.new_page();p2.set_content(html,wait_until='load');p2.wait_for_function('!!window.LabV2');p2.wait_for_timeout(700);p2.locator('[data-enter="research"]').click();p2.locator('#v2-notebook').click();p2.locator('#v2-import').set_input_files(TMP/'notebook.json');p2.wait_for_timeout(350);check(p2.evaluate('LabV2.getState().notes')==1);p2.locator('[data-note-open="0"]').click();p2.wait_for_timeout(220);expected=json.loads((TMP/'notebook.json').read_text())['notes'][0]['scene']['time'];check(p2.evaluate('LabApp.getState().time')==expected);c2.close()
+        # New isolated context has no existing notes; import the actual downloaded file.
+        c2=browser.new_context(viewport={'width':1280,'height':900},locale='zh-CN');p2=c2.new_page();(p2.set_content(html,wait_until='load') if args.inject else p2.goto((ROOT/'日月地实验室.html').as_uri(),wait_until='load'));p2.wait_for_function('!!window.LabV2');p2.wait_for_timeout(700);p2.locator('[data-enter="research"]').click();p2.locator('#v2-notebook').click();p2.locator('#v2-import').set_input_files(TMP/'notebook.json');p2.wait_for_timeout(350);check(p2.evaluate('LabV2.getState().notes')==1);p2.locator('[data-note-open="0"]').click();p2.wait_for_timeout(220);expected=json.loads((TMP/'notebook.json').read_text())['notes'][0]['scene']['time'];check(p2.evaluate('LabApp.getState().time')==expected);c2.close()
     test('新浏览器上下文可导入备份并恢复原场景',backup_new_context)
     def matched_areas():
         close();page.locator('button[data-audience="research"]').click();topic('seasons');wait();a=page.locator('#scene-host').bounding_box();b=page.locator('#v2-companion-host').bounding_box();check(abs(a['height']-b['height'])<=2);check(abs(a['y']-b['y'])<=2)
@@ -198,11 +199,14 @@ with sync_playwright() as p:
         c=browser.new_context(viewport={'width':1200,'height':900});q=c.new_page();q.set_content(fixture,wait_until='load');q.wait_for_function('!!window.LabV2');q.wait_for_timeout(850);check(q.locator('#v2-resume').count()==1);check(q.evaluate('JSON.parse(__storageFixture["sem-lab-v2:session"]).scene.time')==snap['scene']['time']);q.locator('#v2-resume').click();q.wait_for_timeout(300);check(q.evaluate('LabApp.getState().time')==snap['scene']['time']);check(q.evaluate('LabV2.getState().tilt')==17);check(q.evaluate('LabV2.getState().topic')=='seasons');c.close()
         c=browser.new_context(viewport={'width':1200,'height':900});q=c.new_page();q.set_content(fixture,wait_until='load');q.wait_for_function('!!window.LabV2');q.wait_for_timeout(850);q.locator('#v2-close').click();q.wait_for_timeout(300);check(q.evaluate('LabApp.getState().time')==snap['scene']['time']);c.close()
     test('存储适配器夹具：欢迎页不覆盖旧现场，继续入口可恢复',resume_fixture)
-    test('存储被禁止时清晰提示暂存与导出',lambda:check(not v2()['storage'] and '备份' in page.locator('#v2-storage').inner_text()))
+    def denied_storage():
+        c=browser.new_context();q=c.new_page();q.set_content(html,wait_until='load');q.wait_for_function('!!window.LabV2');check(not q.evaluate('LabV2.getState().storage') and '备份' in q.locator('#v2-storage').inner_text());c.close()
+    test('独立不透明来源：存储被禁止时清晰提示暂存与导出',denied_storage)
+    if not args.inject:test('真实文件来源保留原生浏览器存储',lambda:check(v2()['storage']))
     test('完整交互没有外部 HTTP(S) 请求',lambda:check(len(requests)==0,str(requests)))
     test('完整交互没有 JavaScript / WebGL 控制台错误',lambda:check(len(errors)==0,str(errors)))
-    report={'timestamp':time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),'htmlSha256':hashlib.sha256(html.encode('utf-8')).hexdigest(),'browser':browser.version,'platform':'Linux Chromium + SwiftShader via Xvfb','loading':'set_content(full delivered HTML); no navigation policy modified','not_tested':['Windows hardware / Start.cmd','actual file:// navigation (blocked by administrator)','native localStorage across browser restarts','real iOS/Android touch hardware'],'passed':sum(r['pass'] for r in results),'total':len(results),'errors':errors,'externalRequests':requests,'results':results}
-    (ROOT/'tests/v2-browser-report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
+    report={'timestamp':time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),'htmlSha256':hashlib.sha256(html.encode('utf-8')).hexdigest(),'browser':browser.version,'platform':'Linux Chromium + SwiftShader','loading':'injected contents' if args.inject else 'file:// direct navigation (fault fixtures isolated)','not_tested':['Windows hardware / Start.cmd','native localStorage across browser restarts','real iOS/Android touch hardware']+(['real file navigation'] if args.inject else []),'passed':sum(r['pass'] for r in results),'total':len(results),'errors':errors,'externalRequests':requests,'results':results}
+    (OUT/'report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
     browser.close()
 print(f"{sum(r['pass'] for r in results)}/{len(results)} passed")
 if any(not r['pass'] for r in results):raise SystemExit(1)

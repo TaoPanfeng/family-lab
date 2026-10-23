@@ -7,3 +7,5 @@
 
 /* New galleries share the entry system; original project styling is untouched. */
 .card[hidden]{display:none}.home-search{display:flex;gap:14px;align-items:center;margin:0 0 24px}.home-search label{color:#c5d6b4;font-weight:600;white-space:nowrap}.home-search input{width:min(520px,70%);padding:13px 16px;border:1px solid #405047;border-radius:10px;background:#18231d;color:#edf2e7;font:inherit}.home-search span,.home-empty{color:#a4b4a6}.home-search input:focus-visible{outline:2px solid #c1d5a3;outline-offset:3px}.biology .illustration{color:#89d5b1}.geography .illustration{color:#85bfdc}.cosmos .illustration{color:#b6a6f0}.martial .illustration{color:#e6bd86}@media(max-width:620px){.home-search{flex-wrap:wrap}.home-search input{width:calc(100% - 95px)}.home-search span{font-size:13px}}
+
+.card.math{--accent:#8cc6b1;}

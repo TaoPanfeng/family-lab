@@ -142,5 +142,21 @@
     ],
     "license": "MIT",
     "importedVersion": "current"
+  },
+  {
+    "id": "math",
+    "name": "数学",
+    "subtitle": "从一颗豆到无限世界",
+    "english": "PATTERNS · REASONS · POSSIBILITIES",
+    "entry": "projects/math/index.html",
+    "question": "数学，为什么能帮我们看懂世界？",
+    "description": "沿125个核心知识节点，从小学走向大学；用44个实验连接图形、公式与真实用途。",
+    "tags": [
+      "知识路线",
+      "动手实验",
+      "不同证明"
+    ],
+    "license": "MIT",
+    "importedVersion": "current"
   }
 ]

@@ -6,6 +6,7 @@ const root = path.resolve(__dirname, '..');
 const offline = process.argv.includes('--offline');
 const chemistryFiles = fs.readdirSync(path.join(root,'projects/chemistry/tests')).filter(f=>f.endsWith('.test.cjs')).sort().map(f=>'tests/'+f);
 const suites = [
+  ['数学知识结构、证明与定量模型','.', ['--test','tests/math-models.test.cjs']],
   ['公共首页', '.', ['--test','tests/portal.test.cjs']],
   ['新增四馆模型与资料','.', ['--test','tests/expansion-models.test.cjs']],
   ['可视化整改与光学数值','.', ['--test','tests/refactor-models.test.cjs']],

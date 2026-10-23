@@ -15,6 +15,9 @@
     "test:browser": "python tests/browser-smoke.py",
     "site": "python tools/prepare-site.py",
     "test:quality": "python tests/quality-browser.py",
-    "test:models:quality": "node --test tests/refactor-models.test.cjs"
+    "test:models:quality": "node --test tests/refactor-models.test.cjs",
+    "test:math": "node --test tests/math-models.test.cjs",
+    "test:math:browser": "python tests/math-browser.py",
+    "test:experience": "python tests/experience-browser.py"
   }
 }
