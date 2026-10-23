@@ -49,12 +49,16 @@ jobs:
         run: python tests/browser-smoke.py --browser "$(command -v google-chrome)" --out .qa/browser
       - name: Four museums via actual file URLs, including WebGL
         run: python tests/expansion-browser.py --file --require-webgl --browser "$(command -v google-chrome)" --out .qa/new-file
+      - name: Quality regression via actual file URLs
+        run: python tests/quality-browser.py --file --require-webgl --browser "$(command -v google-chrome)" --out .qa/quality-file
       - name: Prepare website and corresponding source
         run: python tools/prepare-site.py
       - name: Test real homepage clicks and HTTP subpaths
         run: python tests/site-smoke.py --browser "$(command -v google-chrome)" --out .qa/site
       - name: Four museums via HTTP, including WebGL and notebook persistence
         run: python tests/expansion-browser.py --site --require-webgl --browser "$(command -v google-chrome)" --out .qa/new-http
+      - name: Quality regression via HTTP, including actual rendering changes
+        run: python tests/quality-browser.py --site --require-webgl --browser "$(command -v google-chrome)" --out .qa/quality-http
       - name: Preserve tested offline outputs
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         uses: actions/upload-artifact@v4
@@ -67,6 +71,7 @@ jobs:
             source.html
             projects/astronomy/日月地实验室.html
             projects/physics/index.html
+            projects/physics/BUILD_MANIFEST.json
             projects/posture/index.html
             projects/chemistry/chemistry-explorer.html
       - name: Upload tested static website
@@ -113,7 +118,7 @@ jobs:
             echo 'Newer source exists; the old run will not commit or deploy.' >> "$GITHUB_STEP_SUMMARY"
             exit 0
           fi
-          git add -- index.html source.html projects/astronomy/日月地实验室.html projects/physics/index.html projects/posture/index.html projects/chemistry/chemistry-explorer.html
+          git add -- index.html source.html projects/astronomy/日月地实验室.html projects/physics/index.html projects/physics/BUILD_MANIFEST.json projects/posture/index.html projects/chemistry/chemistry-explorer.html
           if ! git diff --cached --quiet; then
             subject="$(git show -s --format=%s "$GITHUB_SHA")"
             git config user.name 'github-actions[bot]'
@@ -174,9 +179,66 @@ jobs:
               if b'<html' not in content[:2000].lower():
                   raise RuntimeError('Not HTML: ' + project['id'])
               print('HTTP 200:', project['name'])
-          for path in ['shared/core.js','shared/shell.js','shared/scene3d.js','shared/lab.css','projects/biology/data.js','projects/geography/app.js','projects/cosmos/data.js','projects/martial/model.js']:
+          for path in ['shared/core.js','shared/shell.js','shared/scene3d.js','shared/lab.css','projects/biology/data.js','projects/geography/app.js','projects/cosmos/data.js','projects/martial/model.js','projects/martial/hands.js','shared/canvas3d.js','projects/biology/process-models.js','projects/biology/visuals.js','projects/geography/countries.js','projects/geography/terrain.js','projects/geography/map-engine.js','projects/cosmos/process-models.js','projects/cosmos/visuals.js','projects/physics/optics.html','projects/physics/optics/model.js','projects/physics/optics/data.js','projects/physics/optics/app.js']:
               if len(get(path)) < 100:
                   raise RuntimeError('Missing runtime asset: ' + path)
           with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as output:
               output.write('### Nine museums published and HTTP-verified\n\n' + base + '\n')
           PY
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify actual published visual interactions
+        env:
+          SITE_URL: ${{ steps.deployment.outputs.page_url }}
+          DEBIAN_FRONTEND: noninteractive
+          NEEDRESTART_MODE: a
+        run: |
+          python -m pip install playwright==1.57.0
+          sudo -E apt-get -o Acquire::Retries=2 -o Acquire::http::Timeout=15 update -qq
+          sudo -E apt-get -o Acquire::Retries=2 -o Acquire::http::Timeout=15 install -y --no-install-recommends fonts-noto-cjk
+          python tests/quality-browser.py --base "$SITE_URL" --require-webgl --browser "$(command -v google-chrome)" --out .qa/live-quality
+      - name: Preserve online interaction evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: published-quality-results
+          path: .qa/live-quality
+          if-no-files-found: ignore
+          retention-days: 7
+
+  cleanup-merged-work-branch:
+    needs: deploy
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Remove only the fully merged, closed work branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          branch='feature/four-museums-20261023'
+          gh auth setup-git
+          head="$(git ls-remote --heads origin "refs/heads/$branch" | cut -f1)"
+          if test -z "$head"; then
+            echo 'Work branch already removed; main is retained.' >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          open_prs="$(gh api --method GET "repos/$GITHUB_REPOSITORY/pulls" -f state=open -f "head=${GITHUB_REPOSITORY_OWNER}:$branch" --jq 'length')"
+          test "$open_prs" = '0'
+          git fetch origin "refs/heads/$branch:refs/remotes/origin/$branch" "refs/heads/main:refs/remotes/origin/main"
+          test "$(git rev-parse "origin/$branch")" = "$head"
+          git merge-base --is-ancestor "$head" origin/main
+          test "$(git ls-remote --heads origin "refs/heads/$branch" | cut -f1)" = "$head"
+          git push origin --delete "$branch"
+          echo 'Verified merged branch deleted after successful deployment; history remains in main.' >> "$GITHUB_STEP_SUMMARY"

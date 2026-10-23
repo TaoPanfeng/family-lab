@@ -1,0 +1,14 @@
+{
+  "base": "297fb0a7ebeb148fe2504b76a972b271b60461aa",
+  "archive_sha256": "904cef467cdacdb0abf10cbcc7cf11711fb9f7d89e92aae6b66a28a95ca25cec",
+  "raw_sha256": "39bcc52bddb6471cc08712f3a157679dad2b83f1e78ec5a5070f73733ea94e32",
+  "parts": [
+    {"path":".maintenance/quality/part-00.xz","sha":"9f30ccba6fd35ff1b6468c7e3b729ec9e5b2dc03","size":9000},
+    {"path":".maintenance/quality/part-01.xz","sha":"d49f757d49241f927c95e79d86e8648a44f88b5b","size":9000},
+    {"path":".maintenance/quality/part-02.xz","sha":"154470ab33f780026bce353a070e7c73e9f4383d","size":9000},
+    {"path":".maintenance/quality/part-03.xz","sha":"8792296a47e1fdd027bcf5ebc98fd094c89c8da6","size":9000},
+    {"path":".maintenance/quality/part-04.xz","sha":"f3590a318ba52b0711693d2db45476166576153c","size":9000},
+    {"path":".maintenance/quality/part-05.xz","sha":"ff4058b94d52bef3605e3a7b4105f1f8393d9de2","size":9000},
+    {"path":".maintenance/quality/part-06.xz","sha":"5ff82b219135a680a0c29b53fa07ece3e35415a7","size":2460}
+  ]
+}
