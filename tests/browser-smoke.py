@@ -68,7 +68,7 @@ try:
     report['browser']=browser.version
     context=browser.new_context(viewport={'width':1440,'height':1040},locale='zh-CN',timezone_id='Asia/Shanghai',accept_downloads=True)
     page=open_page(context,'home','index.html')
-    check('首页恰好五个项目入口',page.locator('[data-project]').count()==5)
+    check('首页恰好九个项目入口',page.locator('[data-project]').count()==9)
     for item in json.loads((ROOT/'catalog.json').read_text()):
         link=page.locator(f'[data-project="{item["id"]}"]')
         check('首页入口存在且指向原文件：'+item['name'],link.get_attribute('href')==item['entry'] and (ROOT/item['entry']).is_file())
