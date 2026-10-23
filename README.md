@@ -1,92 +1,78 @@
 # 万物 · 家庭探索馆
 
-日月地、物理、化学、历史、坐卧：**一个首页，五个独立项目，每个项目只保留当前版本。**
+**一个首页，九个独立空间；每个项目只保留当前代码。**
 
-## 直接使用
+在线入口：https://taopanfeng.github.io/family-lab/
+
+## 本地使用
 
 ```bash
 git clone https://github.com/TaoPanfeng/family-lab.git
 cd family-lab
 ```
 
-克隆后双击根目录 **`index.html`**，或在 Windows 运行 `打开首页.cmd`。点击卡片在新标签页进入原项目。日常使用不需要 Node.js、Python、npm 或启动服务；打开外部参考资料才需要网络。私有仓库的首次克隆使用自己的 GitHub 授权，不要把密码、令牌或私钥提交到聊天或仓库。
+双击根目录 `index.html`，或 Windows 下运行 `打开首页.cmd`。所有模型、脚本和地图随仓库提供，日常使用不需要 npm、Python、后端或网络；点击外部参考资料才需要联网。
 
-五个项目已解压入库，首次导入记录见 `docs/IMPORT_STATUS.md`。**代码入库不等于网站上线**：发布是否完成，以 Actions 中 `deploy` 和发布后的 HTTP 检查结果为准。
-
-| 项目 | 路径 | 运行入口 |
+| 馆 | 路径 | 入口 |
 | --- | --- | --- |
-| 日月地 | `projects/astronomy` | `日月地实验室.html` |
-| 物理 | `projects/physics` | `index.html` |
-| 化学 | `projects/chemistry` | `chemistry-explorer.html` |
-| 历史 | `projects/history` | `index.html` |
-| 坐卧 | `projects/posture` | `index.html` |
+| 日月地 | projects/astronomy | 日月地实验室.html |
+| 物理 | projects/physics | index.html |
+| 化学 | projects/chemistry | chemistry-explorer.html |
+| 历史 | projects/history | index.html |
+| 坐卧 | projects/posture | index.html |
+| 生物 | projects/biology | index.html |
+| 地理 | projects/geography | index.html |
+| 宇宙 | projects/cosmos | index.html |
+| 武术 | projects/martial | index.html |
 
-日月地采用原上传包中的 V2，其余采用各自上传版本。首页不再提供多版本选择，未重复收录旧应用及嵌套 ZIP。源码版本标记和历史测试基线仅用于追踪来源，不代表存在第二套应用。
+原有五馆业务界面保持不变。四个新馆共31个主题，可切换儿童/进阶、调参数、慢放、暂停、单步、拖动时间条，收藏问题和导出观察笔记。
+
+内容范围、来源与模型边界见 [docs/EXPANSION.md](docs/EXPANSION.md)。尤其：地理为精选资料不是全国完整实时名录；人体是机制图解不是完整三维解剖库；武术是程序化教学片段，不是名家动捕、完整拳谱或发力测量。参考的商业产品没有被直接搬入本仓库。
 
 ## 后续更新
 
-提出具体功能需求即可继续维护本仓库，不需要重新上传 ZIP：
-
 ```text
-读取最新代码 → 修改源码及测试 → 中文功能提交
-             → 云端构建、测试 → 自动提交离线成品
-             → Pages 部署及网址检查
+读取最新代码 → 修改源码与测试 → 对应需求的中文提交
+→ 构建及新旧馆回归 → 自动同步离线成品 → Pages部署 → 在线核验
 ```
 
-提交说明应匹配实际修改，例如 `feat(physics): 增加自由落体空气阻力开关`。成品提交会记录对应的源码提交。工作流不会强推，也不会用旧构建覆盖更新的 main。
-
-等待对应提交的测试和 `sync-offline` 通过后，在本地仓库执行：
+例如：`feat(biology): 增加心肺循环的氧气追踪与对照实验`。构建提交会关联功能提交。测试和 `sync-offline` 通过后，本地执行：
 
 ```bash
 git pull --ff-only
 ```
 
-然后重新打开首页。Windows 也可以双击 `更新.cmd`；它遇到未提交改动会停止，不会自动 stash、reset 或丢弃本地修改。普通 ZIP 解压目录不是 Git 克隆，更新脚本会明确提示。
+Windows 也可运行 `更新.cmd`。遇到本地未提交改动会停止，不自动 stash、reset、强推或丢弃文件。ZIP解压目录不等于Git克隆。
 
-## 开发与测试
+## 开发与验证
 
-普通使用不需要构建。维护者使用 Node.js 22.17+，推荐 Node.js 24：
+使用 Node.js 22.17+（推荐24）；普通使用无须构建。修改可读源码，不只修改打包HTML。
 
 ```bash
 npm run build
-npm run test:offline
 npm --prefix projects/history ci --ignore-scripts --no-audit --no-fund
 npm test
-```
-
-浏览器测试使用 Python Playwright 1.57.0。云端固定 Ubuntu 24.04，复用并记录该环境预装的 Chrome 版本，避免重复安装系统依赖。自建环境可安装对应的 Chromium：
-
-```bash
 python -m pip install playwright==1.57.0
 python -m playwright install chromium
 python tests/browser-smoke.py
+python tests/expansion-browser.py --file --require-webgl
 python tools/prepare-site.py
 python tests/site-smoke.py
+python tests/expansion-browser.py --site --require-webgl
 ```
 
-`browser-smoke.py` 默认测试真实 `file://` 导航；`site-smoke.py` 测试 `/family-lab/` HTTP 子路径、五个实际入口和移动布局。两者都支持 `--browser` 指定 Chrome/Chromium。受限环境使用 `--inject` 只代表内容和交互测试，不代表真实文件导航，更不能当作 Windows 双击实测。
+浏览器脚本可用 `--browser` 指定已安装的 Chrome/Chromium。`--inject` 仅用于受限环境的内容测试，不能代替真实 file://、HTTP 和 WebGL。云端复用 Ubuntu24.04 的 Chrome；当前运行证据见 Actions 的 `browser-test-results`，不是旧项目自带的历史报告。Windows真机需要单独验证。
 
-`catalog.json` 管名称与入口；`portal/` 管首页；`projects/` 保存五个项目完整内容；`tools/build-home.cjs` 生成首页和源码索引。修改可读源码后必须生成并提交离线成品，不能只改打包结果。
+`catalog.json` 管入口；`portal/` 管首页；`projects/` 保存独立项目；`shared/` 是新四馆的学习与绘图组件。旧馆不被注入公共菜单或 iframe。`source.html` 索引当前版本源码和许可。
 
-## 静态网站发布
+## 发布、安全与记录
 
-`.github/workflows/pages.yml` 会依次执行构建、模型/DOM、真实 file:// 和 HTTP 浏览器检查，同步离线成品，再发布 GitHub Pages。测试报告和截图保存在对应 Actions 的 artifacts 中。
+`.github/workflows/pages.yml` 对 PR 只测试，对 main 在测试通过后同步成品并发布。不会将旧构建覆盖较新的 main，也不会改变仓库可见性或计费。
 
-首次启用 Pages 可能需要仓库所有者在 **Settings → Pages → Source** 选择 **GitHub Actions**。普通 Actions 令牌不具备新建站点需要的仓库管理权限。完成设置后重新运行发布工作流；读取部署步骤返回的真实地址，不能把预计域名当作已上线地址。
+Pages 首次配置由所有者在 Settings → Pages → Source 选择 GitHub Actions；不需要再套 Jekyll 或 Static HTML 模板。网站已配置后，每次成功发布沿用同一地址。只有部署结果与访问核验成功才能说新版本已上线。
 
-GitHub Free 的 Pages 适用于公开仓库；私有仓库需支持该功能的计划。不要为了托管擅自公开代码或变更计费。网站公开性和仓库公开性须分别确认。
+笔记只保存在当前浏览器和地址中，线上/本地不会自动互通。移动文件、换浏览器或清理数据前导出备份；新馆不修改旧馆学习记录。不得上传私人记录、密码、令牌或密钥。
 
-官方依据：
-- https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages
-- https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site
-- https://github.com/actions/configure-pages/blob/main/action.yml
+实验是科普，不是诊疗、训练处方、导航或危险实物实验指南。日月地保留 AGPL-3.0-or-later；其余项目及第三方依赖按自身许可。详情见 `THIRD_PARTY_NOTICES.md`，不能把全部素材统称MIT。
 
-所有运行路径均为相对路径。`source.html` 提供同一副本的源码与许可。`tools/prepare-site.py` 只生成 `_site`，排除 Git、凭据与依赖目录；它本身不会上传网站。
-
-## 记录、安全与许可
-
-学习记录仍由各项目保存在当前浏览器。换路径、换域名或清理浏览器前先导出，不承诺自动迁移。确认备份前保留旧文件夹。
-
-化学与物理实验仅为教学模拟；坐卧不是医疗诊断工具。原始许可、科学来源与模型局限均保留。日月地遵循其原有 AGPL-3.0-or-later，不能被首页 MIT 许可覆盖。
-
-原整合测试记录见 `docs/INTEGRATION_REPORT.md`；首次云端导入记录见 `docs/IMPORT_STATUS.md`。旧项目自带报告不能当作本次新跑结果，当前结果以对应 Actions 日志和 artifacts 为准。
+历史记录：`docs/IMPORT_STATUS.md`、`docs/INTEGRATION_REPORT.md`。本次扩展范围：`docs/EXPANSION.md`。

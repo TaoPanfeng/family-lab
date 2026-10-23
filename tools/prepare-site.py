@@ -11,6 +11,6 @@ TOP_FILES = ['index.html','source.html','catalog.json','README.md','AGENTS.md','
 EXCLUDE = shutil.ignore_patterns('.git','.ssh','.env','.env.*','*.pem','*.key','*.p12','*.pfx','node_modules','__pycache__','.DS_Store','Thumbs.db','tmp','artifacts','test-output','*.log')
 for name in TOP_FILES:
     shutil.copy2(ROOT / name, OUT / name)
-for name in ['projects','portal','tools','tests','docs']:
+for name in ['projects','portal','shared','tools','tests','docs']:
     shutil.copytree(ROOT / name, OUT / name, ignore=EXCLUDE)
 print(f'Static site staged in {OUT}; this does NOT publish it.')

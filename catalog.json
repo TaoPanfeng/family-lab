@@ -78,5 +78,69 @@
     ],
     "license": "MIT",
     "importedVersion": "1.0.0"
+  },
+  {
+    "id": "biology",
+    "name": "生物",
+    "subtitle": "生命探索馆",
+    "english": "LIFE, FROM THE INSIDE",
+    "entry": "projects/biology/index.html",
+    "question": "一口氧气，怎样抵达每一个细胞？",
+    "description": "从细胞分裂到心肺合作，观察遗传、睡眠与植物繁殖。",
+    "tags": [
+      "11 个主题",
+      "因果动画",
+      "生命与成长"
+    ],
+    "license": "MIT",
+    "importedVersion": "current"
+  },
+  {
+    "id": "geography",
+    "name": "地理",
+    "subtitle": "山海与足迹",
+    "english": "OUR BLUE PLANET",
+    "entry": "projects/geography/index.html",
+    "question": "一滴水、一艘船、一只燕子，会去哪里？",
+    "description": "旋转地球、寻找中国山河，沿着历史航线认识人与自然。",
+    "tags": [
+      "离线地球",
+      "山河图层",
+      "路线实验"
+    ],
+    "license": "MIT",
+    "importedVersion": "current"
+  },
+  {
+    "id": "cosmos",
+    "name": "宇宙",
+    "subtitle": "从脚下到星海",
+    "english": "BEYOND THE HORIZON",
+    "entry": "projects/cosmos/index.html",
+    "question": "一直向外走，我们在宇宙的哪里？",
+    "description": "穿越大气层、调整轨道，跨越九级尺度，理解光与距离。",
+    "tags": [
+      "三维轨道",
+      "尺度漫游",
+      "模型边界"
+    ],
+    "license": "MIT",
+    "importedVersion": "current"
+  },
+  {
+    "id": "martial",
+    "name": "武术",
+    "subtitle": "身体运动观察室",
+    "english": "MOVE WITH AWARENESS",
+    "entry": "projects/martial/index.html",
+    "question": "一招一式，身体究竟怎样动起来？",
+    "description": "转动三维人体、暂停分解，观察八段锦、太极与咏春动作片段。",
+    "tags": [
+      "三维人体",
+      "程序化编排",
+      "轨迹与角度"
+    ],
+    "license": "MIT",
+    "importedVersion": "current"
   }
 ]
