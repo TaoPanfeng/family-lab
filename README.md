@@ -4,6 +4,8 @@
 
 在线入口：https://taopanfeng.github.io/family-lab/
 
+> 本交付包含尚未推送的视觉整改与两项光学实验。线上地址仍以实际部署结果为准；本轮范围、测试及限制见 [整改记录](docs/QUALITY_REFACTOR.md)。
+
 ## 本地使用
 
 ```bash
@@ -25,7 +27,7 @@ cd family-lab
 | 宇宙 | projects/cosmos | index.html |
 | 武术 | projects/martial | index.html |
 
-原有五馆业务界面保持不变。四个新馆共31个主题，可切换儿童/进阶、调参数、慢放、暂停、单步、拖动时间条，收藏问题和导出观察笔记。
+原有五馆的核心实验保留，物理馆侧栏新增双缝干涉与菲索齿轮实验入口。四个新馆共31个主题，可切换儿童/进阶、调参数、慢放、暂停、单步、拖动时间条，收藏问题和导出观察笔记。
 
 内容范围、来源与模型边界见 [docs/EXPANSION.md](docs/EXPANSION.md)。尤其：地理为精选资料不是全国完整实时名录；人体是机制图解不是完整三维解剖库；武术是程序化教学片段，不是名家动捕、完整拳谱或发力测量。参考的商业产品没有被直接搬入本仓库。
 
@@ -59,6 +61,8 @@ python tests/expansion-browser.py --file --require-webgl
 python tools/prepare-site.py
 python tests/site-smoke.py
 python tests/expansion-browser.py --site --require-webgl
+python tests/quality-browser.py --file --require-webgl
+python tests/quality-browser.py --site --require-webgl
 ```
 
 浏览器脚本可用 `--browser` 指定已安装的 Chrome/Chromium。`--inject` 仅用于受限环境的内容测试，不能代替真实 file://、HTTP 和 WebGL。云端复用 Ubuntu24.04 的 Chrome；当前运行证据见 Actions 的 `browser-test-results`，不是旧项目自带的历史报告。Windows真机需要单独验证。

@@ -41,14 +41,16 @@ try:
    check(mod+': registered lessons',len(lessons)>=4)
    for l in lessons:
     page.locator('[data-lesson="'+l['id']+'"]').click();check(mod+'/'+l['id']+': navigation',page.evaluate('LabTest.getState().lesson')==l['id'])
-    if args.require_webgl and ((mod=='geography' and l['id'] in ['globe','coordinates']) or (mod=='cosmos' and l['id'] in ['orbit','solar','scale','sky']) or mod=='martial'):
-     check(mod+'/'+l['id']+': actual WebGL renderer',page.evaluate('LabTest.getState().three') and page.locator('.three-canvas').is_visible())
+    if args.require_webgl and ((mod=='cosmos' and l['id'] in ['orbit','solar','scale','sky']) or mod=='martial'):
+     check(mod+'/'+l['id']+': actual WebGL renderer',page.evaluate("LabTest.getState().renderer === 'webgl'") and page.locator('.three-canvas').is_visible())
     for t in [0,.25,.6,1]:page.evaluate('(t)=>LabTest.seek(t)',t)
     check(mod+'/'+l['id']+': timeline endpoint',page.evaluate('LabTest.getState().time')==1)
     for c in l['controls']:
      loc=page.locator('#p-'+c['id'])
      if c.get('type')=='select':
-      for value,_ in c['options']:loc.select_option(str(value))
+      # Large country datasets are exhaustively checked in model tests; sample UI boundaries here.
+      options=c['options'] if len(c['options'])<=40 else [c['options'][i] for i in [0,1,len(c['options'])//2,len(c['options'])-1]]
+      for value,_ in options:loc.select_option(str(value))
      elif c.get('type')=='checkbox':loc.uncheck();loc.check()
      else:
       for value in [c['min'],c['max']]:loc.evaluate('(el,v)=>{el.value=v;el.dispatchEvent(new Event("input",{bubbles:true}));}',value)

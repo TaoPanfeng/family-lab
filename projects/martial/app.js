@@ -1,30 +1,79 @@
-/* Original pose viewer: observable geometry, not inferred force or medical advice. */
-(function(){'use strict';const M=window.Museum,B=window.MartialModel,C=window.WorldCore,D=window.LabDraw,P=D.colors;let frameKey='';
-const links=[['pelvis','chest'],['chest','neck'],['lShoulder','rShoulder'],['lHip','rHip'],['lShoulder','lElbow'],['lElbow','lWrist'],['rShoulder','rElbow'],['rElbow','rWrist'],['lHip','lKnee'],['lKnee','lAnkle'],['rHip','rKnee'],['rKnee','rAnkle']];
-function bone(a,b,obj,radius){const u=new THREE.Vector3(...a),w=new THREE.Vector3(...b).sub(u);obj.position.copy(u.addScaledVector(w,.5));obj.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),w.clone().normalize());obj.scale.set(radius,w.length(),radius);}
-function fields(v){return{amplitude:v.amplitude,stance:v.stance||.22,mirror:v.mirror};}
-M.mount=({lesson:l,values:v,container,custom})=>{frameKey='';custom.innerHTML='<section class="card"><h2>拆开来看，再连起来看</h2><p class="tiny">这些是程序化关键帧，不是录像帧；角度和轨迹仅描述模型。地面金点为骨盆投影，不是实测重心。</p><div class="model-list" id="pose-frames"></div></section>';
- const s=Lab3D.make(container,{distance:3.7,target:[0,1,0],yaw:0,pitch:.12,min:2,max:8});if(!s)return null;const bones=[],joints={},hands={},feet={};const bodyMat=new THREE.MeshPhongMaterial({color:0x6a86a3,shininess:18});
- links.forEach(([a,b],i)=>{const color=a[0]==='l'?0x79dfca:a[0]==='r'?0xffd18b:0x6b88a3;const m=new THREE.Mesh(new THREE.CylinderGeometry(1,1,1,14),new THREE.MeshPhongMaterial({color,shininess:15}));s.scene.add(m);bones.push(m);});
- for(const name of ['pelvis','chest','neck','lShoulder','rShoulder','lElbow','rElbow','lWrist','rWrist','lHip','rHip','lKnee','rKnee','lAnkle','rAnkle']){const m=new THREE.Mesh(new THREE.SphereGeometry(.036,12,10),new THREE.MeshBasicMaterial({color:0xe8f4ff}));s.scene.add(m);joints[name]=m;}
- const torso=new THREE.Mesh(new THREE.SphereGeometry(1,24,18),bodyMat);s.scene.add(torso);const hips=new THREE.Mesh(new THREE.SphereGeometry(1,20,16),new THREE.MeshPhongMaterial({color:0x3d526b}));hips.scale.set(.20,.14,.13);s.scene.add(hips);
- const head=new THREE.Group(),skull=new THREE.Mesh(new THREE.SphereGeometry(.118,24,18),new THREE.MeshPhongMaterial({color:0xe1c0a0}));skull.scale.y=1.15;head.add(skull);for(const x of [-.043,.043]){const eye=new THREE.Mesh(new THREE.SphereGeometry(.012,10,8),new THREE.MeshBasicMaterial({color:0x192837}));eye.position.set(x,.02,.106);head.add(eye);}const nose=new THREE.Mesh(new THREE.SphereGeometry(.018,10,8),new THREE.MeshPhongMaterial({color:0xcba886}));nose.position.set(0,0,.12);head.add(nose);s.scene.add(head);
- for(const side of ['l','r']){hands[side]=new THREE.Mesh(new THREE.SphereGeometry(.07,16,12),new THREE.MeshPhongMaterial({color:side==='l'?0x79dfca:0xffd18b}));s.scene.add(hands[side]);feet[side]=new THREE.Mesh(new THREE.BoxGeometry(.14,.09,.28),new THREE.MeshPhongMaterial({color:0x3c536b}));s.scene.add(feet[side]);}
- const grid=new THREE.GridHelper(4,16,0x406074,0x253547);s.scene.add(grid);const projection=new THREE.Mesh(new THREE.CircleGeometry(.045,24),new THREE.MeshBasicMaterial({color:0xffd18b,side:THREE.DoubleSide}));projection.rotation.x=-Math.PI/2;projection.position.y=.012;s.scene.add(projection);
- const footprint=new THREE.Mesh(new THREE.PlaneGeometry(1,1),new THREE.MeshBasicMaterial({color:0x79dfca,transparent:true,opacity:.08,side:THREE.DoubleSide}));footprint.rotation.x=-Math.PI/2;footprint.position.y=.006;s.scene.add(footprint);
- const plumb=Lab3D.line([[0,0,0],[0,1,0]],0x8c7952);s.scene.add(plumb);let cameraKey='',trailKey='',trails=[];
- return{three:true,render:(t,v)=>{const name=v.motion||l.motion,p=B.pose(name,t,fields(v)),j=p.joints;
- links.forEach(([a,b],i)=>bone(j[a],j[b],bones[i],i<4?.055:i>=8?.078:.05));for(const name in joints){joints[name].position.set(...j[name]);joints[name].visible=v.skeleton;}
- bone(j.pelvis,j.neck,torso,1);torso.scale.set(.215,.34,.13);hips.position.set(...j.pelvis);head.position.set(...j.head);head.rotation.y=p.head;
- for(const side of ['l','r']){hands[side].position.set(...j[side+'Wrist']);hands[side].scale.set(1,.65,1.2);feet[side].position.set(j[side+'Ankle'][0],j[side+'Ankle'][1]-.015,j[side+'Ankle'][2]+.05);}
- projection.position.set(j.pelvis[0],.012,j.pelvis[2]);footprint.scale.set((v.stance||.22)*2+.14,.3,1);const positions=plumb.geometry.attributes.position;positions.setXYZ(0,j.pelvis[0],.02,j.pelvis[2]);positions.setXYZ(1,...j.pelvis);positions.needsUpdate=true;
- if(cameraKey!==v.camera){cameraKey=v.camera;/* Front is +Z; geographic longitude needs a -90 degree offset. */if(v.camera!=='free')s.focus(v.camera==='front'?-90:v.camera==='side'?0:90,8);}
- const tk=JSON.stringify([name,fields(v)]);if(tk!==trailKey){trailKey=tk;for(const q of trails){s.scene.remove(q);q.geometry.dispose();q.material.dispose();}trails=[];for(const side of ['l','r']){const pts=[];for(let i=0;i<=100;i++)pts.push(B.pose(name,i/100,fields(v)).joints[side+'Wrist']);const line=Lab3D.line(pts,side==='l'?0x79dfca:0xffd18b);s.scene.add(line);trails.push(line);}}
- for(const q of trails){q.visible=v.trail;q.geometry.setDrawRange(0,Math.max(2,Math.round(t*100)+1));}s.draw();},dispose:s.dispose};
-};
-function fallback(c,p,v,name,t){D.clear(c);const yaw=v.camera==='side'?Math.PI/2:v.camera==='back'?Math.PI:v.camera==='free'?.6:0,proj=a=>[480+(a[0]*Math.cos(yaw)+a[2]*Math.sin(yaw))*230,520-a[1]*230],j=p.joints;D.line(c,[[140,535],[820,535]],'#365269',2);D.text(c,'平面备用视图 · 可切换正 / 侧 / 背面',480,42,24,P.muted);
- if(v.trail)for(const side of ['l','r']){const ps=[];for(let i=0;i<=80*t;i++)ps.push(proj(B.pose(name,i/80,fields(v)).joints[side+'Wrist']));if(ps.length>1)D.line(c,ps,side==='l'?'#436f68':'#796a50',2);}
- const a=proj(j.pelvis),b=proj(j.chest);D.line(c,[a,b,proj(j.neck)],'#56718c',65);for(const [u,w] of links){const color=u[0]==='l'?P.teal:u[0]==='r'?P.gold:'#7995ad';D.line(c,[proj(j[u]),proj(j[w])],color,16);}
- D.circle(c,...proj(j.head),27,'#e1c0a0');if(v.camera!=='back'){const h=proj(j.head);D.circle(c,h[0]-8,h[1]-2,3,'#253547');D.circle(c,h[0]+8,h[1]-2,3,'#253547');}if(v.skeleton)for(const key in j)if(key!=='head')D.circle(c,...proj(j[key]),5,'#eff7ff');const foot=proj([j.pelvis[0],0,j.pelvis[2]]);D.line(c,[a,foot],P.muted,1,[4,5]);D.circle(c,...foot,7,P.gold);D.text(c,'骨盆投影 ≠ 人体重心测量',480,580,18,P.gold);}
-M.render=({ctx:c,lesson:l,values:v,time:t,view})=>{const name=v.motion||l.motion,p=B.pose(name,t,fields(v)),j=p.joints;if(!view||!view.three)fallback(c,p,v,name,t);if(frameKey!==name){frameKey=name;const box=document.querySelector('#pose-frames');box.innerHTML='';for(let i=0;i<p.count;i++){const b=document.createElement('button');b.textContent=i===0?'预备':i===p.count-1?'收式':'分解 '+i;b.onclick=()=>window.LabTest.seek(i/(p.count-1));box.append(b);}}document.querySelectorAll('#pose-frames button').forEach((b,i)=>b.setAttribute('aria-pressed',p.stage===i));return{metrics:[['青色侧肘内夹角',B.angle(j.lShoulder,j.lElbow,j.lWrist).toFixed(1)+'°'],['金色侧肘内夹角',B.angle(j.rShoulder,j.rElbow,j.rWrist).toFixed(1)+'°'],['当前分解',`${p.stage+1} / ${p.count}`]],hint:view&&view.three?'拖动人体换视角；显示的是模型几何，不是实测发力。':'三维不可用，已切换平面模型；所有动作与角度仍可观察。',clock:'动作进度 '+Math.round(t*100)+'%'};};
+/* Joint-driven mannequin with articulated fingers, explicit palm orientation and inspectable views. */
+(function () {
+  'use strict';
+  const M=Museum,B=MartialModel,H=MartialHands,D=LabDraw,P=D.colors;
+  const links=[['lShoulder','lElbow'],['lElbow','lWrist'],['rShoulder','rElbow'],['rElbow','rWrist'],['lHip','lKnee'],['lKnee','lAnkle'],['rHip','rKnee'],['rKnee','rAnkle']];
+  let frameKey='';
+  const fields=v=>({amplitude:v.amplitude,stance:v.stance||.22,mirror:v.mirror});
+  for(const l of M.lessons){
+    l.controls.push({id:'detail',label:'观察范围',type:'select',value:l.id==='wingchun'?'upper':'full',options:[['full','全身与站姿'],['upper','上半身与双手'],['left','左手近景'],['right','右手近景']]});
+    l.controls.push({id:'palms',label:'显示掌面方向箭头',type:'checkbox',value:true});
+    l.duration=25;l.sources.push(['Wing Chun Halesowen · 掌型与结构','https://www.wingchunhalesowen.co.uk/tan-sau-bong-sau-pak-sau/']);
+    l.controls.find(p=>p.id==='skeleton').value=false;
+  }
+  function connect(a,b,obj){const u=new THREE.Vector3(...a),d=new THREE.Vector3(...b).sub(u);obj.position.copy(u.addScaledVector(d,.5));obj.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),d.clone().normalize());obj.scale.y=d.length();}
+  function mesh(geometry,color){return new THREE.Mesh(geometry,new THREE.MeshStandardMaterial({color,roughness:.82,metalness:0}));}
+  function label(text,color){const canvas=document.createElement('canvas');canvas.width=256;canvas.height=80;const c=canvas.getContext('2d');c.fillStyle='#0b1626df';c.roundRect(0,0,256,80,14);c.fill();c.fillStyle=color;c.font='600 26px system-ui,"Microsoft YaHei"';c.textAlign='center';c.textBaseline='middle';c.fillText(text,128,40);const texture=new THREE.CanvasTexture(canvas),sprite=new THREE.Sprite(new THREE.SpriteMaterial({map:texture,depthTest:false,transparent:true}));sprite.scale.set(.26,.081,1);return sprite;}
+  M.mount=({lesson:l,values:v,container,custom})=>{
+    frameKey='';custom.innerHTML='<section class="card"><h2>看清手型，再看动作</h2><div class="legend"><span class="legend-chip"><i style="--chip:#f0c7a5"></i>暖色面＝手心（可见掌纹）</span><span class="legend-chip"><i style="--chip:#9eb6cb"></i>蓝灰面＝手背（可见指甲）</span><span>青环＝人物左腕；金环＝人物右腕</span></div><p id="hand-state" class="details-text"></p><div class="phase-strip" id="pose-frames"></div><p class="tiny">模型展示关节位置与掌面，不推算发力或内劲；不同传承动作存在差异，不能代替教练纠正。</p></section>';
+    const s=Lab3D.make(container,{distance:3.25,target:[0,.99,0],yaw:0,pitch:.12,min:.3,max:10,allowSoftware:true});if(!s)return null;
+    const bones=links.map(([a],i)=>{const upper=i%2===0,leg=i>=4;const top=leg?(upper?.09:.064):(upper?.067:.045),bottom=leg?(upper?.062:.037):(upper?.047:.027);const obj=mesh(new THREE.CylinderGeometry(bottom,top,1,20),leg?0x25394b:upper?0x457777:0x588687);s.scene.add(obj);return obj;});
+    const joints={};for(const name of ['lShoulder','rShoulder','lElbow','rElbow','lWrist','rWrist','lHip','rHip','lKnee','rKnee']){const obj=mesh(new THREE.SphereGeometry(.024,14,10),0xe3e8e5);obj.material.depthTest=false;obj.renderOrder=9;joints[name]=obj;s.scene.add(obj);}
+    const torsoPoints=[[.155,0],[.16,.10],[.145,.20],[.19,.34],[.224,.45],[.22,.5],[.12,.56],[.065,.60]].map(p=>new THREE.Vector2(...p));
+    const torso=mesh(new THREE.LatheGeometry(torsoPoints,36),0x355b61);torso.scale.z=.63;s.scene.add(torso);
+    const hips=mesh(new THREE.SphereGeometry(1,24,16),0x263e50);hips.scale.set(.18,.145,.115);s.scene.add(hips);
+    const belt=mesh(new THREE.TorusGeometry(.16,.011,8,36),0xb8c6bb);belt.rotation.x=Math.PI/2;belt.scale.y=.68;s.scene.add(belt);
+    const neck=mesh(new THREE.CylinderGeometry(.055,.061,.13,20),0xd8b093);s.scene.add(neck);
+    const head=new THREE.Group(),skull=mesh(new THREE.SphereGeometry(1,32,24),0xd8b093);skull.scale.set(.091,.123,.092);head.add(skull);
+    const face=mesh(new THREE.SphereGeometry(1,24,18),0xd8b093);face.scale.set(.075,.084,.059);face.position.set(0,-.024,.047);head.add(face);
+    const nose=mesh(new THREE.ConeGeometry(.016,.042,4),0xc8a189);nose.rotation.x=Math.PI/2;nose.position.set(0,-.011,.105);head.add(nose);
+    for(const x of [-.093,.093]){const ear=mesh(new THREE.SphereGeometry(1,12,10),0xc59e82);ear.scale.set(.012,.025,.018);ear.position.set(x,-.006,0);head.add(ear);}s.scene.add(head);
+    const hands={l:H.createHand('l'),r:H.createHand('r')},feet={},wristRings={},arrows={},labels={};
+    for(const side of ['l','r']){
+      s.scene.add(hands[side].group);feet[side]=mesh(new THREE.SphereGeometry(1,24,14),0x273b4c);feet[side].scale.set(.062,.046,.136);s.scene.add(feet[side]);
+      wristRings[side]=mesh(new THREE.TorusGeometry(.029,.005,6,24),side==='l'?0x79dfca:0xffd18b);s.scene.add(wristRings[side]);
+      arrows[side]=new THREE.ArrowHelper(new THREE.Vector3(0,1,0),new THREE.Vector3(),.17,0xf0c7a5,.025,.012);s.scene.add(arrows[side]);
+      labels[side]=label(side==='l'?'左掌':'右掌',side==='l'?'#79dfca':'#ffd18b');s.scene.add(labels[side]);
+    }
+    const floor=mesh(new THREE.CircleGeometry(1.7,64),0x152636);floor.rotation.x=-Math.PI/2;floor.position.y=-.005;s.scene.add(floor);
+    const grid=new THREE.GridHelper(3.4,20,0x46687b,0x243c4c);grid.material.transparent=true;grid.material.opacity=.45;s.scene.add(grid);
+    let cameraKey='',trailKey='',trails=[];
+    const selectCamera=(value,j)=>{
+      const angle=value.camera==='side'?Math.PI/2:value.camera==='back'?Math.PI:0;
+      if(value.detail==='left'||value.detail==='right'){const side=value.detail==='left'?'l':'r',w=j[side+'Wrist'];s.setView(.55,angle+.4,.38,[w[0],w[1]+.045,w[2]+.07]);}
+      else if(value.detail==='upper')s.setView(1.8,angle+.14,.08,[0,1.38,.18]);
+      else s.setView(3.25,angle,.12,[0,.99,0]);
+    };
+    return {three:true,renderer:s.mode,zoom:s.zoom,resetCamera:()=>{cameraKey='';const p=B.pose(v.motion||l.motion,window.LabTest?.getState().time||0,fields(v));selectCamera(v,p.joints);},render:(t,v)=>{
+      const name=v.motion||l.motion,p=B.pose(name,t,fields(v)),j=p.joints;
+      links.forEach(([a,b],i)=>connect(j[a],j[b],bones[i]));
+      for(const key in joints){joints[key].position.set(...j[key]);joints[key].visible=v.skeleton;}
+      torso.position.set(...j.pelvis);torso.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),new THREE.Vector3(...j.neck).sub(new THREE.Vector3(...j.pelvis)).normalize());
+      hips.position.set(...j.pelvis);belt.position.set(j.pelvis[0],j.pelvis[1]+.13,j.pelvis[2]);neck.position.set(...j.neck);head.position.set(...j.head);head.rotation.y=p.head;
+      for(const side of ['l','r']){
+        const state=H.handState(name,t,side,v.mirror);hands[side].update(j,state,v.mirror);
+        feet[side].position.set(j[side+'Ankle'][0],.045,j[side+'Ankle'][2]+.06);
+        wristRings[side].position.set(...j[side+'Wrist']);wristRings[side].quaternion.copy(hands[side].group.quaternion);wristRings[side].rotateX(Math.PI/2);
+        const hand=hands[side].group,normal=new THREE.Vector3(0,0,1).applyQuaternion(hand.quaternion),origin=new THREE.Vector3(0,.05,.02).applyQuaternion(hand.quaternion).add(hand.position);
+        arrows[side].position.copy(origin);arrows[side].setDirection(normal);arrows[side].visible=v.palms;
+        labels[side].position.copy(origin.clone().addScaledVector(normal,.12));labels[side].visible=v.palms; const size=(v.detail==='left'||v.detail==='right')?.075:.20; labels[side].scale.set(size,size*80/256,1); arrows[side].setLength((v.detail==='left'||v.detail==='right')?.09:.14,.017,.008);
+        if(v.detail==='left'||v.detail==='right'){const focus=v.detail==='left'?'l':'r';labels[side].visible=v.palms&&side===focus;}
+      }
+      const ck=v.camera+':'+v.detail;if(ck!==cameraKey){cameraKey=ck;selectCamera(v,j);}
+      if(v.detail==='left'||v.detail==='right'){const w=j[(v.detail==='left'?'l':'r')+'Wrist'];s.target([w[0],w[1]+.045,w[2]+.07]);}
+      const tk=JSON.stringify([name,fields(v)]);if(tk!==trailKey){trailKey=tk;for(const q of trails){s.scene.remove(q);q.geometry.dispose();q.material.dispose();}trails=[];for(const side of ['l','r']){const pts=[];for(let k=0;k<=120;k++)pts.push(B.pose(name,k/120,fields(v)).joints[side+'Wrist']);const q=Lab3D.line(pts,side==='l'?0x79dfca:0xffd18b);s.scene.add(q);trails.push(q);}}
+      for(const q of trails){q.visible=v.trail;q.geometry.setDrawRange(0,Math.max(2,Math.floor(t*120)+1));}
+      s.draw();
+    },dispose:s.dispose};
+  };
+  function fallback(c,p,v){D.clear(c);D.text(c,'三维不可用 · 二维骨架仅用于位置检查',480,55,24,P.gold);const j=p.joints,proj=a=>[480+a[0]*230,520-a[1]*230];for(const [a,b]of links)D.line(c,[proj(j[a]),proj(j[b])],a[0]==='l'?P.teal:P.gold,10);D.line(c,[proj(j.pelvis),proj(j.chest),proj(j.neck)],'#6a93a5',44);D.ellipse(c,...proj(j.head),22,29,'#ceb094');D.text(c,'此备用图不具备三维手型验收能力',480,570,18,P.muted);}
+  M.render=({ctx:c,lesson:l,values:v,time:t,view})=>{
+    const name=v.motion||l.motion,p=B.pose(name,t,fields(v)),j=p.joints;
+    if(!view||!view.three)fallback(c,p,v);
+    if(frameKey!==name){frameKey=name;const box=document.querySelector('#pose-frames');box.innerHTML='';for(let i=0;i<p.count;i++){const b=document.createElement('button');b.textContent=i===0?'预备':i===p.count-1?'收式':'分解 '+i;b.onclick=()=>LabTest.seek(i/(p.count-1));box.append(b);}}
+    document.querySelectorAll('#pose-frames button').forEach((b,i)=>b.setAttribute('aria-pressed',p.stage===i));
+    const a=H.handState(name,t,'l',v.mirror),b=H.handState(name,t,'r',v.mirror);document.querySelector('#hand-state').textContent='人物左手：'+a.description+'；人物右手：'+b.description+'。掌纹、指甲和箭头一起判断朝向，不靠一个圆球猜手型。';
+    return {metrics:[['人物左肘内夹角',B.angle(j.lShoulder,j.lElbow,j.lWrist).toFixed(1)+'°'],['人物右肘内夹角',B.angle(j.rShoulder,j.rElbow,j.rWrist).toFixed(1)+'°'],['人物左手',a.description]],
+      hint:view&&view.three?(view.renderer==='canvas3d'?'软件三维（非 WebGL） · ':'')+'拖动旋转、滚轮缩放；“观察范围”可放大单手。箭头垂直于掌面，暖色手心、蓝灰手背。':'三维未启动；此处仅显示二维备用骨架。',clock:'动作进度 '+Math.round(t*100)+'%'};
+  };
 })();

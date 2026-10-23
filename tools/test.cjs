@@ -8,6 +8,7 @@ const chemistryFiles = fs.readdirSync(path.join(root,'projects/chemistry/tests')
 const suites = [
   ['公共首页', '.', ['--test','tests/portal.test.cjs']],
   ['新增四馆模型与资料','.', ['--test','tests/expansion-models.test.cjs']],
+  ['可视化整改与光学数值','.', ['--test','tests/refactor-models.test.cjs']],
   ['日月地模型','projects/astronomy',['tests/test.cjs']],
   ['日月地学习与对照','projects/astronomy',['tests/v2-test.cjs']],
   ['物理','projects/physics',['--test','tests/physics.test.cjs','tests/server.test.cjs']],
