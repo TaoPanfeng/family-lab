@@ -122,7 +122,14 @@ try:
                 snap(page, 'breathing-redesigned')
                 layouts(page, mod)
             elif mod == 'martial':
-                page.evaluate("const original=Lab3D.make;Lab3D.make=(...args)=>{window.__qa3d=original(...args);return window.__qa3d;}")
+                # Return undefined: Playwright auto-invokes a returned function value.
+                page.evaluate("""() => {
+                    const original = Lab3D.make;
+                    Lab3D.make = (...args) => {
+                        window.__qa3d = original(...args);
+                        return window.__qa3d;
+                    };
+                }""")
                 select(page, 'wingchun'); setp(page, 'motion', 'tan'); seek(page, .5)
                 renderer = page.evaluate('LabTest.getState().renderer')
                 report['renderers'][mod] = renderer
