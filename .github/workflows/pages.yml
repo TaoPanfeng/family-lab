@@ -34,11 +34,17 @@ jobs:
         run: npm run build
       - name: Test original applications and four new museums
         run: npm test
-      - name: Install browser test driver
-        timeout-minutes: 3
+      - name: Install browser test driver and Chinese screenshot fonts
+        timeout-minutes: 4
+        env:
+          DEBIAN_FRONTEND: noninteractive
+          NEEDRESTART_MODE: a
         run: |
           python -m pip install playwright==1.57.0
           google-chrome --version
+          sudo -E apt-get -o Acquire::Retries=2 -o Acquire::http::Timeout=15 update -qq
+          sudo -E apt-get -o Acquire::Retries=2 -o Acquire::http::Timeout=15 install -y --no-install-recommends fonts-noto-cjk
+          fc-match 'Noto Sans CJK SC'
       - name: Original projects and nine homepage entries via file URLs
         run: python tests/browser-smoke.py --browser "$(command -v google-chrome)" --out .qa/browser
       - name: Four museums via actual file URLs, including WebGL
