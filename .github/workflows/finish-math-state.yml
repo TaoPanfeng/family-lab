@@ -1,0 +1,76 @@
+name: Apply reviewed ground-view state fix
+on:
+  push:
+    branches: ['work/math-and-experience']
+    paths: ['.github/workflows/finish-math-state.yml']
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Apply exact reviewed source changes
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib
+          def read(name, expected):
+              p = Path(name)
+              raw = p.read_bytes()
+              if hashlib.sha256(raw).hexdigest() != expected:
+                  raise RuntimeError('Source changed: ' + name)
+              return p, raw.decode('utf-8')
+          def once(s, old, new):
+              if s.count(old) != 1:
+                  raise RuntimeError('Unexpected edit context')
+              return s.replace(old, new)
+          p,s = read('projects/astronomy/src/v2.js','3732998a46ee4ac81920e5451d08f061d13106785a60b604300bdbf90102fbf8')
+          s = once(s,'topic:v.topic,split:v.split,tilt:v.tilt',"topic:v.topic,split:v.split&&live().state.view!=='ground',tilt:v.tilt")
+          s = once(s,'app.validateSnapshot(entry.scene);const c=L.validateContext(entry.context);restoreBusy=true;',"app.validateSnapshot(entry.scene);const c=L.validateContext(entry.context);\n    // Ground snapshots stay single-view, including backups captured between render frames.\n    if(entry.scene.view==='ground')c.split=false;\n    restoreBusy=true;")
+          p.write_text(s)
+          p,s = read('projects/astronomy/tests/v2-browser-test.py','1074bac0d41f4e69b1587979d077f44a54c27e45495744bd94450b6e4b29a924')
+          start=s.index('    def ground_restore():');end=s.index('    test(',start)
+          replacement='''    def ground_restore():
+                  # Snapshot before any render frame: saved camera intent must be consistent immediately.
+                  snap=ev("""()=>{LabApp.setMode('ground');return {scene:LabApp.getState(),context:LabV2.getState()};}""")
+                  check(snap['scene']['view']=='ground');check(not snap['context']['split'])
+                  page.wait_for_function("LabApp.getState().view==='ground'&&!LabV2.getState().split")
+                  topic('moon');ev('(s)=>LabV2.restoreEntry(s)',snap)
+                  page.wait_for_function("LabApp.getState().view==='ground'&&!LabV2.getState().split")
+                  check(st()['time']==snap['scene']['time'])
+                  # Older backups may contain the stale flag from the previous frame.
+                  snap['context']['split']=True;ev('(s)=>LabV2.restoreEntry(s)',snap)
+                  page.wait_for_function("LabApp.getState().view==='ground'&&!LabV2.getState().split")
+          '''
+          lines=replacement.splitlines()
+          replacement=lines[0]+'\n'+'\n'.join('        '+line.lstrip() for line in lines[1:] if line.strip())+'\n'
+          p.write_text(s[:start]+replacement+s[end:])
+          p,s = read('README.md','24329b87257007e483f05d952871d8f191f284f8fcbe2b449addee74d37c7b51')
+          s=once(s,'在线发布后可以在手机和平板打开，五个项目的离线入口仍然保留。','在线发布后可以在手机和平板打开，十个项目的离线入口仍然保留。')
+          s=once(s,'| 武术 | `projects/martial/index.html` | 三维骨架、关键帧、八段锦/太极/咏春观察片段 |','| 武术 | `projects/martial/index.html` | 练功服/素模/骨架、清晰掌背、关键帧及动作片段 |\n| 数学 | `projects/math/index.html` | 125个核心节点、44类实验、分步例题与23组双路线论证 |')
+          p.write_text(s)
+          PY
+      - name: Rebuild and validate changes
+        run: |
+          python -m py_compile projects/astronomy/tests/v2-browser-test.py
+          npm run build
+          node tools/test.cjs --offline
+      - name: Commit reviewed changes without overwriting newer work
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh auth setup-git
+          git fetch origin work/math-and-experience
+          test "$(git rev-parse origin/work/math-and-experience)" = "$GITHUB_SHA"
+          git add -- README.md projects/astronomy/src/v2.js projects/astronomy/tests/v2-browser-test.py projects/astronomy/日月地实验室.html
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'fix(astronomy): 保持地面视角快照一致，覆盖旧备份与逐帧竞态'
+          git push origin HEAD:refs/heads/work/math-and-experience
