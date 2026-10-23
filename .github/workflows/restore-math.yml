@@ -1,0 +1,88 @@
+name: Restore reviewed mathematics and experience
+
+on:
+  push:
+    branches: ['work/math-and-experience']
+    paths: ['.delivery/math/manifest.json']
+
+permissions:
+  contents: write
+concurrency:
+  group: family-lab-reviewed-math-transfer
+  cancel-in-progress: false
+
+jobs:
+  restore:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Restore checksummed reviewed source
+        run: |
+          python - <<'PY'
+          import hashlib, json, lzma, pathlib
+          root = pathlib.Path.cwd()
+          folder = root / '.delivery/math'
+          manifest = json.loads((folder / 'manifest.json').read_text())
+          pieces = []
+          for item in manifest['parts']:
+              path = folder / item['name']
+              if path.resolve().parent != folder.resolve():
+                  raise RuntimeError('Invalid chunk name')
+              raw = path.read_bytes()
+              if len(raw) != item['bytes'] or hashlib.sha256(raw).hexdigest() != item['sha256']:
+                  raise RuntimeError('Chunk integrity error: ' + item['name'])
+              pieces.append(raw)
+          compressed = b''.join(pieces)
+          if hashlib.sha256(compressed).hexdigest() != manifest['archive_sha256']:
+              raise RuntimeError('Archive integrity error')
+          files = json.loads(lzma.decompress(compressed))
+          if len(files) != manifest['files']:
+              raise RuntimeError('Unexpected source file count')
+          for name, item in files.items():
+              rel = pathlib.PurePosixPath(name)
+              if rel.is_absolute() or '..' in rel.parts or not rel.parts or rel.parts[0] in ('.git', '.github', '.delivery'):
+                  raise RuntimeError('Unsafe source path: ' + name)
+              data = item['content'].encode('utf-8')
+              if hashlib.sha256(data).hexdigest() != item['sha256']:
+                  raise RuntimeError('Source checksum mismatch: ' + name)
+              path = root / name
+              if path.is_symlink() or not path.resolve().is_relative_to(root):
+                  raise RuntimeError('Unsafe destination: ' + name)
+              path.parent.mkdir(parents=True, exist_ok=True)
+              path.write_bytes(data)
+          (folder / 'restored-paths.json').write_text(json.dumps(list(files)))
+          print('Verified and restored', len(files), 'reviewed source files.')
+          PY
+      - name: Rebuild offline applications and check models
+        run: |
+          npm run build
+          node tools/test.cjs --offline
+      - name: Commit restored source and generated outputs to work branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh auth setup-git
+          branch='work/math-and-experience'
+          git fetch origin "$branch"
+          test "$(git rev-parse "origin/$branch")" = "$GITHUB_SHA"
+          python - <<'PY'
+          import json, subprocess
+          files = json.load(open('.delivery/math/restored-paths.json'))
+          files += ['index.html','source.html','projects/astronomy/日月地实验室.html','projects/physics/index.html','projects/physics/BUILD_MANIFEST.json','projects/posture/index.html','projects/chemistry/chemistry-explorer.html']
+          subprocess.run(['git','add','--',*files], check=True)
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'feat(math): 新增全学段数学探索、44类实验与双路线论证，优化人物和二维操作' -m '恢复逐文件校验的125节点数学馆与全站体验整改；构建及模型检查通过，真实浏览器和发布验收由后续PR执行。'
+          git push origin "HEAD:refs/heads/$branch"
+          echo '### Reviewed mathematics source restored; full PR verification is still required.' >> "$GITHUB_STEP_SUMMARY"
+          git rev-parse HEAD >> "$GITHUB_STEP_SUMMARY"

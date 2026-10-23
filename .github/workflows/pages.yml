@@ -17,7 +17,7 @@ concurrency:
 jobs:
   verify:
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
         with:
@@ -46,12 +46,26 @@ jobs:
           sudo -E apt-get -o Acquire::Retries=2 -o Acquire::http::Timeout=15 install -y --no-install-recommends fonts-wqy-zenhei
           fc-match ':lang=zh-cn'
           test -n "$(fc-list :lang=zh file | head -n 1)"
-      - name: Original projects and nine homepage entries via file URLs
+      - name: Deep physics, posture and astronomy interaction audits
+        env:
+          GW_BROWSER: /usr/bin/google-chrome
+        run: |
+          mkdir -p projects/physics/previews .qa/physics-audit
+          python projects/physics/tests/browser_test.py
+          cp projects/physics/docs/browser-test-report.json .qa/physics-audit/report.json
+          python -c "import json; r=json.load(open('.qa/physics-audit/report.json')); assert r['loading']=='file:// direct navigation' and r['failed']==0"
+          python projects/posture/tests/browser_smoke.py --browser "$(command -v google-chrome)" --out .qa/posture-audit
+          python projects/astronomy/tests/v2-browser-test.py --browser "$(command -v google-chrome)" --out .qa/astronomy-audit
+      - name: Original projects and ten homepage entries via file URLs
         run: python tests/browser-smoke.py --browser "$(command -v google-chrome)" --out .qa/browser
       - name: Four museums via actual file URLs, including WebGL
         run: python tests/expansion-browser.py --file --require-webgl --browser "$(command -v google-chrome)" --out .qa/new-file
       - name: Quality regression via actual file URLs
         run: python tests/quality-browser.py --file --require-webgl --browser "$(command -v google-chrome)" --out .qa/quality-file
+      - name: Math catalogue and all interactive models via file URLs
+        run: python tests/math-browser.py --file --browser "$(command -v google-chrome)" --out .qa/math-file
+      - name: Shared controls and human appearance via file URLs
+        run: python tests/experience-browser.py --file --require-webgl --browser "$(command -v google-chrome)" --out .qa/experience-file
       - name: Prepare website and corresponding source
         run: python tools/prepare-site.py
       - name: Test real homepage clicks and HTTP subpaths
@@ -60,6 +74,10 @@ jobs:
         run: python tests/expansion-browser.py --site --require-webgl --browser "$(command -v google-chrome)" --out .qa/new-http
       - name: Quality regression via HTTP, including actual rendering changes
         run: python tests/quality-browser.py --site --require-webgl --browser "$(command -v google-chrome)" --out .qa/quality-http
+      - name: Math catalogue and all interactive models via HTTP
+        run: python tests/math-browser.py --site --browser "$(command -v google-chrome)" --out .qa/math-http
+      - name: Shared controls and human appearance via HTTP
+        run: python tests/experience-browser.py --site --require-webgl --browser "$(command -v google-chrome)" --out .qa/experience-http
       - name: Preserve tested offline outputs
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         uses: actions/upload-artifact@v4
@@ -134,7 +152,7 @@ jobs:
     needs: sync-offline
     if: needs.sync-offline.outputs.current == 'true'
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    timeout-minutes: 20
     permissions:
       contents: read
       pages: write
@@ -147,7 +165,7 @@ jobs:
       - name: Deploy tested website
         id: deployment
         uses: actions/deploy-pages@v4
-      - name: Verify published homepage, catalogue, nine applications and shared scripts
+      - name: Verify published homepage, catalogue, ten applications and shared scripts
         env:
           SITE_URL: ${{ steps.deployment.outputs.page_url }}
         run: |
@@ -168,11 +186,11 @@ jobs:
                       if attempt == 7:
                           raise
                       time.sleep(5)
-          expected = {'astronomy','physics','chemistry','history','posture','biology','geography','cosmos','martial'}
+          expected = {'astronomy','physics','chemistry','history','posture','biology','geography','cosmos','martial','math'}
           home = get('index.html').decode('utf-8')
           catalog = json.loads(get('catalog.json'))
-          if {p['id'] for p in catalog} != expected or len(catalog) != 9:
-              raise RuntimeError('Published catalogue does not have the expected nine museums')
+          if {p['id'] for p in catalog} != expected or len(catalog) != 10:
+              raise RuntimeError('Published catalogue does not have the expected ten museums')
           for project in catalog:
               if ('data-project="' + project['id'] + '"') not in home:
                   raise RuntimeError('Homepage missing ' + project['id'])
@@ -180,19 +198,20 @@ jobs:
               if b'<html' not in content[:2000].lower():
                   raise RuntimeError('Not HTML: ' + project['id'])
               print('HTTP 200:', project['name'])
-          for path in ['shared/core.js','shared/shell.js','shared/scene3d.js','shared/lab.css','projects/biology/data.js','projects/geography/app.js','projects/cosmos/data.js','projects/martial/model.js','projects/martial/hands.js','shared/canvas3d.js','projects/biology/process-models.js','projects/biology/visuals.js','projects/geography/countries.js','projects/geography/terrain.js','projects/geography/map-engine.js','projects/cosmos/process-models.js','projects/cosmos/visuals.js','projects/physics/optics.html','projects/physics/optics/model.js','projects/physics/optics/data.js','projects/physics/optics/app.js']:
+          for path in ['shared/core.js','shared/shell.js','shared/scene3d.js','shared/lab.css','projects/biology/data.js','projects/geography/app.js','projects/cosmos/data.js','projects/martial/model.js','projects/martial/hands.js','shared/canvas3d.js','projects/biology/process-models.js','projects/biology/visuals.js','projects/geography/countries.js','projects/geography/terrain.js','projects/geography/map-engine.js','projects/cosmos/process-models.js','projects/cosmos/visuals.js','projects/physics/optics.html','projects/physics/optics/model.js','projects/physics/optics/data.js','projects/physics/optics/app.js','projects/math/index.html','projects/math/data.js','projects/math/model.js','projects/math/labs.js','projects/math/proofs.js','projects/math/app.js','projects/math/style.css']:
               if len(get(path)) < 100:
                   raise RuntimeError('Missing runtime asset: ' + path)
           with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as output:
-              output.write('### Nine museums published and HTTP-verified\n\n' + base + '\n')
+              output.write('### Ten museums published and HTTP-verified\n\n' + base + '\n')
           PY
+
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Verify actual published visual interactions
+      - name: Verify actual published quality, mathematics and common controls
         env:
           SITE_URL: ${{ steps.deployment.outputs.page_url }}
           DEBIAN_FRONTEND: noninteractive
@@ -203,12 +222,18 @@ jobs:
           sudo -E apt-get -o Acquire::Retries=2 -o Acquire::http::Timeout=15 install -y --no-install-recommends fonts-wqy-zenhei
           test -n "$(fc-list :lang=zh file | head -n 1)"
           python tests/quality-browser.py --base "$SITE_URL" --require-webgl --browser "$(command -v google-chrome)" --out .qa/live-quality
+          python tests/math-browser.py --base "$SITE_URL" --browser "$(command -v google-chrome)" --out .qa/live-math
+          python tests/experience-browser.py --base "$SITE_URL" --require-webgl --browser "$(command -v google-chrome)" --out .qa/live-experience
       - name: Preserve online interaction evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: published-quality-results
-          path: .qa/live-quality
+          path: |
+            .qa/live-quality
+            .qa/live-math
+            .qa/live-experience
+          include-hidden-files: true
           if-no-files-found: ignore
           retention-days: 7
 
@@ -229,7 +254,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          branch='feature/four-museums-20261023'
+          branch='work/math-and-experience'
           gh auth setup-git
           head="$(git ls-remote --heads origin "refs/heads/$branch" | cut -f1)"
           if test -z "$head"; then
@@ -243,4 +268,4 @@ jobs:
           git merge-base --is-ancestor "$head" origin/main
           test "$(git ls-remote --heads origin "refs/heads/$branch" | cut -f1)" = "$head"
           git push origin --delete "$branch"
-          echo 'Verified merged branch deleted after successful deployment; history remains in main.' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Merged work branch removed after successful live validation; history remains in main.' >> "$GITHUB_STEP_SUMMARY"
