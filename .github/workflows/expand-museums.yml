@@ -1,0 +1,53 @@
+name: Restore tested museum sources
+
+on:
+  push:
+    branches: [feature/four-museums-20261023]
+    paths: ['.maintenance/part-*', '.maintenance/restore.py']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+concurrency:
+  group: restore-four-museums
+  cancel-in-progress: false
+
+jobs:
+  restore:
+    if: github.ref == 'refs/heads/feature/four-museums-20261023'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Restore checksum-verified source files
+        run: python .maintenance/restore.py
+      - name: Build and verify the integrated source
+        run: |
+          npm run build
+          node --test tests/portal.test.cjs tests/expansion-models.test.cjs
+      - name: Stage only verified source files and remove transport files
+        run: |
+          python - <<'PY'
+          import json, pathlib, subprocess
+          paths = json.loads(pathlib.Path('.maintenance/restored.json').read_text())
+          subprocess.run(['git', 'add', '--', *paths], check=True)
+          subprocess.run(['git', 'rm', '-r', '--', '.maintenance'], check=True)
+          pathlib.Path('.maintenance/restored.json').unlink()
+          PY
+      - name: Commit readable sources to the feature branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'feat(museums): 增加生物、地理、宇宙、武术31个交互主题及九馆首页' -m '保留原五馆；新增离线学习壳、实验记录、来源边界及模型和浏览器测试。'
+          gh auth setup-git
+          git push origin HEAD:feature/four-museums-20261023

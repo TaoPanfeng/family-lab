@@ -3,46 +3,21 @@ name: Test and publish Family Lab
 on:
   push:
     branches: [main]
-    paths-ignore:
-      - 'family-lab.zip'
-      - '.github/scripts/import_archive.py'
-      - '.github/workflows/import-family-lab.yml'
+    paths-ignore: ['family-lab.zip', '.github/scripts/import_archive.py', '.github/workflows/import-family-lab.yml']
   pull_request:
     branches: [main]
   workflow_dispatch:
 
 permissions:
   contents: read
-
 concurrency:
   group: family-lab-publish-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  inspect:
-    runs-on: ubuntu-24.04
-    timeout-minutes: 3
-    outputs:
-      ready: ${{ steps.project.outputs.ready }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-      - id: project
-        name: Check whether the initial project import is complete
-        run: |
-          if test -f package.json && test -f catalog.json && test -f index.html; then
-            echo 'ready=true' >> "$GITHUB_OUTPUT"
-          else
-            echo 'ready=false' >> "$GITHUB_OUTPUT"
-            echo 'Initial ZIP import is incomplete. Application checks and deployment did not run.' >> "$GITHUB_STEP_SUMMARY"
-          fi
-
   verify:
-    needs: inspect
-    if: needs.inspect.outputs.ready == 'true'
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
         with:
@@ -57,19 +32,23 @@ jobs:
         run: npm --prefix projects/history ci --ignore-scripts --no-audit --no-fund
       - name: Build all offline applications and homepage
         run: npm run build
-      - name: Run model, data and DOM tests
+      - name: Test original applications and four new museums
         run: npm test
-      - name: Install test driver and verify preinstalled Chrome
+      - name: Install browser test driver
         timeout-minutes: 3
         run: |
           python -m pip install playwright==1.57.0
           google-chrome --version
-      - name: Verify actual local-file navigation and interactions
+      - name: Original projects and nine homepage entries via file URLs
         run: python tests/browser-smoke.py --browser "$(command -v google-chrome)" --out .qa/browser
-      - name: Prepare website with corresponding source and licenses
+      - name: Four museums via actual file URLs, including WebGL
+        run: python tests/expansion-browser.py --file --require-webgl --browser "$(command -v google-chrome)" --out .qa/new-file
+      - name: Prepare website and corresponding source
         run: python tools/prepare-site.py
-      - name: Verify HTTP subpaths, project entry links and mobile layout
+      - name: Test real homepage clicks and HTTP subpaths
         run: python tests/site-smoke.py --browser "$(command -v google-chrome)" --out .qa/site
+      - name: Four museums via HTTP, including WebGL and notebook persistence
+        run: python tests/expansion-browser.py --site --require-webgl --browser "$(command -v google-chrome)" --out .qa/new-http
       - name: Preserve tested offline outputs
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         uses: actions/upload-artifact@v4
@@ -125,7 +104,7 @@ jobs:
           git fetch origin main
           if test "$(git rev-parse origin/main)" != "$GITHUB_SHA"; then
             echo 'current=false' >> "$GITHUB_OUTPUT"
-            echo 'Newer source is already on main; this older run will not commit or deploy.' >> "$GITHUB_STEP_SUMMARY"
+            echo 'Newer source exists; the old run will not commit or deploy.' >> "$GITHUB_STEP_SUMMARY"
             exit 0
           fi
           git add -- index.html source.html projects/astronomy/日月地实验室.html projects/physics/index.html projects/posture/index.html projects/chemistry/chemistry-explorer.html
@@ -137,7 +116,6 @@ jobs:
             git push origin HEAD:main
           fi
           echo 'current=true' >> "$GITHUB_OUTPUT"
-          echo 'Offline outputs match the tested source and are committed to main.' >> "$GITHUB_STEP_SUMMARY"
           git rev-parse HEAD >> "$GITHUB_STEP_SUMMARY"
 
   deploy:
@@ -153,16 +131,11 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      # Enabling a new site may require the owner's one-time Pages setting.
-      # Never change repository visibility or account billing automatically.
-      - name: Configure or attempt to enable GitHub Pages
-        uses: actions/configure-pages@v5
-        with:
-          enablement: true
-      - name: Deploy the tested website
+      - uses: actions/configure-pages@v5
+      - name: Deploy tested website
         id: deployment
         uses: actions/deploy-pages@v4
-      - name: Verify published homepage and all five project URLs
+      - name: Verify published homepage, catalogue, nine applications and shared scripts
         env:
           SITE_URL: ${{ steps.deployment.outputs.page_url }}
         run: |
@@ -172,28 +145,32 @@ jobs:
           from urllib.request import urlopen
           base = os.environ['SITE_URL'].rstrip('/') + '/'
           def get(path):
-              url = urljoin(base, quote(path, safe='/'))
-              for attempt in range(6):
+              url = urljoin(base, quote(path, safe='/')) + '?check=' + os.environ['GITHUB_SHA'][:12]
+              for attempt in range(8):
                   try:
                       with urlopen(url, timeout=30) as response:
                           if response.status != 200:
-                              raise RuntimeError('Unexpected HTTP status')
+                              raise RuntimeError('HTTP status: ' + str(response.status))
                           return response.read()
                   except Exception:
-                      if attempt == 5:
+                      if attempt == 7:
                           raise
                       time.sleep(5)
+          expected = {'astronomy','physics','chemistry','history','posture','biology','geography','cosmos','martial'}
           home = get('index.html').decode('utf-8')
-          if 'data-project="astronomy"' not in home or 'data-project="posture"' not in home:
-              raise RuntimeError('Published homepage does not match Family Lab')
           catalog = json.loads(get('catalog.json'))
-          if len(catalog) != 5:
-              raise RuntimeError('Expected exactly five projects')
+          if {p['id'] for p in catalog} != expected or len(catalog) != 9:
+              raise RuntimeError('Published catalogue does not have the expected nine museums')
           for project in catalog:
+              if ('data-project="' + project['id'] + '"') not in home:
+                  raise RuntimeError('Homepage missing ' + project['id'])
               content = get(project['entry'])
               if b'<html' not in content[:2000].lower():
-                  raise RuntimeError('Project did not return HTML: ' + project['id'])
+                  raise RuntimeError('Not HTML: ' + project['id'])
               print('HTTP 200:', project['name'])
+          for path in ['shared/core.js','shared/shell.js','shared/scene3d.js','shared/lab.css','projects/biology/data.js','projects/geography/app.js','projects/cosmos/data.js','projects/martial/model.js']:
+              if len(get(path)) < 100:
+                  raise RuntimeError('Missing runtime asset: ' + path)
           with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as output:
-              output.write('### Published and HTTP-verified\n\n' + base + '\n')
+              output.write('### Nine museums published and HTTP-verified\n\n' + base + '\n')
           PY
