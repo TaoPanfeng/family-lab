@@ -2,7 +2,7 @@
   "name": "family-lab",
   "version": "1.0.0",
   "private": true,
-  "description": "九个独立探索馆、统一首页、离线优先；新增双缝干涉与菲索齿轮光速实验。",
+  "description": "十个独立探索馆、统一首页、离线优先；数学知识路线、交互实验与可视化探索。",
   "engines": {
     "node": ">=22.17"
   },
