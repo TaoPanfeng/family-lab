@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Exercise the published nine-museum home and all actual popup links under a subpath."""
+"""Exercise the published ten-museum home and all actual popup links under a subpath."""
 from pathlib import Path
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urljoin, urlsplit, unquote
@@ -45,15 +45,15 @@ def main():
                 page = context.new_page()
                 response = page.goto(base,wait_until='load',timeout=60000)
                 check('homepage HTTP 200',response.status==200)
-                check('nine independent museum entries',page.locator('[data-project]').count()==9)
+                check('ten independent museum entries',page.locator('[data-project]').count()==10)
                 page.locator('#museum-search').fill('氧气')
                 check('homepage search filters actual cards',page.locator('[data-project]:visible').count()==1)
                 page.locator('#museum-search').fill('000missing')
                 check('homepage empty search state',page.locator('#home-empty').is_visible())
                 page.locator('#museum-search').press('Escape')
-                check('Escape restores all cards',page.locator('[data-project]:visible').count()==9)
+                check('Escape restores all cards',page.locator('[data-project]:visible').count()==10)
                 entries=page.locator('[data-project]').evaluate_all('(ls)=>ls.map(a=>({id:a.dataset.project,href:a.getAttribute("href")}))')
-                ready={'astronomy':'!!window.LabV2','physics':'!!window.GuanWu','chemistry':'!!window.ChemAppTesting','history':'!!document.querySelector("#navigation [data-view]")','posture':'!!window.PostureLab'}
+                ready={'math':'!!window.MathTest','astronomy':'!!window.LabV2','physics':'!!window.GuanWu','chemistry':'!!window.ChemAppTesting','history':'!!document.querySelector("#navigation [data-view]")','posture':'!!window.PostureLab'}
                 for entry in entries:
                     with page.expect_popup(timeout=30000) as opened:
                         page.locator('[data-project="'+entry['id']+'"]').click()
