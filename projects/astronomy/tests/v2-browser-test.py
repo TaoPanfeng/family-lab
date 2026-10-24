@@ -16,7 +16,7 @@ def test(name,fn):
     try:
         detail=fn();results.append({'name':name,'pass':True,**({'detail':detail} if detail else {})});print('PASS',name,flush=True)
     except Exception as e:
-        results.append({'name':name,'pass':False,'error':str(e)});print('FAIL',name,str(e),flush=True)
+        results.append({'name':name,'pass':False,'error':str(e),'traceback':traceback.format_exc()});print('FAIL',name,str(e),flush=True)
         try:page.screenshot(path=str(TMP/f'failure-{len(results)}.png'))
         except:pass
 with sync_playwright() as p:
@@ -106,7 +106,36 @@ with sync_playwright() as p:
         page.wait_for_function("LabApp.getState().view==='ground'&&!LabV2.getState().split")
     test('独立地面场景恢复不会被强制切回太空',ground_restore)
     def shadow():
-        topic('shadow');check(page.locator('#v2-shadow-canvas').is_visible());check(v2()['window']['step']==7*86400000);old=float(page.locator('#v2-right-metric').inner_text().split()[0]);realfield('#v2-research-controls .v2-height',2);new=float(page.locator('#v2-right-metric').inner_text().split()[0]);check(abs(new-2*old)<.021);shot('05-noon-shadow.png')
+        topic('shadow')
+        # A topic change schedules rendering; a fixed sleep can still see the old view.
+        canvas=page.locator('#v2-shadow-canvas')
+        canvas.wait_for(state='visible')
+        check(v2()['window']['step']==7*86400000,'shadow timeline must step by seven days')
+        def ready(height):
+            page.wait_for_function("""height=>{
+                const metric=document.getElementById('v2-right-metric');
+                const title=document.getElementById('v2-right-metric-title');
+                const canvas=document.getElementById('v2-shadow-canvas');
+                return LabV2.getState().topic==='shadow'&&LabV2.getState().height===height&&
+                    title.textContent===height.toFixed(1)+' 米立杆 · 正午影长'&&
+                    / 米$/.test(metric.textContent)&&Number.isFinite(parseFloat(metric.textContent))&&
+                    !canvas.hidden&&canvas.width>0&&canvas.height>0;
+            }""",arg=height)
+            return float(page.locator('#v2-right-metric').inner_text().split()[0])
+        page.locator('#v2-reset-second').click()
+        old=ready(1);before=st();altitude=page.locator('#v2-left-metric').inner_text()
+        image=canvas.evaluate('(c)=>c.toDataURL()')
+        realfield('#v2-research-controls .v2-height',2)
+        new=ready(2)
+        check(abs(new-2*old)<.021,f'1m shadow={old}, 2m shadow={new}; expected double within displayed rounding')
+        check(page.locator('#v2-left-metric').inner_text()==altitude,'height changed the solar altitude')
+        check(st()['time']==before['time'] and st()['observer']==before['observer'],'height changed time or observer')
+        page.wait_for_function("old=>document.getElementById('v2-shadow-canvas').toDataURL()!==old",arg=image)
+        page.locator('#v2-reset-second').click()
+        check(ready(1)==old,'reset did not restore the one-metre shadow')
+        realfield('#v2-research-controls .v2-height',2);check(ready(2)==new,'repeated height change is not deterministic')
+        shot('05-noon-shadow.png')
+        return {'oneMetreShadow':old,'twoMetreShadow':new,'solarAltitude':altitude,'resetVerified':True}
     test('立杆实验：杆高加倍，影长随几何关系变化',shadow)
     def shadow_city():
         before=st()['observer']['lat'];page.locator('.v2-compare-city').click();wait();check(st()['observer']['lat']*before<0);check('悉尼' in page.locator('#v2-right-extra').inner_text());page.locator('.v2-compare-city').click()
