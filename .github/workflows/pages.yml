@@ -66,6 +66,8 @@ jobs:
         run: python tests/math-browser.py --file --browser "$(command -v google-chrome)" --out .qa/math-file
       - name: Shared controls and human appearance via file URLs
         run: python tests/experience-browser.py --file --require-webgl --browser "$(command -v google-chrome)" --out .qa/experience-file
+      - name: Trusted mobile touch gestures via file URLs
+        run: python tests/mobile-touch.py --file --require-webgl --browser "$(command -v google-chrome)" --out .qa/mobile-file
       - name: Prepare website and corresponding source
         run: python tools/prepare-site.py
       - name: Test real homepage clicks and HTTP subpaths
@@ -78,6 +80,8 @@ jobs:
         run: python tests/math-browser.py --site --browser "$(command -v google-chrome)" --out .qa/math-http
       - name: Shared controls and human appearance via HTTP
         run: python tests/experience-browser.py --site --require-webgl --browser "$(command -v google-chrome)" --out .qa/experience-http
+      - name: Trusted mobile touch gestures via HTTP
+        run: python tests/mobile-touch.py --site --require-webgl --browser "$(command -v google-chrome)" --out .qa/mobile-http
       - name: Preserve tested offline outputs
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         uses: actions/upload-artifact@v4
@@ -198,7 +202,7 @@ jobs:
               if b'<html' not in content[:2000].lower():
                   raise RuntimeError('Not HTML: ' + project['id'])
               print('HTTP 200:', project['name'])
-          for path in ['shared/core.js','shared/shell.js','shared/scene3d.js','shared/lab.css','projects/biology/data.js','projects/geography/app.js','projects/cosmos/data.js','projects/martial/model.js','projects/martial/hands.js','shared/canvas3d.js','projects/biology/process-models.js','projects/biology/visuals.js','projects/geography/countries.js','projects/geography/terrain.js','projects/geography/map-engine.js','projects/cosmos/process-models.js','projects/cosmos/visuals.js','projects/physics/optics.html','projects/physics/optics/model.js','projects/physics/optics/data.js','projects/physics/optics/app.js','projects/math/index.html','projects/math/data.js','projects/math/model.js','projects/math/labs.js','projects/math/proofs.js','projects/math/app.js','projects/math/style.css']:
+          for path in ['shared/core.js','shared/touch.js','shared/shell.js','shared/scene3d.js','shared/lab.css','projects/biology/data.js','projects/geography/app.js','projects/cosmos/data.js','projects/martial/model.js','projects/martial/hands.js','shared/canvas3d.js','projects/biology/process-models.js','projects/biology/visuals.js','projects/geography/countries.js','projects/geography/terrain.js','projects/geography/map-engine.js','projects/cosmos/process-models.js','projects/cosmos/visuals.js','projects/physics/optics.html','projects/physics/optics/model.js','projects/physics/optics/data.js','projects/physics/optics/app.js','projects/math/index.html','projects/math/data.js','projects/math/model.js','projects/math/labs.js','projects/math/proofs.js','projects/math/app.js','projects/math/style.css']:
               if len(get(path)) < 100:
                   raise RuntimeError('Missing runtime asset: ' + path)
           with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as output:
@@ -224,6 +228,7 @@ jobs:
           python tests/quality-browser.py --base "$SITE_URL" --require-webgl --browser "$(command -v google-chrome)" --out .qa/live-quality
           python tests/math-browser.py --base "$SITE_URL" --browser "$(command -v google-chrome)" --out .qa/live-math
           python tests/experience-browser.py --base "$SITE_URL" --require-webgl --browser "$(command -v google-chrome)" --out .qa/live-experience
+          python tests/mobile-touch.py --base "$SITE_URL" --require-webgl --browser "$(command -v google-chrome)" --out .qa/live-mobile
       - name: Preserve online interaction evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -233,6 +238,7 @@ jobs:
             .qa/live-quality
             .qa/live-math
             .qa/live-experience
+            .qa/live-mobile
           include-hidden-files: true
           if-no-files-found: ignore
           retention-days: 7
@@ -254,7 +260,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          branch='work/math-and-experience'
+          branch='work/mobile-touch'
           gh auth setup-git
           head="$(git ls-remote --heads origin "refs/heads/$branch" | cut -f1)"
           if test -z "$head"; then
