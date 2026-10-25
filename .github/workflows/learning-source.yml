@@ -1,0 +1,35 @@
+name: Learning source snapshot
+on:
+  push:
+    branches: ['work/learning-clarity']
+    paths: ['.github/workflows/learning-source.yml']
+permissions:
+  contents: read
+jobs:
+  snapshot:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Prepare local formula renderer without external font dependencies
+        run: |
+          mkdir -p /tmp/formulas
+          cd /tmp/formulas
+          npm pack katex@0.16.25 --ignore-scripts
+          tar -xzf katex-0.16.25.tgz
+          mkdir -p "$GITHUB_WORKSPACE/shared/vendor/katex"
+          cp package/dist/katex.min.js package/LICENSE "$GITHUB_WORKSPACE/shared/vendor/katex/"
+          cd "$GITHUB_WORKSPACE"
+          git rev-parse HEAD > SOURCE_COMMIT.txt
+          find shared/vendor/katex -type f -exec sha256sum '{}' ';' > FORMULA_CHECKSUMS.txt
+          tar --exclude=.git -czf /tmp/learning-source.tar.gz .
+      - uses: actions/upload-artifact@v4
+        with:
+          name: learning-source
+          path: /tmp/learning-source.tar.gz
+          retention-days: 3
