@@ -1,0 +1,21 @@
+name: Mobile source snapshot
+on:
+  push:
+    branches: ['work/mobile-touch']
+    paths: ['.github/workflows/mobile-source.yml']
+permissions:
+  contents: read
+jobs:
+  snapshot:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - run: git archive --format=tar HEAD -o /tmp/source.tar
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mobile-source
+          path: /tmp/source.tar
+          retention-days: 1
