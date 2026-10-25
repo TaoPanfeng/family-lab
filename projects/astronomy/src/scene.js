@@ -151,18 +151,19 @@
       this.renderer.domElement.addEventListener('webglcontextlost',this.contextLost);
     }
     bindPointer(){
-      const canvas=this.renderer.domElement;this.pointers=new Map();this.lastPinch=0;
-      this.pointerDown=e=>{canvas.setPointerCapture(e.pointerId);this.pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});};
+      const canvas=this.renderer.domElement;canvas.style.touchAction='none';this.pointers=new Map();this.lastPinch=0;
+      canvas.addEventListener('touchmove',e=>{if(this.pointers.size&&e.cancelable)e.preventDefault();},{passive:false});
+      this.pointerDown=e=>{if(e.pointerType==='mouse'&&e.button!==0)return;canvas.setPointerCapture(e.pointerId);this.pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});if(this.pointers.size===2){const [a,b]=[...this.pointers.values()];this.lastPinch=Math.hypot(a.x-b.x,a.y-b.y);}};
       this.pointerMove=e=>{
         const old=this.pointers.get(e.pointerId);if(!old)return;
         const dx=e.clientX-old.x,dy=e.clientY-old.y;this.pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
-        if(this.pointers.size===2){const [a,b]=[...this.pointers.values()],d=Math.hypot(a.x-b.x,a.y-b.y);if(this.lastPinch)this.zoom(this.lastPinch/d);this.lastPinch=d;}
-        else{this.azimuth-=dx*.006;this.elevation=A.clamp(this.elevation+dy*.006,-1.47,1.47);this.cameraManual=true;}
+        if(this.pointers.size===2){const [a,b]=[...this.pointers.values()],d=Math.hypot(a.x-b.x,a.y-b.y);if(this.lastPinch>2&&d>2)this.zoom(this.lastPinch/d);this.lastPinch=d;}
+        else if(this.pointers.size===1){this.azimuth-=dx*.006;this.elevation=A.clamp(this.elevation+dy*.006,-1.47,1.47);this.cameraManual=true;}
       };
       this.pointerUp=e=>{this.pointers.delete(e.pointerId);this.lastPinch=0;};
       this.wheel=e=>{e.preventDefault();this.zoom(Math.exp(e.deltaY*.001));};
       canvas.addEventListener('pointerdown',this.pointerDown);canvas.addEventListener('pointermove',this.pointerMove);
-      canvas.addEventListener('pointerup',this.pointerUp);canvas.addEventListener('pointercancel',this.pointerUp);
+      canvas.addEventListener('pointerup',this.pointerUp);canvas.addEventListener('pointercancel',this.pointerUp);canvas.addEventListener('lostpointercapture',this.pointerUp);
       canvas.addEventListener('wheel',this.wheel,{passive:false});canvas.addEventListener('contextmenu',e=>e.preventDefault());
       canvas.addEventListener('dblclick',e=>{if(this.mode==='ground'||!this.state)return;
         const b=canvas.getBoundingClientRect(),ray=new T.Raycaster();ray.setFromCamera(new T.Vector2((e.clientX-b.left)/b.width*2-1,1-(e.clientY-b.top)/b.height*2),this.camera);

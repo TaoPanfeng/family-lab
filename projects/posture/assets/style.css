@@ -10,3 +10,14 @@
 .current-step p{font-size:13px}.parameter label{font-size:12px}.parameter>p,.parameter-note{font-size:10px}.step-hint{font-size:10px}.stage-caption{font-size:9px}.scene-label{font-size:11px}.breath-main p{font-size:11px}.step-item small{font-size:10px}
 @media(max-width:740px){.library{position:relative}.current-step p{font-size:13px}.step-item small{font-size:9px}.stage-caption{font-size:9px}.step-hint{font-size:9px}}
 @media(max-width:380px){.step-bottom{flex-wrap:wrap}.step-hint{max-width:100%}.step-buttons{margin-left:auto}.camera-controls button{padding:4px 7px}.walk-play{font-size:9px;padding:4px}}
+
+/* Touch targets are local controls, not a global page-scroll lock. */
+@media (pointer:coarse),(max-width:800px){
+ button,select,summary{min-height:44px}
+ button{min-width:44px}
+ input[type=range]{min-height:44px;touch-action:none}
+ input[type=checkbox],input[type=radio]{min-width:24px;min-height:24px}
+ input:not([type=range]):not([type=checkbox]):not([type=radio]),select,textarea{font-size:16px!important}
+ button,select,summary{touch-action:manipulation}
+ dialog{max-height:90dvh;overscroll-behavior:contain}
+}

@@ -55,7 +55,7 @@
       else if(value.detail==='upper')s.setView(1.8,angle+.14,.08,[0,1.38,.18]);
       else s.setView(3.25,angle,.12,[0,.99,0]);
     };
-    return {three:true,renderer:s.mode,zoom:s.zoom,resetCamera:()=>{cameraKey='';const p=B.pose(v.motion||l.motion,window.LabTest?.getState().time||0,fields(v));selectCamera(v,p.joints);},render:(t,v)=>{
+    return {three:true,renderer:s.mode,state:s.state,zoom:s.zoom,resetCamera:()=>{cameraKey='';const p=B.pose(v.motion||l.motion,window.LabTest?.getState().time||0,fields(v));selectCamera(v,p.joints);},render:(t,v)=>{
       const name=v.motion||l.motion,p=B.pose(name,t,fields(v)),j=p.joints;
       const style=v.appearance||'uniform',skeleton=style==='skeleton';
       links.forEach(([a,b],i)=>{connect(j[a],j[b],bones[i]);connect(j[a],j[b],rig[i]);bones[i].visible=!skeleton;rig[i].visible=skeleton;bones[i].material.color.setHex(style==='plain'?0x9eacb6:i>=4?0x223747:0xe5ded0);});

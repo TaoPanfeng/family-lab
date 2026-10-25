@@ -9,7 +9,7 @@ for(const l of M.lessons){
  {id:'country',label:'定位国家／地区',type:'select',value:'',options:[['','不单独定位'],...GeoCountries.filter(c=>c.name!=='南极洲').sort((a,b)=>a.name.localeCompare(b.name,'zh')).map(c=>[c.id,c.name])]});
  l.limits+=' 国家／地区边界来自本地 Natural Earth 低分辨率快照，原始发布日期未确认，不代表当前权威边界。航路叠加的是现代简化边界，不是1519年的国界。';
  l.sources.push(['Natural Earth 国家边界与数据约定','https://www.naturalearthdata.com/downloads/110m-cultural-vectors/110m-admin-0-countries/']);
- l.try='地图中拖动旋转／平移，滚轮或画面上方 + / − 缩放。信息说明放在画面外，不压住地理对象。';
+ l.try='画面内单指旋转／平移，双指捏合缩放；也可用上方 + / −。画面外滑动可滚动页面；点“滑动页面”可从画面中滚页。';
 }
 const coordinateLesson=M.lessons.find(l=>l.id==='coordinates');
 coordinateLesson.sources.push(['美国国务院历史档案：朝鲜停战线与北纬38°','https://history.state.gov//historicaldocuments/frus1952-54v15p2/d932'],['越南之声实地报道：北纬17°展馆与边海河','https://vovworld.vn/media/17th-parallel-exhibition-hall-a-tribute-to-the-past-a-commitment-to-present-peace-2237330.vov5']);
@@ -43,7 +43,7 @@ M.mount=({lesson:l,values:v,custom,redraw})=>{
  currentMap.onHover=p=>{hovered=p;if(p)detail(p);else detail(active);};currentMap.onSelect=p=>{active=p;detail(p);list();redraw();};
  if($('#place-search'))$('#place-search').oninput=e=>{search=e.target.value.trim();list();redraw();};
  if(l.id==='voyages')renderStops();
- const view={three:false,renderer:'geographic-projection',zoom:currentMap.zoom,resetCamera:()=>{Object.assign(currentMap.state,initial);regionKey='';redraw();},dispose:currentMap.dispose};
+ const view={three:false,renderer:'geographic-projection',state:()=>({...currentMap.state}),zoom:currentMap.zoom,resetCamera:()=>{Object.assign(currentMap.state,initial);regionKey='';redraw();},dispose:currentMap.dispose};
  return view;
 };
 M.render=({ctx:c,values:v,time:t,lesson:l})=>{

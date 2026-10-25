@@ -1,0 +1,16 @@
+'use strict';
+const {test}=require('node:test'),assert=require('node:assert/strict'),vm=require('node:vm'),fs=require('node:fs'),path=require('node:path');
+function fixture(){
+ const listeners=new Map(),captures=new Set(),moves=[],zooms=[],taps=[];let scrolling=false;
+ const el={style:{touchAction:'auto'},closest:()=>scrolling?{}:null,addEventListener(n,f){if(!listeners.has(n))listeners.set(n,[]);listeners.get(n).push(f);},removeEventListener(n,f){listeners.set(n,(listeners.get(n)||[]).filter(v=>v!==f));},setPointerCapture:id=>captures.add(id),hasPointerCapture:id=>captures.has(id),releasePointerCapture:id=>captures.delete(id)};
+ const window={};vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../shared/touch.js'),'utf8'),{window,Date,Map,Math});
+ const control=window.LabTouch.bind(el,{pan:(...v)=>moves.push(v),zoom:v=>zooms.push(v),tap:e=>taps.push(e.pointerId)});
+ function send(type,id=1,x=0,y=0){let prevented=false;const e={type,pointerId:id,pointerType:'touch',button:0,clientX:x,clientY:y,cancelable:true,detail:1,preventDefault(){prevented=true;},stopImmediatePropagation(){}};for(const fn of [...listeners.get(type)||[]])fn(e);return prevented;}
+ return{el,listeners,captures,moves,zooms,taps,send,control,scroll:()=>scrolling=true};
+}
+test('single-finger drag changes model and never becomes a selection',()=>{const f=fixture();f.send('pointerdown');f.send('pointermove',1,20,-40);f.send('pointerup',1,20,-40);assert.deepEqual(f.moves,[[20,-40]]);assert.equal(f.taps.length,0);assert.equal(f.control.active(),0);});
+test('pinch adjusts scale without rotating, then one-finger motion resumes without jumping',()=>{const f=fixture();f.send('pointerdown',1,30,50);f.send('pointerdown',2,70,50);f.send('pointermove',2,90,50);assert.equal(f.zooms[0],40/60);assert.equal(f.moves.length,0);f.send('pointerup',2,90,50);f.send('pointermove',1,33,54);assert.deepEqual(f.moves,[[3,4]]);f.send('pointerup',1,33,54);assert.equal(f.taps.length,0);});
+test('pointercancel and lost capture cannot select a map marker',()=>{for(const kind of ['pointercancel','lostpointercapture']){const f=fixture();f.send('pointerdown');f.send(kind);assert.equal(f.taps.length,0);assert.equal(f.control.active(),0);f.send('pointerdown');f.send('pointerup');assert.equal(f.taps.length,1);}});
+test('coincident fingers and a third finger never create infinite scale',()=>{const f=fixture();f.send('pointerdown',1);f.send('pointerdown',2);f.send('pointermove',2);f.send('pointerdown',3);f.send('pointermove',3,40,40);assert.equal(f.zooms.length,0);assert.equal(f.moves.length,0);f.control.cancel();assert.equal(f.captures.size,0);});
+test('reading mode leaves native scrolling and page zoom to the browser',()=>{const f=fixture();f.scroll();f.send('pointerdown');f.send('pointermove',1,10,80);assert.equal(f.send('touchmove'),false);assert.equal(f.moves.length,0);assert.equal(f.control.active(),0);});
+test('touch compatibility guard is confined to an active model gesture',()=>{const f=fixture();assert.equal(f.send('touchmove'),false);f.send('pointerdown');assert.equal(f.send('touchmove'),true);f.send('pointerup');assert.equal(f.send('touchmove'),false);f.control.dispose();assert.equal(f.el.style.touchAction,'auto');assert.ok([...f.listeners.values()].every(a=>a.length===0));});

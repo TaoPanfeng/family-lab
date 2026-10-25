@@ -24,3 +24,5 @@
 
 20. 数学馆 `projects/math/` 使用独立的知识路线与 SVG 实验。125节点、44模型、23重点结果的双路线论证不能说成125个完全独立的完整课程。区分相关基础实验、定义、样例与一般证明，保留假设条件。
 21. 数学修改运行 `node --test tests/math-models.test.cjs`，并执行 `tests/math-browser.py` 的真实 file、HTTP及上线URL验收。共享工具与人物修改运行 `tests/experience-browser.py`，保留原馆深度测试和原有回归。
+
+22. 手机改动必须运行 `tests/mobile-touch.test.cjs` 与 `tests/mobile-touch.py` 的真实file、HTTP和上线模式。用可信触摸输入检查页面滚动量、旋转/缩放状态、滑条与取消手势；不能把窄屏鼠标测试当作手机验收。触摸限制只在操作区域，禁止全页锁滚动或禁用浏览器缩放，保留阅读退出途径。

@@ -7,3 +7,14 @@
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 
 [hidden]{display:none!important}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+/* Touch targets are local controls, not a global page-scroll lock. */
+@media (pointer:coarse),(max-width:800px){
+ button,select,summary{min-height:44px}
+ button{min-width:44px}
+ input[type=range]{min-height:44px;touch-action:none}
+ input[type=checkbox],input[type=radio]{min-width:24px;min-height:24px}
+ input:not([type=range]):not([type=checkbox]):not([type=radio]),select,textarea{font-size:16px!important}
+ button,select,summary{touch-action:manipulation}
+ dialog{max-height:90dvh;overscroll-behavior:contain}
+}

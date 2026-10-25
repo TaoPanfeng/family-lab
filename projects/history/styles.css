@@ -17,3 +17,14 @@ body[data-mode=child] .dynasty-summary,body[data-mode=child] .ruler-card p,body[
 @media(max-width:1180px){.timeline-foot .year-form{display:flex;grid-column:1/-1;justify-content:flex-end}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
 @media print{.sidebar,.topbar,.page-footer,.controls,.filter-bar,.map-zoom,.dialog-actions,.toast,.compare-tray{display:none!important}.workspace{margin-left:0}body{background:white;font-size:12px}main{padding:0}.panel{break-inside:avoid;box-shadow:none}.ruler-grid{grid-template-columns:repeat(2,1fr)}dialog[open]{position:static;width:100%;max-height:none;border:0;display:block}body:has(dialog[open]) .workspace{display:none}dialog::backdrop{display:none}.dialog-header{position:static}.print-only{display:block}}
+
+/* Touch targets are local controls, not a global page-scroll lock. */
+@media (pointer:coarse),(max-width:800px){
+ button,select,summary{min-height:44px}
+ button{min-width:44px}
+ input[type=range]{min-height:44px;touch-action:none}
+ input[type=checkbox],input[type=radio]{min-width:24px;min-height:24px}
+ input:not([type=range]):not([type=checkbox]):not([type=radio]),select,textarea{font-size:16px!important}
+ button,select,summary{touch-action:manipulation}
+ dialog{max-height:90dvh;overscroll-behavior:contain}
+}

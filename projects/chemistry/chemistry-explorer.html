@@ -18,6 +18,17 @@
 
 [hidden]{display:none!important}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 
+/* Touch targets are local controls, not a global page-scroll lock. */
+@media (pointer:coarse),(max-width:800px){
+ button,select,summary{min-height:44px}
+ button{min-width:44px}
+ input[type=range]{min-height:44px;touch-action:none}
+ input[type=checkbox],input[type=radio]{min-width:24px;min-height:24px}
+ input:not([type=range]):not([type=checkbox]):not([type=radio]),select,textarea{font-size:16px!important}
+ button,select,summary{touch-action:manipulation}
+ dialog{max-height:90dvh;overscroll-behavior:contain}
+}
+
 </style>
   <style>
 /* All laboratory presentation is scoped to .chem-lab. */
@@ -1810,7 +1821,7 @@ Og|鿫是原子序数 118 的元素。|位于第 18 族；常温宏观状态未�
     }
     function pointerDown(event) {
       const g = event.target.closest && event.target.closest('[data-draggable-gear]');
-      if (!g || event.button > 0) return;
+      if (drag || !g || event.button > 0) return;
       const svg = g.closest('svg'), bounds = svg.getBoundingClientRect(), id = g.getAttribute('data-draggable-gear');
       if (!bounds.width || !bounds.height) return;
       drag = { id, pointerId: event.pointerId, startX: event.clientX, startY: event.clientY, pos: Object.assign({}, state.gear[id]), scaleX: 860 / bounds.width, scaleY: 460 / bounds.height, moved: false, svg };
@@ -1824,8 +1835,8 @@ Og|鿫是原子序数 118 的元素。|位于第 18 族；常温宏观状态未�
       state = reduce(state, { type: 'MOVE_GEAR', id: drag.id, x: drag.pos.x + dx * drag.scaleX, y: drag.pos.y + dy * drag.scaleY });
       const art = container.querySelector('[data-lab-bench]'); if (art) art.innerHTML = benchSVG(state);
     }
-    function pointerUp() {
-      if (!drag) return;
+    function pointerUp(event) {
+      if (!drag || (event && event.pointerId != null && drag.pointerId !== event.pointerId)) return;
       const moved = drag.moved; drag = null;
       if (moved) { suppressClick = true; remember(); render(); }
     }

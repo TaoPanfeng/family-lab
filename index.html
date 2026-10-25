@@ -10,6 +10,17 @@
 .card[hidden]{display:none}.home-search{display:flex;gap:14px;align-items:center;margin:0 0 24px}.home-search label{color:#c5d6b4;font-weight:600;white-space:nowrap}.home-search input{width:min(520px,70%);padding:13px 16px;border:1px solid #405047;border-radius:10px;background:#18231d;color:#edf2e7;font:inherit}.home-search span,.home-empty{color:#a4b4a6}.home-search input:focus-visible{outline:2px solid #c1d5a3;outline-offset:3px}.biology .illustration{color:#89d5b1}.geography .illustration{color:#85bfdc}.cosmos .illustration{color:#b6a6f0}.martial .illustration{color:#e6bd86}@media(max-width:620px){.home-search{flex-wrap:wrap}.home-search input{width:calc(100% - 95px)}.home-search span{font-size:13px}}
 
 .card.math{--accent:#8cc6b1;}
+
+/* Touch targets are local controls, not a global page-scroll lock. */
+@media (pointer:coarse),(max-width:800px){
+ button,select,summary{min-height:44px}
+ button{min-width:44px}
+ input[type=range]{min-height:44px;touch-action:none}
+ input[type=checkbox],input[type=radio]{min-width:24px;min-height:24px}
+ input:not([type=range]):not([type=checkbox]):not([type=radio]),select,textarea{font-size:16px!important}
+ button,select,summary{touch-action:manipulation}
+ dialog{max-height:90dvh;overscroll-behavior:contain}
+}
 </style></head>
 <body><a class="skip" href="#explore">跳到项目入口</a><div class="wrap">
 <header class="topbar"><a class="brand" href="index.html" aria-label="万物家庭探索馆首页"><span class="mark" aria-hidden="true">物</span><span><strong>万物 · 家庭探索馆</strong><small>FAMILY LAB / STAY CURIOUS</small></span></a><span class="topnote"><span class="dot" aria-hidden="true"></span>无需安装 · 可离线打开</span></header>

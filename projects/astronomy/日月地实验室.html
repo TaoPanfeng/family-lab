@@ -58,6 +58,17 @@ body:not([data-audience=research]) .v2-modes button{min-height:44px}
 
 /* Keep the date readable and the four main transport targets touch-sized. */
 @media(max-width:800px){.time-controls{grid-template-columns:1fr 1fr}.date-controls{grid-column:1/-1;grid-row:1}.playback{grid-column:1;grid-row:2;justify-content:flex-start}.speed-controls{grid-column:2;grid-row:2}.speed-controls>label{display:none}.speed-controls select{width:100%;max-width:170px;height:40px}.playback .icon-button,body:not([data-audience=research]) .playback .icon-button,.play-button{width:44px;height:44px}.camera-tools .icon-button{width:40px;height:44px}.v2-mobile-views button{min-height:44px}}
+
+/* Touch targets are local controls, not a global page-scroll lock. */
+@media (pointer:coarse),(max-width:800px){
+ button,select,summary{min-height:44px}
+ button{min-width:44px}
+ input[type=range]{min-height:44px;touch-action:none}
+ input[type=checkbox],input[type=radio]{min-width:24px;min-height:24px}
+ input:not([type=range]):not([type=checkbox]):not([type=radio]),select,textarea{font-size:16px!important}
+ button,select,summary{touch-action:manipulation}
+ dialog{max-height:90dvh;overscroll-behavior:contain}
+}
 </style>
 </head>
 <body>
@@ -783,18 +794,19 @@ globalThis.ASSETS={"earth":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2
       this.renderer.domElement.addEventListener('webglcontextlost',this.contextLost);
     }
     bindPointer(){
-      const canvas=this.renderer.domElement;this.pointers=new Map();this.lastPinch=0;
-      this.pointerDown=e=>{canvas.setPointerCapture(e.pointerId);this.pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});};
+      const canvas=this.renderer.domElement;canvas.style.touchAction='none';this.pointers=new Map();this.lastPinch=0;
+      canvas.addEventListener('touchmove',e=>{if(this.pointers.size&&e.cancelable)e.preventDefault();},{passive:false});
+      this.pointerDown=e=>{if(e.pointerType==='mouse'&&e.button!==0)return;canvas.setPointerCapture(e.pointerId);this.pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});if(this.pointers.size===2){const [a,b]=[...this.pointers.values()];this.lastPinch=Math.hypot(a.x-b.x,a.y-b.y);}};
       this.pointerMove=e=>{
         const old=this.pointers.get(e.pointerId);if(!old)return;
         const dx=e.clientX-old.x,dy=e.clientY-old.y;this.pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
-        if(this.pointers.size===2){const [a,b]=[...this.pointers.values()],d=Math.hypot(a.x-b.x,a.y-b.y);if(this.lastPinch)this.zoom(this.lastPinch/d);this.lastPinch=d;}
-        else{this.azimuth-=dx*.006;this.elevation=A.clamp(this.elevation+dy*.006,-1.47,1.47);this.cameraManual=true;}
+        if(this.pointers.size===2){const [a,b]=[...this.pointers.values()],d=Math.hypot(a.x-b.x,a.y-b.y);if(this.lastPinch>2&&d>2)this.zoom(this.lastPinch/d);this.lastPinch=d;}
+        else if(this.pointers.size===1){this.azimuth-=dx*.006;this.elevation=A.clamp(this.elevation+dy*.006,-1.47,1.47);this.cameraManual=true;}
       };
       this.pointerUp=e=>{this.pointers.delete(e.pointerId);this.lastPinch=0;};
       this.wheel=e=>{e.preventDefault();this.zoom(Math.exp(e.deltaY*.001));};
       canvas.addEventListener('pointerdown',this.pointerDown);canvas.addEventListener('pointermove',this.pointerMove);
-      canvas.addEventListener('pointerup',this.pointerUp);canvas.addEventListener('pointercancel',this.pointerUp);
+      canvas.addEventListener('pointerup',this.pointerUp);canvas.addEventListener('pointercancel',this.pointerUp);canvas.addEventListener('lostpointercapture',this.pointerUp);
       canvas.addEventListener('wheel',this.wheel,{passive:false});canvas.addEventListener('contextmenu',e=>e.preventDefault());
       canvas.addEventListener('dblclick',e=>{if(this.mode==='ground'||!this.state)return;
         const b=canvas.getBoundingClientRect(),ray=new T.Raycaster();ray.setFromCamera(new T.Vector2((e.clientX-b.left)/b.width*2-1,1-(e.clientY-b.top)/b.height*2),this.camera);

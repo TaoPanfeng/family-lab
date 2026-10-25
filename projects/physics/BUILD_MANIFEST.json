@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
-  "sha256": "2f4176b19f42cfe173fd888bc2e86a6838b89140bef8f22b68fd5ce2cea8276e",
-  "bytes": 152085,
+  "sha256": "bf33f08a2f9255557f24f5db4ce8e9014cca45188a8e4efa7d3ac166575689f1",
+  "bytes": 152684,
   "inputs": [
     "src/index.template.html",
     "assets/style.css",

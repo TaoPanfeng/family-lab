@@ -754,7 +754,7 @@
     }
     function pointerDown(event) {
       const g = event.target.closest && event.target.closest('[data-draggable-gear]');
-      if (!g || event.button > 0) return;
+      if (drag || !g || event.button > 0) return;
       const svg = g.closest('svg'), bounds = svg.getBoundingClientRect(), id = g.getAttribute('data-draggable-gear');
       if (!bounds.width || !bounds.height) return;
       drag = { id, pointerId: event.pointerId, startX: event.clientX, startY: event.clientY, pos: Object.assign({}, state.gear[id]), scaleX: 860 / bounds.width, scaleY: 460 / bounds.height, moved: false, svg };
@@ -768,8 +768,8 @@
       state = reduce(state, { type: 'MOVE_GEAR', id: drag.id, x: drag.pos.x + dx * drag.scaleX, y: drag.pos.y + dy * drag.scaleY });
       const art = container.querySelector('[data-lab-bench]'); if (art) art.innerHTML = benchSVG(state);
     }
-    function pointerUp() {
-      if (!drag) return;
+    function pointerUp(event) {
+      if (!drag || (event && event.pointerId != null && drag.pointerId !== event.pointerId)) return;
       const moved = drag.moved; drag = null;
       if (moved) { suppressClick = true; remember(); render(); }
     }

@@ -10,7 +10,7 @@
     return [Math.cos(p)*Math.sin(d), Math.cos(q)*Math.sin(p)-Math.sin(q)*Math.cos(p)*Math.cos(d),Math.sin(q)*Math.sin(p)+Math.cos(q)*Math.cos(p)*Math.cos(d)];
   }
   function create(canvas,redraw,initial={}) {
-    const state={projection:'flat',lon:0,lat:10,zoom:1,...initial};let dragging=null,moved=false,hover=null;
+    const state={projection:'flat',lon:0,lat:10,zoom:1,...initial};let hover=null;
     const rect={x:24,y:64,w:912,h:456},center=[480,300],hits=[];
     function point(lon,lat){
       if(state.projection==='globe'){const v=globePoint(lon,lat,state.lon,state.lat),r=218*state.zoom;return [480+r*v[0],300-r*v[1],v[2]>=0];}
@@ -70,21 +70,24 @@
       if(options.record)hits.push({p,record:options.record});return p;
     }
     const eventPoint=e=>{const r=canvas.getBoundingClientRect();return [(e.clientX-r.left)*960/r.width,(e.clientY-r.top)*600/r.height];};
-    const onDown=e=>{dragging=[e.clientX,e.clientY];moved=false;canvas.setPointerCapture(e.pointerId);};
+    function hitAt(e){const p=eventPoint(e),r=canvas.getBoundingClientRect();return hits.map(h=>({h,d:Math.hypot((h.p[0]-p[0])*r.width/960,(h.p[1]-p[1])*r.height/600)})).filter(x=>x.d<(e.pointerType==='touch'?22:12)).sort((a,b)=>a.d-b.d)[0]?.h;}
+    const gesture=LabTouch.bind(canvas,{
+      pan:(dx,dy)=>{state.lon=wrap(state.lon-dx*.35/state.zoom);state.lat=clamp(state.lat+dy*.3/state.zoom,-85,85);redraw();},
+      zoom:factor=>{state.zoom=clamp(state.zoom/factor,.65,12);redraw();},
+      tap:e=>{const h=hitAt(e);if(h)api.onSelect?.(h.record);}
+    });
     const onMove=e=>{
-      if(dragging){const dx=e.clientX-dragging[0],dy=e.clientY-dragging[1];if(Math.abs(dx)+Math.abs(dy)>1)moved=true;state.lon=wrap(state.lon-dx*.35/state.zoom);state.lat=clamp(state.lat+dy*.3/state.zoom,-85,85);dragging=[e.clientX,e.clientY];redraw();return;}
-      const p=eventPoint(e),hit=hits.filter(h=>Math.hypot(h.p[0]-p[0],h.p[1]-p[1])<15).sort((a,b)=>Math.hypot(a.p[0]-p[0],a.p[1]-p[1])-Math.hypot(b.p[0]-p[0],b.p[1]-p[1]))[0];
-      if(hover?.id!==hit?.record.id){hover=hit?.record||null;api.onHover?.(hover);redraw();}canvas.style.cursor=hit?'pointer':'grab';
+      if(e.pointerType==='touch'||gesture.active())return;
+      const hit=hitAt(e);if(hover?.id!==hit?.record.id){hover=hit?.record||null;api.onHover?.(hover);redraw();}canvas.style.cursor=hit?'pointer':'grab';
     };
-    const onUp=e=>{dragging=null;if(!moved){const p=eventPoint(e),h=hits.find(h=>Math.hypot(h.p[0]-p[0],h.p[1]-p[1])<15);if(h)api.onSelect?.(h.record);}};
     const wheel=e=>{e.preventDefault();state.zoom=clamp(state.zoom*Math.exp(-e.deltaY*.001),.65,12);redraw();};
     const keys=e=>{if(!['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','+','-','='].includes(e.key))return;e.preventDefault();if(e.key.startsWith('Arrow')){state.lon=wrap(state.lon+(e.key==='ArrowLeft'?-6:e.key==='ArrowRight'?6:0)/state.zoom);state.lat=clamp(state.lat+(e.key==='ArrowUp'?6:e.key==='ArrowDown'?-6:0)/state.zoom,-85,85);}else state.zoom=clamp(state.zoom*(e.key==='-'?.85:1.18),.65,12);redraw();};
     canvas.tabIndex=0;canvas.style.touchAction='none';canvas.setAttribute('aria-label','可拖动地图：方向键平移或旋转，加减键缩放');
-    canvas.addEventListener('pointerdown',onDown);canvas.addEventListener('pointermove',onMove);canvas.addEventListener('pointerup',onUp);canvas.addEventListener('pointercancel',onUp);canvas.addEventListener('wheel',wheel,{passive:false});canvas.addEventListener('keydown',keys);
+    canvas.addEventListener('pointermove',onMove);canvas.addEventListener('wheel',wheel,{passive:false});canvas.addEventListener('keydown',keys);
     const api={state,point,inside,base,path,parallel,meridian,marker,text,hover:()=>hover,
       zoom:factor=>{state.zoom=clamp(state.zoom/factor,.65,12);redraw();},
       focus:(lon,lat,zoom)=>{state.lon=lon;state.lat=lat;if(zoom)state.zoom=zoom;},
-      dispose:()=>{canvas.removeEventListener('pointerdown',onDown);canvas.removeEventListener('pointermove',onMove);canvas.removeEventListener('pointerup',onUp);canvas.removeEventListener('pointercancel',onUp);canvas.removeEventListener('wheel',wheel);canvas.removeEventListener('keydown',keys);}};return api;
+      dispose:()=>{gesture.dispose();canvas.removeEventListener('pointermove',onMove);canvas.removeEventListener('wheel',wheel);canvas.removeEventListener('keydown',keys);}};return api;
   }
   const exported={create,globePoint,wrap};if(typeof window!=='undefined')window.LabMap=exported;if(typeof module!=='undefined')module.exports=exported;
 })();

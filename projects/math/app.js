@@ -33,7 +33,7 @@ $('zoomPlot').onclick=()=>{plotZoom=plotZoom===1?1.5:plotZoom===1.5?2:1;$('zoomP
 $('reset').onclick=()=>{plotZoom=1;$('zoomPlot').textContent='放大图示';params=M.normalize(current.lab);seed=17;controls();renderLab();};$('controls').addEventListener('input',e=>{if(e.target.dataset.param)set(e.target.dataset.param,e.target.value);});
 $('saveNote').onclick=()=>{store.notes[current.id]=$('note').value.slice(0,2000);say(save()?'观察已保存。':'只保存在本次内存；请导出备份。');};$('mark').onclick=()=>{let id=current.id;store.practiced=store.practiced.includes(id)?store.practiced.filter(x=>x!==id):[...store.practiced,id];save();$('mark').textContent=store.practiced.includes(id)?'✓ 已练过（可取消）':'标记：我练过了';list();say('这是你的练习标记，不是考试成绩。');};
 document.addEventListener('click',e=>{let b=e.target.closest('[data-topic],[data-clear],[data-route],[data-experiment],[data-record],[data-delete],[data-part],[data-bit]');if(!b)return;
-if(b.dataset.topic){select(b.dataset.topic);$('content').focus({preventScroll:true});window.scrollTo(0,0);}
+if(b.dataset.topic){select(b.dataset.topic);$('content').focus({preventScroll:true});if(matchMedia('(max-width:720px)').matches)$('content').scrollIntoView({block:'start'});else window.scrollTo(0,0);}
 if(b.hasAttribute('data-clear')){$('search').value='';$('stage').value='';$('group').value='';favoritesOnly=false;$('favorites').setAttribute('aria-pressed',false);list();}
 if(b.dataset.route!==undefined){route=Number(b.dataset.route);proof();}
 if(b.dataset.part)set('n',Number(b.dataset.part));if(b.dataset.bit!==undefined)set('n',params.n^(1<<(7-Number(b.dataset.bit))));

@@ -282,12 +282,22 @@
   }
   let suppressMapClick=false;
   function wireMap() {
-    const svg=document.getElementById('atlas-svg');if(!svg)return;let drag=null;
-    // Capture only after a drag begins; immediate capture would steal region/marker clicks.
-    svg.addEventListener('pointerdown',e=>{if(e.button!==0)return;drag={clientX:e.clientX,clientY:e.clientY,camera:{...(state.mapCamera||cameraFor(snapshots[state.mapIndex]))},moved:false};});
-    svg.addEventListener('pointermove',e=>{if(!drag)return;const dx=e.clientX-drag.clientX,dy=e.clientY-drag.clientY;if(!drag.moved&&Math.hypot(dx,dy)>4){drag.moved=true;svg.setPointerCapture(e.pointerId);}if(!drag.moved)return;const bounds=svg.getBoundingClientRect();const scale=Math.min(bounds.width/drag.camera.w,bounds.height/drag.camera.h);if(scale<=0)return;state.mapCamera={...drag.camera,x:drag.camera.x-dx/scale,y:drag.camera.y-dy/scale};syncMapCamera();});
-    const end=e=>{if(!drag)return;suppressMapClick=drag.moved;drag=null;if(svg.hasPointerCapture(e.pointerId))svg.releasePointerCapture(e.pointerId);};
-    svg.addEventListener('pointerup',end);svg.addEventListener('pointercancel',end);
+    const svg=document.getElementById('atlas-svg');if(!svg)return;let drag=null,multiple=false;const pointers=new Map();svg.style.touchAction='none';
+    const distance=()=>{const p=[...pointers.values()];return p.length===2?Math.hypot(p[0].x-p[1].x,p[0].y-p[1].y):0;};
+    const camera=()=>({...state.mapCamera||cameraFor(snapshots[state.mapIndex])});
+    // A short tap still targets its region. Capture only once a drag/pinch begins.
+    svg.addEventListener('pointerdown',e=>{if(e.button!==0)return;if(!pointers.size){multiple=false;suppressMapClick=false;drag={clientX:e.clientX,clientY:e.clientY,camera:camera(),moved:false};}pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});if(pointers.size>1){multiple=true;suppressMapClick=true;}});
+    svg.addEventListener('pointermove',e=>{
+      if(!pointers.has(e.pointerId))return;const before=distance();pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+      if(pointers.size===2){const after=distance();if(before>2&&after>2){const p=[...pointers.values()],matrix=svg.getScreenCTM();const anchor=matrix?new DOMPoint((p[0].x+p[1].x)/2,(p[0].y+p[1].y)/2).matrixTransform(matrix.inverse()):null;zoomMap(before/after,anchor);}return;}
+      if(pointers.size!==1||!drag)return;const dx=e.clientX-drag.clientX,dy=e.clientY-drag.clientY;
+      if(!drag.moved&&Math.hypot(dx,dy)>4){drag.moved=true;svg.setPointerCapture(e.pointerId);}if(!drag.moved)return;
+      const bounds=svg.getBoundingClientRect(),scale=Math.min(bounds.width/drag.camera.w,bounds.height/drag.camera.h);if(scale<=0)return;
+      state.mapCamera={...drag.camera,x:drag.camera.x-dx/scale,y:drag.camera.y-dy/scale};syncMapCamera();
+    });
+    const end=e=>{if(!pointers.has(e.pointerId))return;suppressMapClick=multiple||!!drag?.moved||e.type!=='pointerup';pointers.delete(e.pointerId);const remaining=[...pointers.values()][0];drag=remaining?{clientX:remaining.x,clientY:remaining.y,camera:camera(),moved:true}:null;if(svg.hasPointerCapture(e.pointerId))svg.releasePointerCapture(e.pointerId);};
+    svg.addEventListener('pointerup',end);svg.addEventListener('pointercancel',end);svg.addEventListener('lostpointercapture',end);
+    svg.addEventListener('touchmove',e=>{if(pointers.size&&e.cancelable)e.preventDefault();},{passive:false});
     svg.addEventListener('wheel',e=>{e.preventDefault();const matrix=svg.getScreenCTM();if(!matrix)return;const p=new DOMPoint(e.clientX,e.clientY).matrixTransform(matrix.inverse());zoomMap(e.deltaY>0?1.14:.87,p);},{passive:false});
   }
   function exportNotes() {

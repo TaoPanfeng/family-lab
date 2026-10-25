@@ -10,3 +10,14 @@
 @media(max-width:780px){.workspace{display:flex;flex-direction:column;gap:0}.stage-column{display:contents}.workspace>.controls-card{order:4;width:100%;margin:10px 0 20px}.stage{order:0;width:100%}.metrics{order:1;width:100%}.comparison-info{order:2;width:100%}.live-extra{order:3;width:100%}.learning-card{order:5;width:100%}.journey-footer{order:6;width:100%}.danger-banner{order:-1;width:100%}}
 
 .optics-links{margin:20px 12px;padding:14px;background:#eaf3ef;border:1px solid #c3d8cf;border-radius:12px}.optics-links h3{font-size:14px;margin:0 0 8px}.optics-links a{display:block;padding:9px 0;color:#246554;text-decoration:none;font-size:14px;font-weight:600}.optics-links a:hover{text-decoration:underline}.optics-links p{font-size:12px;color:#526c66;line-height:1.7}
+
+/* Touch targets are local controls, not a global page-scroll lock. */
+@media (pointer:coarse),(max-width:800px){
+ button,select,summary{min-height:44px}
+ button{min-width:44px}
+ input[type=range]{min-height:44px;touch-action:none}
+ input[type=checkbox],input[type=radio]{min-width:24px;min-height:24px}
+ input:not([type=range]):not([type=checkbox]):not([type=radio]),select,textarea{font-size:16px!important}
+ button,select,summary{touch-action:manipulation}
+ dialog{max-height:90dvh;overscroll-behavior:contain}
+}
