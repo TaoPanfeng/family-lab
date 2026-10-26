@@ -9,6 +9,7 @@ html=html.replace(/<script src="([^"]+)"><\/script>/g,(_,name)=>`<script>\n${fs.
 const svg=fs.readFileSync(path.join(dist,'icon.svg'),'utf8');
 const data='data:image/svg+xml;base64,'+Buffer.from(svg).toString('base64');
 html=html.replace(/href="icon.svg"/g,`href="${data}"`).replace(/src=\\?"icon.svg\\?"/g,`src="${data}"`);
+html=html.replace('href="../experiments/index.html"','href="experiments/index.html"');
 const target=path.join(root,'chemistry-explorer.html');
 fs.writeFileSync(target,html);
 console.log(`Offline application: ${path.basename(target)} (${Buffer.byteLength(html)} bytes)`);

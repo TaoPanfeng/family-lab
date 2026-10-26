@@ -6,6 +6,7 @@
   let frameKey='';
   const fields=v=>({amplitude:v.amplitude,stance:v.stance||.22,mirror:v.mirror});
   for(const l of M.lessons){
+    l.sources.push(["连续人体网格：MakeHuman CC0，来源与改编说明","HUMAN_ASSET.md"]);
     l.controls.push({id:'detail',label:'观察范围',type:'select',value:l.id==='wingchun'?'upper':'full',options:[['full','全身与站姿'],['upper','上半身与双手'],['left','左手近景'],['right','右手近景']]});
     l.controls.push({id:'appearance',label:'人物显示',type:'select',value:'uniform',options:[['uniform','练功服 · 完整人物'],['plain','素模 · 看结构'],['skeleton','骨架 · 看关节']]});
     l.controls.push({id:'palms',label:'显示掌面方向箭头',type:'checkbox',value:true});
@@ -18,6 +19,7 @@
   M.mount=({lesson:l,values:v,container,custom})=>{
     frameKey='';custom.innerHTML='<section class="card"><h2>先看身形，再看掌向与动作</h2><div class="legend"><span class="legend-chip"><i style="--chip:#f0c7a5"></i>暖色面＝手心（可见掌纹）</span><span class="legend-chip"><i style="--chip:#9eb6cb"></i>蓝灰面＝手背（可见指甲）</span><span>青环＝人物左腕；金环＝人物右腕</span></div><p id="hand-state" class="details-text"></p><div class="phase-strip" id="pose-frames"></div><p class="tiny">模型展示关节位置与掌面，不推算发力或内劲；不同传承动作存在差异，不能代替教练纠正。</p></section>';
     const s=Lab3D.make(container,{distance:3.25,target:[0,.99,0],yaw:0,pitch:.12,min:.3,max:10,allowSoftware:true});if(!s)return null;
+    const human=window.MartialHuman?.make(s.scene);
     const bones=links.map(([a],i)=>{const upper=i%2===0,leg=i>=4;const top=leg?(upper?.09:.064):(upper?.067:.045),bottom=leg?(upper?.062:.037):(upper?.047:.027);const obj=mesh(new THREE.CylinderGeometry(bottom,top,1,20),leg?0x223747:0xe5ded0);s.scene.add(obj);return obj;});
     const joints={};for(const name of ['lShoulder','rShoulder','lElbow','rElbow','lWrist','rWrist','lHip','rHip','lKnee','rKnee']){const obj=mesh(new THREE.SphereGeometry(.018,14,10),0xe3e8e5);obj.material.depthTest=false;obj.renderOrder=9;joints[name]=obj;s.scene.add(obj);}
     const torsoPoints=[[.155,0],[.16,.10],[.145,.20],[.19,.34],[.224,.45],[.22,.5],[.12,.56],[.065,.60]].map(p=>new THREE.Vector2(...p));
@@ -58,17 +60,18 @@
     return {three:true,renderer:s.mode,state:s.state,zoom:s.zoom,resetCamera:()=>{cameraKey='';const p=B.pose(v.motion||l.motion,window.LabTest?.getState().time||0,fields(v));selectCamera(v,p.joints);},render:(t,v)=>{
       const name=v.motion||l.motion,p=B.pose(name,t,fields(v)),j=p.joints;
       const style=v.appearance||'uniform',skeleton=style==='skeleton';
-      links.forEach(([a,b],i)=>{connect(j[a],j[b],bones[i]);connect(j[a],j[b],rig[i]);bones[i].visible=!skeleton;rig[i].visible=skeleton;bones[i].material.color.setHex(style==='plain'?0x9eacb6:i>=4?0x223747:0xe5ded0);});
-      for(const [name,o] of Object.entries(connectors)){o.position.set(...j[name]);o.visible=!skeleton;o.material.color.setHex(style==='plain'?0x9eacb6:name.includes('Knee')?0x223747:0xe5ded0);}
-      for(const o of [torso,hips,belt,neck,head])o.visible=!skeleton;
-      torso.material.color.setHex(style==='plain'?0x9eacb6:0xe5ded0);hips.material.color.setHex(style==='plain'?0x8c9da9:0x223747);uniformDetails.visible=style==='uniform';belt.visible=style==='uniform';
+      links.forEach(([a,b],i)=>{connect(j[a],j[b],bones[i]);connect(j[a],j[b],rig[i]);bones[i].visible=!skeleton&&!human;rig[i].visible=skeleton;bones[i].material.color.setHex(style==='plain'?0x9eacb6:i>=4?0x223747:0xe5ded0);});
+      for(const [name,o] of Object.entries(connectors)){o.position.set(...j[name]);o.visible=!skeleton&&!human;o.material.color.setHex(style==='plain'?0x9eacb6:name.includes('Knee')?0x223747:0xe5ded0);}
+      for(const o of [torso,hips,belt,neck,head])o.visible=!skeleton&&!human;
+      human?.render(j,style,p.head,v.mirror);
+      torso.material.color.setHex(style==='plain'?0x9eacb6:0xe5ded0);hips.material.color.setHex(style==='plain'?0x8c9da9:0x223747);uniformDetails.visible=style==='uniform'&&!human;belt.visible=style==='uniform'&&!human;
 
       for(const key in joints){joints[key].position.set(...j[key]);joints[key].visible=v.skeleton||skeleton;}
       torso.position.set(...j.pelvis);torso.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),new THREE.Vector3(...j.neck).sub(new THREE.Vector3(...j.pelvis)).normalize());
       hips.position.set(...j.pelvis);belt.position.set(j.pelvis[0],j.pelvis[1]+.13,j.pelvis[2]);neck.position.set(...j.neck);head.position.set(...j.head);head.rotation.y=p.head;
       for(const side of ['l','r']){
         const state=H.handState(name,t,side,v.mirror);hands[side].update(j,state,v.mirror);
-        feet[side].visible=!skeleton;feet[side].position.set(j[side+'Ankle'][0],.045,j[side+'Ankle'][2]+.06);
+        feet[side].visible=!skeleton&&!human;feet[side].position.set(j[side+'Ankle'][0],.045,j[side+'Ankle'][2]+.06);
         wristRings[side].position.set(...j[side+'Wrist']);wristRings[side].quaternion.copy(hands[side].group.quaternion);wristRings[side].rotateX(Math.PI/2);
         const hand=hands[side].group,normal=new THREE.Vector3(0,0,1).applyQuaternion(hand.quaternion),origin=new THREE.Vector3(0,.05,.02).applyQuaternion(hand.quaternion).add(hand.position);
         arrows[side].position.copy(origin);arrows[side].setDirection(normal);arrows[side].visible=v.palms;
@@ -90,6 +93,6 @@
     document.querySelectorAll('#pose-frames button').forEach((b,i)=>b.setAttribute('aria-pressed',p.stage===i));
     const a=H.handState(name,t,'l',v.mirror),b=H.handState(name,t,'r',v.mirror);document.querySelector('#hand-state').textContent='人物左手：'+a.description+'；人物右手：'+b.description+'。掌纹、指甲和箭头一起判断朝向，不靠一个圆球猜手型。';
     return {metrics:[['人物左肘内夹角',B.angle(j.lShoulder,j.lElbow,j.lWrist).toFixed(1)+'°'],['人物右肘内夹角',B.angle(j.rShoulder,j.rElbow,j.rWrist).toFixed(1)+'°'],['人物左手',a.description]],
-      hint:view&&view.three?(view.renderer==='canvas3d'?'软件三维（非 WebGL） · ':'')+'拖动旋转、滚轮缩放；“观察范围”可放大单手。箭头垂直于掌面，暖色手心、蓝灰手背。':'三维未启动；此处仅显示二维备用骨架。',clock:'动作进度 '+Math.round(t*100)+'%'};
+      hint:view&&view.three?(view.renderer==='canvas3d'?'软件三维（非 WebGL） · ':'')+'CC0 人体连续网格，原创教学动作（非动捕）。拖动旋转、滚轮缩放；“观察范围”可放大单手。箭头垂直于掌面，暖色手心、蓝灰手背。':'三维未启动；此处仅显示二维备用骨架。',clock:'动作进度 '+Math.round(t*100)+'%'};
   };
 })();

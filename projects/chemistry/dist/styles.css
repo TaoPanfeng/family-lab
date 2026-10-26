@@ -18,3 +18,5 @@
  button,select,summary{touch-action:manipulation}
  dialog{max-height:90dvh;overscroll-behavior:contain}
 }
+
+.reaction-entry{display:block;margin:8px 0 16px;padding:12px;border:1px solid #69c8b5;border-radius:12px;background:#e4f3ee;color:#176252;text-decoration:none;font-size:14px;line-height:1.6;min-height:44px}.reaction-entry:focus-visible{outline:3px solid #d4a647;outline-offset:2px}

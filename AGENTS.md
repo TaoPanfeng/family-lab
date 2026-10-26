@@ -26,3 +26,8 @@
 21. 数学修改运行 `node --test tests/math-models.test.cjs`，并执行 `tests/math-browser.py` 的真实 file、HTTP及上线URL验收。共享工具与人物修改运行 `tests/experience-browser.py`，保留原馆深度测试和原有回归。
 
 22. 手机改动必须运行 `tests/mobile-touch.test.cjs` 与 `tests/mobile-touch.py` 的真实file、HTTP和上线模式。用可信触摸输入检查页面滚动量、旋转/缩放状态、滑条与取消手势；不能把窄屏鼠标测试当作手机验收。触摸限制只在操作区域，禁止全页锁滚动或禁用浏览器缩放，保留阅读退出途径。
+
+23. 教学语义不能只靠控件结构验收。数学每节点保留针对性主例、第二情境、逐步推理与误区；相关工具明确折叠，不冒充本节完整实验。正式公式走 `shared/formula.js` 的离线 MathML，不直接显示 LaTeX 原文；禁用可信HTML指令，不引入运行时字体/CDN。
+24. 化学动画位于 `projects/chemistry/experiments/`，阶段式配平反应、中文物质和解释同步。气体收集和倾倒不虚构新反应，氧化还原的分开观察不写成两个独立先后反应。仅屏幕科普，不向儿童提供危险实物实验配方。
+25. `projects/biology/microscope/` 是合成明场显微示意；不得声称照片或临床诊断。倍率、视场、调焦与倒像保持一致，标本结构不能因平移而随机改变。人体资产与粗骨架重定向的来源/局限见 `projects/martial/HUMAN_ASSET.md`。
+26. 上述教学修改运行 `tests/learning-models.test.cjs` 和 `tests/learning-browser.py` 的真实 file/HTTP、WebGL 与上线URL检查，并保留原数学、全馆、手机验收。禁止以注入式截图冒充公开网站，禁止以测试数量证明教学完全准确。

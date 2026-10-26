@@ -24,7 +24,8 @@
             const area=(p[1][0]-p[0][0])*(p[2][1]-p[0][1])-(p[1][1]-p[0][1])*(p[2][0]-p[0][0]);if(mat.side!==T.DoubleSide&&area>0)continue;
             a.fromBufferAttribute(attr,ids[0]);b.fromBufferAttribute(attr,ids[1]).sub(a);c.fromBufferAttribute(attr,ids[2]).sub(a);
             let n=b.cross(c).normalize();if(geo.attributes.normal){n.set(0,0,0);for(const id of ids)n.add(new T.Vector3().fromBufferAttribute(geo.attributes.normal,id));n.normalize();}n.applyMatrix3(normalMatrix).normalize();const shade=mat.isMeshBasicMaterial?1:.53+.45*Math.max(0,n.dot(new T.Vector3(.3,.65,.7).normalize()));
-            const color=`rgb(${Math.round(rgb.r*255*shade)},${Math.round(rgb.g*255*shade)},${Math.round(rgb.b*255*shade)})`;
+            const vc=geo.attributes.color&&mat.vertexColors?ids.reduce((s,id)=>s.map((x,j)=>x+geo.attributes.color.array[id*3+j]/3),[0,0,0]):[rgb.r,rgb.g,rgb.b];
+            const color=`rgb(${Math.round(vc[0]*255*shade)},${Math.round(vc[1]*255*shade)},${Math.round(vc[2]*255*shade)})`;
             commands.push({z:p.reduce((s,v)=>s+v[2],0)/3-(obj.renderOrder||0)*10,kind:'triangle',p,color,alpha});
           }
         }else if(obj.isLine){const end=Math.min(index?index.count:attr.count,geo.drawRange.start+geo.drawRange.count),start=geo.drawRange.start||0,step=obj.isLineSegments?2:1;

@@ -2,7 +2,7 @@
 (function(root){'use strict';const M=root.MathModels;
 const colors={blue:'#2969b0',orange:'#d66631',green:'#157a68',ink:'#213a46',muted:'#607781',grid:'#dce5e7'};
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const text=(x,y,s,color=colors.ink,size=18,anchor='middle')=>`<text x="${x}" y="${y}" fill="${color}" font-size="${size}" text-anchor="${anchor}">${esc(s)}</text>`;
+const text=(x,y,s,color=colors.ink,size=18,anchor='middle')=>{if(root.Formula&&/[=²³Σ∫√\[]/.test(String(s))&&y>=280&&anchor==='middle'){return `<foreignObject x="20" y="${y-30}" width="760" height="82"><div xmlns="http://www.w3.org/1999/xhtml" style="color:${color};text-align:center;font-size:${size}px;line-height:1.8">${Formula.legacy(s)}</div></foreignObject>`;}return `<text x="${x}" y="${y}" fill="${color}" font-size="${size}" text-anchor="${anchor}">${esc(s)}</text>`;};
 const line=(x,y,u,v,color=colors.ink,width=2,dash='')=>`<line x1="${x}" y1="${y}" x2="${u}" y2="${v}" stroke="${color}" stroke-width="${width}"${dash?` stroke-dasharray="${dash}"`:''}/>`;
 const rect=(x,y,w,h,fill=colors.blue,stroke='#fff')=>`<rect x="${x}" y="${y}" width="${Math.max(0,w)}" height="${Math.max(0,h)}" rx="2" fill="${fill}" stroke="${stroke}"/>`;
 const dot=(x,y,r=6,color=colors.blue)=>`<circle cx="${x}" cy="${y}" r="${r}" fill="${color}"/>`;

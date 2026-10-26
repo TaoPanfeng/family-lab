@@ -100,3 +100,7 @@ Pages 首次设置为 Settings → Pages → Source → GitHub Actions；配置�
 实验用于科普，不是诊疗、训练处方、导航或危险实物实验指南。日月地保留 AGPL-3.0-or-later；其余项目及第三方依赖按各自许可，见 `THIRD_PARTY_NOTICES.md`，不可把全部素材统称 MIT。
 
 历史记录：`docs/IMPORT_STATUS.md`、`docs/INTEGRATION_REPORT.md`。
+
+## 教学清晰度整改
+
+数学新增逐节点第二情境、正式MathML公式与22个聚焦概念交互，相关基础工具单独标注；化学新增 [六组分阶段实验](projects/chemistry/experiments/index.html)，生物新增 [虚拟显微镜](projects/biology/microscope/index.html) 和重绘的呼吸过程。武术主体改用有明确CC0授权的连续人体网格，动作仍是教学示意。来源、范围与验收见 [教学整改](docs/LEARNING_CLARITY.md)。

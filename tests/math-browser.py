@@ -20,6 +20,7 @@ def check(name,ok):
  if not ok:raise AssertionError(name)
 def select(page,id):
  page.locator('#topics [data-topic="'+id+'"]').click();page.wait_for_function('(id)=>MathTest.getState().topic===id',arg=id)
+ if page.locator('.experiment').is_hidden() and page.locator('#relatedLabToggle').is_visible():page.locator('#relatedLabToggle').click()
 def control(page,key,value):page.locator('#control-'+key).evaluate('(e,v)=>{e.value=v;e.dispatchEvent(new Event("input",{bubbles:true}));}',str(value))
 def shot(page,name):page.evaluate('window.scrollTo(0,0)');page.screenshot(path=str(OUT/(name+'.png')))
 try:
@@ -47,7 +48,7 @@ try:
     for value in [c['min'],c['max']]:
      control(page,c['key'],value)
      check(f'{id}/{c["key"]}={value}: finite rendering',page.evaluate('()=>!/NaN|Infinity/.test(document.querySelector("#visual").innerHTML)&&!document.querySelector("#metrics").textContent.includes("undefined")'))
-   page.locator('#reset').click();check(id+': reset defaults',page.evaluate('JSON.stringify(MathTest.getState().params)===JSON.stringify(MathModels.normalize(MathTest.getState().lab))'))
+   page.locator('#reset').click();check(id+': reset defaults',page.evaluate('JSON.stringify(MathTest.getState().params)===JSON.stringify(MathModels.normalize(MathTest.getState().lab,MathGuide.presets[MathTest.getState().topic]||{}))'))
   select(page,'fractions');old=page.locator('#visual').screenshot();page.locator('[data-part="5"]').click();check('direct fraction selection changes actual image and value',page.evaluate('MathTest.compute().v.n')==5 and old!=page.locator('#visual').screenshot())
   page.locator('[data-experiment="half"]').click();check('half preset',page.evaluate('MathTest.compute().value')==.5);page.locator('[data-experiment="empty"]').click();check('empty fraction',page.evaluate('MathTest.compute().value')==0)
   page.locator('#zoomPlot').click();check('actual SVG magnification',page.evaluate('MathTest.getState().plotZoom')==1.5 and page.evaluate('document.querySelector("#visual svg").getBoundingClientRect().width>document.querySelector("#visual").clientWidth'))

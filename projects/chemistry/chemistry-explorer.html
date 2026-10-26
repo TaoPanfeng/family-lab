@@ -29,6 +29,8 @@
  dialog{max-height:90dvh;overscroll-behavior:contain}
 }
 
+.reaction-entry{display:block;margin:8px 0 16px;padding:12px;border:1px solid #69c8b5;border-radius:12px;background:#e4f3ee;color:#176252;text-decoration:none;font-size:14px;line-height:1.6;min-height:44px}.reaction-entry:focus-visible{outline:3px solid #d4a647;outline-offset:2px}
+
 </style>
   <style>
 /* All laboratory presentation is scoped to .chem-lab. */
@@ -276,6 +278,8 @@
 </style>
 </head>
 <body>
+<a class="reaction-entry" href="experiments/index.html">新增：气体、火焰与反应动画 →</a>
+
   <a class="skip-link" href="#main-content">跳到主要内容</a>
   <div id="app"></div>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
@@ -2485,6 +2489,7 @@ Og|鿫是原子序数 118 的元素。|位于第 18 族；常温宏观状态未�
   function bindNav(root=document){$$('[data-go]',root).forEach(el=>el.addEventListener('click',()=>navigate(el.dataset.go,el.dataset.experiment?{experiment:el.dataset.experiment}:{})));}
   function shell(){
     $('#app').innerHTML=`<div class="mobile-overlay"></div><aside class="sidebar" aria-label="探索导航"><a class="brand" href="#home"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTgiIGZpbGw9IiMwODdmNmEiLz48ZyBmaWxsPSJub25lIiBzdHJva2U9IiNlM2Y1YzQiIHN0cm9rZS13aWR0aD0iMyI+PGVsbGlwc2UgY3g9IjMyIiBjeT0iMzIiIHJ4PSIyMyIgcnk9IjkiIHRyYW5zZm9ybT0icm90YXRlKC00MCAzMiAzMikiLz48ZWxsaXBzZSBjeD0iMzIiIGN5PSIzMiIgcng9IjIzIiByeT0iOSIgdHJhbnNmb3JtPSJyb3RhdGUoNDAgMzIgMzIpIi8+PGVsbGlwc2UgY3g9IjMyIiBjeT0iMzIiIHJ4PSI5IiByeT0iMjMiLz48L2c+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iNSIgZmlsbD0iI2ZmZiIvPjwvc3ZnPgo=" alt="万物化学标志"><span><span class="brand-name">万物化学</span><span class="brand-sub">LITTLE MATTER LAB</span></span></a><nav class="nav-scroll"><div class="nav-section">发现 · UNDERSTAND</div><div class="nav-items">${routes.slice(0,9).map(r=>`<button class="nav-item" data-go="${r[0]}" aria-label="${r[1]}">${icon(r[2],18)}<span>${r[1]}</span></button>`).join('')}</div><div class="nav-section">成长 · KEEP EXPLORING</div><div class="nav-items">${routes.slice(9).map(r=>`<button class="nav-item" data-go="${r[0]}">${icon(r[2],18)}<span>${r[1]}</span></button>`).join('')}</div></nav><div class="sidebar-footer"><div class="progress-mini"><strong>我的实验足迹 <span id="progress-label">0 / 12</span></strong><div class="progress-track"><span id="progress-bar" style="width:0"></span></div><div class="muted tiny" style="margin-top:7px">每一个“为什么”，都值得探索。</div></div><div class="version">用好奇心，连接万物 · v1.0</div></div></aside><div class="app-body"><header class="topbar"><button class="menu-toggle" aria-label="打开导航菜单" aria-expanded="false">${icon('menu',23)}</button><div class="breadcrumb"><span>万物化学</span>${icon('chevron',12)}<b id="breadcrumb-current">探索首页</b></div><div class="topbar-right"><div class="mode-switch" role="group" aria-label="学习模式"><button data-mode="kids" aria-pressed="false">${icon('child',17)}小小探索家</button><button data-mode="advanced" aria-pressed="false">${icon('graduate',17)}进阶研究员</button></div><div class="avatar" title="本机学习进度">${icon('spark',18)}</div></div></header><div class="content-wrap"><main id="main-content" tabindex="-1"></main><footer class="page-footer"><span>从微小粒子，看见生活里的大世界。</span><span>虚拟教学模型 · 学习进度仅保存在当前浏览器</span></footer></div></div>`;
+    const reactionEntry=document.querySelector('.reaction-entry');if(reactionEntry){document.querySelector('.nav-scroll').prepend(reactionEntry);}
     bindNav();$('.menu-toggle').addEventListener('click',()=>{const open=$('.sidebar').classList.toggle('open');$('.mobile-overlay').classList.toggle('open',open);$('.menu-toggle').setAttribute('aria-expanded',String(open));});$('.mobile-overlay').addEventListener('click',closeMenu);
     $$('.mode-switch [data-mode]').forEach(el=>el.addEventListener('click',()=>{state.mode=el.dataset.mode;persist();render();toast(state.mode==='kids'?'小小探索家，跟着线索动手发现吧！':'进阶研究员：展开公式、条件和模型边界。');}));
     document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMenu();});

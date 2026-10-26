@@ -29,3 +29,8 @@
 
 ## 数学馆
 数学卡片、例题、SVG图形、模型和证明说明由本项目编写，采用本馆MIT许可。参考教育部课程标准、MIT公开课程的知识组织，以及Mathigon/Polypad、Math Learning Center、GeoGebra的操作设计思想；没有复制其受限教材正文、软件或素材。OpenStax只参考公开课程结构，未将其正文或图像打包。参考链接见数学馆来源区。
+
+## 教学整改：公式与连续人体（2026-10-26）
+- KaTeX 0.16.25，MIT。`shared/vendor/katex/katex.min.js` 与 `LICENSE` 随仓库提供。仅输出原生 MathML，未打包字体文件，不使用运行时 CDN。上游：https://github.com/KaTeX/KaTeX 。`shared/formula.js` 为本项目的受限文本适配层，`trust:false`。
+- MakeHuman 官方图形数据，固定提交 a8bc2d54ff0ac92e78ff71431b1023eda42bf482，CC0-1.0。连续人体为原数据改编，许可、来源与改编边界见 `projects/martial/HUMAN_ASSET.md`。MakeHuman 程序本身为 AGPL，本次没有导入其程序逻辑。
+- 化学过程、显微样本、呼吸图与数学专属交互均为本项目原创示意，不是 RSC、NHLBI、OpenStax 的原插图，不冒充实验实拍或显微照片。机制资料在各页列出；不复制受限课程。
