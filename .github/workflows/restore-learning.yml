@@ -1,0 +1,151 @@
+name: Restore and verify reviewed learning changes
+
+on:
+  push:
+    branches: ['work/learning-clarity']
+    paths: ['.delivery/learning/manifest.json', '.github/workflows/restore-learning.yml']
+
+permissions:
+  contents: write
+concurrency:
+  group: family-lab-learning-source-transfer
+  cancel-in-progress: false
+
+jobs:
+  restore:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Restore exact checksummed reviewed source
+        run: |
+          python - <<'PY'
+          import hashlib, json, lzma, pathlib
+          root=pathlib.Path.cwd();folder=root/'.delivery/learning'
+          manifest=json.loads((folder/'manifest.json').read_text());parts=[]
+          for item in manifest['parts']:
+              path=folder/item['name']
+              if path.resolve().parent!=folder.resolve():raise RuntimeError('Invalid part path')
+              raw=path.read_bytes()
+              if len(raw)!=item['bytes'] or hashlib.sha256(raw).hexdigest()!=item['sha256']:raise RuntimeError('Chunk integrity failed: '+item['name'])
+              parts.append(raw)
+          compressed=b''.join(parts)
+          if hashlib.sha256(compressed).hexdigest()!=manifest['archive_sha256']:raise RuntimeError('Archive integrity failed')
+          files=json.loads(lzma.decompress(compressed))
+          if len(files)!=manifest['files']:raise RuntimeError('Source count mismatch')
+          restored={}
+          for name,item in files.items():
+              rel=pathlib.PurePosixPath(name);path=root/name
+              if rel.is_absolute() or '..' in rel.parts or not rel.parts or rel.parts[0] in ('.git','.github','.delivery') or path.is_symlink() or not path.resolve().is_relative_to(root):raise RuntimeError('Unsafe path: '+name)
+              if 'base_sha256' in item:
+                  raw=path.read_bytes()
+                  if hashlib.sha256(raw).hexdigest()!=item['base_sha256']:raise RuntimeError('Base changed: '+name)
+                  text=raw.decode('utf-8');last=len(text)
+                  for start,end,replacement in reversed(item['edits']):
+                      if not 0<=start<=end<=last:raise RuntimeError('Invalid edit range: '+name)
+                      text=text[:start]+replacement+text[end:];last=start
+              else:
+                  if path.exists():raise RuntimeError('Unexpected existing file: '+name)
+                  text=item['content']
+              data=text.encode('utf-8')
+              if hashlib.sha256(data).hexdigest()!=item['sha256']:raise RuntimeError('Restored content mismatch: '+name)
+              restored[path]=data
+          for path,data in restored.items():
+              path.parent.mkdir(parents=True,exist_ok=True);path.write_bytes(data)
+          (folder/'restored-paths.json').write_text(json.dumps(list(files)))
+          print('Verified and restored',len(files),'reviewed source files.')
+          PY
+      - name: Fetch pinned licensed runtime and human graphics assets
+        run: |
+          python - <<'PY'
+          import hashlib, io, os, pathlib, tarfile, time, urllib.request
+          def fetch(url):
+              for attempt in range(3):
+                  try:
+                      with urllib.request.urlopen(urllib.request.Request(url,headers={'User-Agent':'Family-Lab-Build'}),timeout=45) as r:return r.read()
+                  except Exception:
+                      if attempt==2:raise
+                      time.sleep(2)
+          commit='a8bc2d54ff0ac92e78ff71431b1023eda42bf482'
+          source=pathlib.Path(os.environ['RUNNER_TEMP'])/'human-reference';source.mkdir(exist_ok=True)
+          assets={'makehuman/data/3dobjs/base.obj':'d26635e9326e3cca30778fd7b9c00062b03cce09','makehuman/data/rigs/default.mhskel':'b02cbecae00143856410d7561adf006d83bf9b3e','makehuman/data/rigs/default_weights.mhw':'66185806afacf87749be8e5cf6dbf66496b2a6b0','LICENSE.ASSETS.md':'f3ede1fc3318f8d794e2cb51924186c62f02f71a'}
+          for name,expected in assets.items():
+              data=fetch(f'https://raw.githubusercontent.com/makehumancommunity/makehuman/{commit}/{name}')
+              if hashlib.sha1(b'blob '+str(len(data)).encode()+b'\0'+data).hexdigest()!=expected:raise RuntimeError('Upstream asset changed: '+name)
+              (source/pathlib.Path(name).name).write_bytes(data)
+          dest=pathlib.Path('projects/martial/assets');dest.mkdir(parents=True,exist_ok=True)
+          (dest/'MAKEHUMAN_CC0.md').write_bytes((source/'LICENSE.ASSETS.md').read_bytes())
+          expected={'package/dist/katex.min.js':('katex.min.js','76d534cf1167067008fca12c4e903fc44cf8cfda8c5279c318d1f78cd90b086e'),'package/LICENSE':('LICENSE','766ccc1f306c885aa45542a9846bbd0a505b27a0374f146778171c2254ce18e3')}
+          root=pathlib.Path('shared/vendor/katex');root.mkdir(parents=True,exist_ok=True)
+          with tarfile.open(fileobj=io.BytesIO(fetch('https://registry.npmjs.org/katex/-/katex-0.16.25.tgz')),mode='r:gz') as tar:
+              for name,(filename,digest) in expected.items():
+                  data=tar.extractfile(name).read()
+                  if hashlib.sha256(data).hexdigest()!=digest:raise RuntimeError('Pinned formula asset changed: '+filename)
+                  (root/filename).write_bytes(data)
+          print('Pinned KaTeX runtime/license and CC0 geometry verified; no upstream application code or fonts copied.')
+          PY
+          python tools/build-human.py "$RUNNER_TEMP/human-reference"
+          python - <<'PY'
+          import hashlib,pathlib
+          assert hashlib.sha256(pathlib.Path('projects/martial/assets/human.js').read_bytes()).hexdigest()=='9c8369751649a7ff1a6f650f35c41805b51b0ea3ae998e5c3f40237cd86e6165'
+          PY
+      - name: Build and verify all model and DOM suites
+        run: |
+          npm --prefix projects/history ci --ignore-scripts --no-audit --no-fund
+          npm run build
+          npm test
+      - name: Install browser driver and screenshot fonts
+        env:
+          DEBIAN_FRONTEND: noninteractive
+          NEEDRESTART_MODE: a
+        run: |
+          python -m pip install playwright==1.57.0
+          sudo -E apt-get -o Acquire::Retries=2 -o Acquire::http::Timeout=15 update -qq
+          sudo -E apt-get -o Acquire::Retries=2 -o Acquire::http::Timeout=15 install -y --no-install-recommends fonts-wqy-zenhei fonts-stix
+          fc-match 'STIX Math'
+      - name: Reviewed lessons via actual file URLs and WebGL
+        run: |
+          python tests/learning-browser.py --file --require-webgl --browser "$(command -v google-chrome)" --out .qa/learning-file
+          python tests/math-browser.py --file --browser "$(command -v google-chrome)" --out .qa/math-file
+      - name: Reviewed lessons, quality and gestures via HTTP
+        run: |
+          python tools/prepare-site.py
+          python tests/learning-browser.py --site --require-webgl --browser "$(command -v google-chrome)" --out .qa/learning-http
+          python tests/quality-browser.py --site --require-webgl --browser "$(command -v google-chrome)" --out .qa/quality-http
+          python tests/mobile-touch.py --site --require-webgl --browser "$(command -v google-chrome)" --out .qa/mobile-http
+      - name: Commit only reviewed source and regenerated offline outputs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh auth setup-git
+          branch='work/learning-clarity'
+          git fetch origin "$branch"
+          test "$(git rev-parse "origin/$branch")" = "$GITHUB_SHA"
+          python - <<'PY'
+          import json,subprocess
+          names=json.load(open('.delivery/learning/restored-paths.json'))
+          names+=['shared/vendor/katex/katex.min.js','shared/vendor/katex/LICENSE','projects/martial/assets/human.js','projects/martial/assets/MAKEHUMAN_CC0.md','index.html','source.html','projects/astronomy/日月地实验室.html','projects/physics/index.html','projects/physics/BUILD_MANIFEST.json','projects/posture/index.html','projects/chemistry/chemistry-explorer.html']
+          subprocess.run(['git','add','--',*names],check=True)
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'feat(learning): 重整数学双例与公式，新增化学过程、显微镜和连续人体' -m '数学125节点逐项补第二例及误区，命题与集合分用主实验，22个概念交互与MathML排版；六组化学分阶段动画、五种显微样本、心肺分层和CC0人体蒙皮。原模型/DOM、真实file和HTTP新教学验收及手机手势通过；合并main后仍需完整全站回归与上线验证。'
+          git push origin "HEAD:refs/heads/$branch"
+          git rev-parse HEAD >> "$GITHUB_STEP_SUMMARY"
+      - name: Preserve actual learning review evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: learning-review-evidence
+          path: .qa
+          include-hidden-files: true
+          if-no-files-found: ignore
+          retention-days: 7
