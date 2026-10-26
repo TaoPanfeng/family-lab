@@ -10,3 +10,11 @@ test('independently counted atoms balance the displayed chemical species',()=>{c
 test('six chemical journeys retain all five stages and physical transport is not invented reaction',()=>{assert.equal(C.lessons.length,6);for(const l of C.lessons){assert.equal(l.stages.length,5);for(let i=0;i<=500;i++){const r=C.sample(l.id,i/500);assert(r.progress>=0&&r.progress<=1);assert(r.lowFlame>=0&&r.highFlame<=1);if(r.stage.reaction)assert(C.equations[r.stage.reaction]);}}assert.equal(C.sample('carbon-dioxide',.68).stage.reaction,null);assert.equal(C.sample('carbon-dioxide',1).lowFlame,0);assert.equal(C.sample('carbon-dioxide',1).highFlame,0);assert.throws(()=>C.sample('missing',0));});
 test('microscope magnification, field, optical resolution and focused samples have consistent scales',()=>{for(const s of M.specimens)for(const objective of [4,10,40]){const x=M.optics({specimen:s.id,objective,fine:s.focus});assert.equal(x.total,objective*10);assert.equal(x.field*objective,18000);assert.equal(x.defocus,0);assert(x.resolution>0);assert.equal(x.field*x.pxPerUm,560);}assert(M.optics({objective:40}).field<M.optics({objective:4}).field);assert(M.optics({objective:40,fine:1}).blur>M.optics({objective:40,fine:0}).blur);assert(M.optics({aperture:10}).resolution>M.optics({aperture:100}).resolution);assert.equal(M.normalize({x:Infinity}).x,0);});
 test('licensed human mesh contains connected triangles and normalized finite coarse skin weights',()=>{vm.runInNewContext(fs.readFileSync('projects/martial/assets/human.js','utf8'),sandbox);const h=sandbox.window.MartialHumanData;assert.equal(h.license,'CC0-1.0');assert(h.position.length/3>10000);assert(h.index.length/3>20000);assert(h.index.every(i=>i>=0&&i<h.position.length/3));for(let i=0;i<h.weights.length;i+=8){const s=h.weights[i+1]+h.weights[i+3]+h.weights[i+5]+h.weights[i+7];assert(Math.abs(s-1)<.00003);}assert(h.position.every(Number.isFinite));});
+
+test('set cardinalities have paired bars and main inclusion-exclusion example has matching formula',()=>{
+  const expected=String.raw`|A\cup B|=|A|+|B|-|A\cap B|`;
+  assert.equal(T.sets.formula,expected);
+  assert.equal(T.combinatorics.formula,expected);
+  assert.equal((T.sets.formula.match(/\|/g)||[]).length,8);
+  assert(T.combinatorics.alternate.steps[1].includes('13>12'));
+});

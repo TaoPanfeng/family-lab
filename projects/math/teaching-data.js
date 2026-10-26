@@ -742,7 +742,7 @@
     "pitfall": "总体方差和无偏样本方差的分母不同。"
   },
   "sets": {
-    "formula": "|A\\cup B|=|A|+|B|-|A\\cap B",
+    "formula": "|A\\cup B|=|A|+|B|-|A\\cap B|",
     "alternate": {
       "title": "|两份社团名单",
       "setup": "游泳名单小青、小林；骑车名单小林、小宇。",
@@ -1470,7 +1470,7 @@
     "pitfall": "p值不是原假设为真的概率；不能看结果再改单双侧。"
   },
   "combinatorics": {
-    "formula": "\\left\\lceil\\frac{n+1}{n}\\right\\rceil=2",
+    "formula": "|A\\cup B|=|A|+|B|-|A\\cap B|",
     "alternate": {
       "title": "生日月份会重复吗",
       "setup": "13个人放入12个月份盒子，假设每盒最多1人。",
