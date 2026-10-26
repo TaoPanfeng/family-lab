@@ -16,33 +16,28 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
-      - name: Apply exact content correction and regression checks
+      - name: Align substitution example and add a semantic regression
         run: |
           python - <<'PY'
           from pathlib import Path
-          import hashlib
+          import hashlib,json
           p=Path('projects/math/teaching-data.js');raw=p.read_bytes()
-          assert hashlib.sha256(raw).hexdigest()=='f36878caff41ca5b0efb969b2a8c627745819f5df82abeaed0f3d88880ec7925'
+          assert hashlib.sha256(raw).hexdigest()=='582440f3775b78af0c5783fa0feaf91db3f95abeaf09d28aa7a3864b46d21fd6'
           text=raw.decode()
-          old=r'"formula": "|A\\cup B|=|A|+|B|-|A\\cap B"'
-          new=r'"formula": "|A\\cup B|=|A|+|B|-|A\\cap B|"'
-          wrong=r'"formula": "\\left\\lceil\\frac{n+1}{n}\\right\\rceil=2"'
-          assert text.count(old)==1 and text.count(wrong)==1
-          text=text.replace(old,new).replace(wrong,new)
-          assert hashlib.sha256(text.encode()).hexdigest()=='582440f3775b78af0c5783fa0feaf91db3f95abeaf09d28aa7a3864b46d21fd6'
-          p.write_text(text)
-          p=Path('tests/learning-models.test.cjs');raw=p.read_bytes()
-          assert hashlib.sha256(raw).hexdigest()=='50ec0a2aa7b073f2c05ec201ad8d9606d4aaa93676bd167404fe9f971754bef8'
+          old='"formula": '+json.dumps(r'\int u\,dv=uv-\int v\,du')
+          new='"formula": '+json.dumps(r'\int_0^1 2x\cos(x^2)\,dx=\int_0^1\cos u\,du=\sin1')
+          assert text.count(old)==1
+          p.write_text(text.replace(old,new))
+          p=Path('tests/learning-models.test.cjs')
           regression=r'''
-          test('set cardinalities have paired bars and main inclusion-exclusion example has matching formula',()=>{
-            const expected=String.raw`|A\cup B|=|A|+|B|-|A\cap B|`;
-            assert.equal(T.sets.formula,expected);
-            assert.equal(T.combinatorics.formula,expected);
-            assert.equal((T.sets.formula.match(/\|/g)||[]).length,8);
-            assert(T.combinatorics.alternate.steps[1].includes('13>12'));
+          test('integration examples distinguish substitution from integration by parts',()=>{
+            assert(T['integration-methods'].formula.includes(String.raw`\cos(x^2)`));
+            assert(T['integration-methods'].formula.includes(String.raw`\int_0^1\cos u`));
+            assert(T['integration-methods'].alternate.steps[1].includes(String.raw`xe^x`));
           });
           '''
-          p.write_text(raw.decode()+regression)
+          text=p.read_text();assert 'integration examples distinguish substitution' not in text
+          p.write_text(text+regression)
           PY
           node --test tests/learning-models.test.cjs
       - name: Commit without overwriting newer work
@@ -56,5 +51,5 @@ jobs:
           git add -- projects/math/teaching-data.js tests/learning-models.test.cjs
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git commit -m 'fix(math): 配对集合基数符号，让组合计数主公式对应容斥例题'
+          git commit -m 'fix(math): 区分换元与分部积分两个例子，公式与当前步骤同步'
           git push origin "HEAD:refs/heads/$branch"
