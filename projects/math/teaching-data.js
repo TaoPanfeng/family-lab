@@ -1145,7 +1145,7 @@
     "pitfall": "条件和初始常数不能忽略。"
   },
   "integration-methods": {
-    "formula": "\\int u\\,dv=uv-\\int v\\,du",
+    "formula": "\\int_0^1 2x\\cos(x^2)\\,dx=\\int_0^1\\cos u\\,du=\\sin1",
     "alternate": {
       "title": "乘积积分的拆法",
       "setup": "求0到1上x乘指数函数的积分，用乘积求导反推。",

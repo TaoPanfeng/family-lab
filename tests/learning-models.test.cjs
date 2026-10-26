@@ -18,3 +18,9 @@ test('set cardinalities have paired bars and main inclusion-exclusion example ha
   assert.equal((T.sets.formula.match(/\|/g)||[]).length,8);
   assert(T.combinatorics.alternate.steps[1].includes('13>12'));
 });
+
+test('integration examples distinguish substitution from integration by parts',()=>{
+  assert(T['integration-methods'].formula.includes(String.raw`\cos(x^2)`));
+  assert(T['integration-methods'].formula.includes(String.raw`\int_0^1\cos u`));
+  assert(T['integration-methods'].alternate.steps[1].includes(String.raw`xe^x`));
+});
