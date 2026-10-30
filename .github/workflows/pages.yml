@@ -56,7 +56,7 @@ jobs:
           python -c "import json; r=json.load(open('.qa/physics-audit/report.json')); assert r['loading']=='file:// direct navigation' and r['failed']==0"
           python projects/posture/tests/browser_smoke.py --browser "$(command -v google-chrome)" --out .qa/posture-audit
           python projects/astronomy/tests/v2-browser-test.py --browser "$(command -v google-chrome)" --out .qa/astronomy-audit
-      - name: Original projects and ten homepage entries via file URLs
+      - name: Original projects and eleven homepage entries via file URLs
         run: python tests/browser-smoke.py --browser "$(command -v google-chrome)" --out .qa/browser
       - name: Four museums via actual file URLs, including WebGL
         run: python tests/expansion-browser.py --file --require-webgl --browser "$(command -v google-chrome)" --out .qa/new-file
@@ -70,6 +70,8 @@ jobs:
         run: python tests/mobile-touch.py --file --require-webgl --browser "$(command -v google-chrome)" --out .qa/mobile-file
       - name: Teaching examples, equations, microscope and continuous human via file URLs
         run: python tests/learning-browser.py --file --require-webgl --browser "$(command -v google-chrome)" --out .qa/learning-file
+      - name: Chinese character lessons, strokes and mobile controls via file URLs
+        run: python tests/chinese-browser.py --file --browser "$(command -v google-chrome)" --out .qa/chinese-file
       - name: Prepare website and corresponding source
         run: python tools/prepare-site.py
       - name: Test real homepage clicks and HTTP subpaths
@@ -86,6 +88,8 @@ jobs:
         run: python tests/mobile-touch.py --site --require-webgl --browser "$(command -v google-chrome)" --out .qa/mobile-http
       - name: Teaching examples, equations, microscope and continuous human via HTTP
         run: python tests/learning-browser.py --site --require-webgl --browser "$(command -v google-chrome)" --out .qa/learning-http
+      - name: Chinese character lessons, strokes and mobile controls via HTTP
+        run: python tests/chinese-browser.py --site --browser "$(command -v google-chrome)" --out .qa/chinese-http
       - name: Preserve tested offline outputs
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         uses: actions/upload-artifact@v4
@@ -173,7 +177,7 @@ jobs:
       - name: Deploy tested website
         id: deployment
         uses: actions/deploy-pages@v4
-      - name: Verify published homepage, catalogue, ten applications and shared scripts
+      - name: Verify published homepage, catalogue, eleven applications and shared scripts
         env:
           SITE_URL: ${{ steps.deployment.outputs.page_url }}
         run: |
@@ -194,11 +198,11 @@ jobs:
                       if attempt == 7:
                           raise
                       time.sleep(5)
-          expected = {'astronomy','physics','chemistry','history','posture','biology','geography','cosmos','martial','math'}
+          expected = {'astronomy','physics','chemistry','history','posture','biology','geography','cosmos','martial','math','chinese'}
           home = get('index.html').decode('utf-8')
           catalog = json.loads(get('catalog.json'))
-          if {p['id'] for p in catalog} != expected or len(catalog) != 10:
-              raise RuntimeError('Published catalogue does not have the expected ten museums')
+          if {p['id'] for p in catalog} != expected or len(catalog) != 11:
+              raise RuntimeError('Published catalogue does not have the expected eleven museums')
           for project in catalog:
               if ('data-project="' + project['id'] + '"') not in home:
                   raise RuntimeError('Homepage missing ' + project['id'])
@@ -206,11 +210,11 @@ jobs:
               if b'<html' not in content[:2000].lower():
                   raise RuntimeError('Not HTML: ' + project['id'])
               print('HTTP 200:', project['name'])
-          for path in ['shared/core.js','shared/touch.js','shared/shell.js','shared/scene3d.js','shared/lab.css','projects/biology/data.js','projects/geography/app.js','projects/cosmos/data.js','projects/martial/model.js','projects/martial/hands.js','shared/canvas3d.js','projects/biology/process-models.js','projects/biology/visuals.js','projects/geography/countries.js','projects/geography/terrain.js','projects/geography/map-engine.js','projects/cosmos/process-models.js','projects/cosmos/visuals.js','projects/physics/optics.html','projects/physics/optics/model.js','projects/physics/optics/data.js','projects/physics/optics/app.js','projects/math/index.html','projects/math/data.js','projects/math/model.js','projects/math/labs.js','projects/math/proofs.js','projects/math/app.js','projects/math/style.css','shared/formula.js','shared/formula.css','shared/vendor/katex/katex.min.js','projects/math/teaching-data.js','projects/math/teaching.js','projects/math/lesson-visuals.js','projects/chemistry/experiments/index.html','projects/chemistry/experiments/model.js','projects/biology/microscope/index.html','projects/biology/microscope/model.js','projects/biology/respiration.js','projects/martial/human.js','projects/martial/assets/human.js']:
+          for path in ['shared/core.js','shared/touch.js','shared/shell.js','shared/scene3d.js','shared/lab.css','projects/biology/data.js','projects/geography/app.js','projects/cosmos/data.js','projects/martial/model.js','projects/martial/hands.js','shared/canvas3d.js','projects/biology/process-models.js','projects/biology/visuals.js','projects/geography/countries.js','projects/geography/terrain.js','projects/geography/map-engine.js','projects/cosmos/process-models.js','projects/cosmos/visuals.js','projects/physics/optics.html','projects/physics/optics/model.js','projects/physics/optics/data.js','projects/physics/optics/app.js','projects/math/index.html','projects/math/data.js','projects/math/model.js','projects/math/labs.js','projects/math/proofs.js','projects/math/app.js','projects/math/style.css','shared/formula.js','shared/formula.css','shared/vendor/katex/katex.min.js','projects/math/teaching-data.js','projects/math/teaching.js','projects/math/lesson-visuals.js','projects/chemistry/experiments/index.html','projects/chemistry/experiments/model.js','projects/biology/microscope/index.html','projects/biology/microscope/model.js','projects/biology/respiration.js','projects/martial/human.js','projects/martial/assets/human.js','projects/chinese/index.html','projects/chinese/data.js','projects/chinese/model.js','projects/chinese/app.js','projects/chinese/style.css','projects/chinese/stroke-data.js','projects/chinese/vendor/hanzi-writer.min.js']:
               if len(get(path)) < 100:
                   raise RuntimeError('Missing runtime asset: ' + path)
           with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as output:
-              output.write('### Ten museums published and HTTP-verified\n\n' + base + '\n')
+              output.write('### Eleven museums published and HTTP-verified\n\n' + base + '\n')
           PY
       - uses: actions/checkout@v4
         with:
@@ -233,6 +237,7 @@ jobs:
           python tests/experience-browser.py --base "$SITE_URL" --require-webgl --browser "$(command -v google-chrome)" --out .qa/live-experience
           python tests/mobile-touch.py --base "$SITE_URL" --require-webgl --browser "$(command -v google-chrome)" --out .qa/live-mobile
           python tests/learning-browser.py --base "$SITE_URL" --require-webgl --browser "$(command -v google-chrome)" --out .qa/live-learning
+          python tests/chinese-browser.py --base "$SITE_URL" --browser "$(command -v google-chrome)" --out .qa/live-chinese
       - name: Preserve online interaction evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -244,6 +249,7 @@ jobs:
             .qa/live-experience
             .qa/live-mobile
             .qa/live-learning
+            .qa/live-chinese
           include-hidden-files: true
           if-no-files-found: ignore
           retention-days: 7
@@ -265,7 +271,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          branch='work/learning-clarity'
+          branch='work/chinese-literacy'
           gh auth setup-git
           head="$(git ls-remote --heads origin "refs/heads/$branch" | cut -f1)"
           if test -z "$head"; then
