@@ -10,3 +10,5 @@
 /* Hanzi Writer installs input handlers even outside a quiz: let reading gestures pass through. */
 #writer-view{pointer-events:none}
 .character-box.is-practicing #writer-view{pointer-events:auto}
+/* Wrap whole controls onto another row rather than split a Chinese action label. */
+.toolbar button{white-space:nowrap;min-width:max-content}
