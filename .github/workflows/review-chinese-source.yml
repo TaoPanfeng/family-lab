@@ -1,0 +1,31 @@
+name: Review Chinese source snapshot
+on:
+  push:
+    branches: ['work/chinese-literacy']
+    paths: ['.github/workflows/review-chinese-source.yml']
+permissions:
+  contents: read
+jobs:
+  snapshot:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verify character content and local stroke dependencies
+        run: node --test tests/chinese-models.test.cjs
+      - name: Prepare current source for independent inspection
+        run: |
+          mkdir -p /tmp/chinese-source-review
+          git archive --format=tar HEAD | gzip > /tmp/chinese-source-review/source.tar.gz
+          git rev-parse HEAD > /tmp/chinese-source-review/commit.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: chinese-source-review
+          path: /tmp/chinese-source-review/
+          retention-days: 3
+          if-no-files-found: error
