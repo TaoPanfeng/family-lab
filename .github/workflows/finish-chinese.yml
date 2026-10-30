@@ -1,0 +1,103 @@
+name: Verify Chinese handwriting and teaching refinements
+on:
+  push:
+    branches: ['work/chinese-literacy']
+    paths: ['.github/workflows/finish-chinese.yml', '.delivery/chinese-polish.xz']
+permissions:
+  contents: write
+concurrency:
+  group: chinese-reviewed-refinements
+  cancel-in-progress: false
+jobs:
+  verify-and-commit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Apply checksum-verified reviewed text edits
+        run: |
+          python - <<'PY'
+          import hashlib, json, lzma
+          from pathlib import Path
+          root = Path.cwd()
+          raw = (root / '.delivery/chinese-polish.xz').read_bytes()
+          assert hashlib.sha256(raw).hexdigest() == 'b6972601c7091eff7bbe57394f2d2508d27abd9d30146aa269666fade794b7ed'
+          edits = json.loads(lzma.decompress(raw))
+          assert len(edits) == 10
+          pending = []
+          for item in edits:
+              rel = Path(item['path'])
+              assert not rel.is_absolute() and '..' not in rel.parts
+              assert rel.parts[0] in ('projects', 'docs', 'tests')
+              path = root / rel
+              assert not path.is_symlink() and path.resolve().is_relative_to(root)
+              original = path.read_bytes() if path.exists() else None
+              assert (hashlib.sha256(original).hexdigest() if original is not None else None) == item['before'], str(rel)
+              text = original.decode('utf-8') if original is not None else ''
+              boundary = len(text)
+              for start,end,replacement in reversed(item['edits']):
+                  assert 0 <= start <= end <= boundary
+                  text = text[:start] + replacement + text[end:]
+                  boundary = start
+              data = text.encode('utf-8')
+              assert hashlib.sha256(data).hexdigest() == item['after'], str(rel)
+              pending.append((path,data))
+          for path,data in pending:
+              path.parent.mkdir(parents=True,exist_ok=True)
+              path.write_bytes(data)
+          print('Restored 10 reviewed files without overwriting unrelated changes.')
+          PY
+      - name: Build offline applications and test Chinese content and homepage
+        run: |
+          npm run build
+          node --test tests/chinese-models.test.cjs tests/portal.test.cjs
+      - name: Install browser and Chinese fonts
+        env:
+          DEBIAN_FRONTEND: noninteractive
+          NEEDRESTART_MODE: a
+        run: |
+          python -m pip install playwright==1.57.0
+          google-chrome --version
+          sudo -E apt-get -o Acquire::Retries=2 -o Acquire::http::Timeout=15 update -qq
+          sudo -E apt-get -o Acquire::Retries=2 -o Acquire::http::Timeout=15 install -y --no-install-recommends fonts-wqy-zenhei
+          test -n "$(fc-list :lang=zh file | head -n 1)"
+      - name: Actual file navigation, stroke input, reading tones and touch gestures
+        run: python tests/chinese-browser.py --file --browser "$(command -v google-chrome)" --out .qa/chinese-file
+      - name: Actual HTTP navigation, stroke input, reading tones and touch gestures
+        run: |
+          python tools/prepare-site.py
+          python tests/chinese-browser.py --site --browser "$(command -v google-chrome)" --out .qa/chinese-http
+      - name: Commit reviewed source and generated index after successful tests
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh auth setup-git
+          git fetch origin work/chinese-literacy
+          test "$(git rev-parse origin/work/chinese-literacy)" = "$GITHUB_SHA"
+          python - <<'PY'
+          import json,lzma,subprocess
+          from pathlib import Path
+          items=json.loads(lzma.decompress(Path('.delivery/chinese-polish.xz').read_bytes()))
+          subprocess.run(['git','add','--',*[i['path'] for i in items],'index.html','source.html'],check=True)
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'feat(chinese): 完善336组词语搭配、带调搜索与真实描字练习' -m '新增十字有来源的字源说明；分清联想与字源。修复响应式描字坐标、完成后拦截滑页和导入后收藏列表未同步；逐卡、逐词、鼠标和可信触摸实际书写经file及HTTP专项验收。'
+          git push origin HEAD:refs/heads/work/chinese-literacy
+      - name: Preserve real-browser evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: chinese-refinement-evidence
+          path: .qa
+          include-hidden-files: true
+          retention-days: 7
+          if-no-files-found: ignore
