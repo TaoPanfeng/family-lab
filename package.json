@@ -2,7 +2,7 @@
   "name": "family-lab",
   "version": "1.0.0",
   "private": true,
-  "description": "十一个独立探索馆、统一首页、离线优先；科学、数学与语文交互探索。",
+  "description": "十四个独立探索馆、统一首页、离线优先；科学、人文、语言、编程与音乐交互探索。",
   "engines": {
     "node": ">=22.17"
   },
@@ -20,6 +20,8 @@
     "test:math:browser": "python tests/math-browser.py",
     "test:experience": "python tests/experience-browser.py",
     "test:chinese": "node --test tests/chinese-models.test.cjs",
-    "test:chinese:browser": "python tests/chinese-browser.py"
+    "test:chinese:browser": "python tests/chinese-browser.py",
+    "test:workshops": "node --test tests/workshops-models.test.cjs",
+    "test:workshops:browser": "python tests/workshops-browser.py"
   }
 }

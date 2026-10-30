@@ -174,5 +174,53 @@
     ],
     "license": "MIT；笔顺数据另遵Arphic许可",
     "importedVersion": "current"
+  },
+  {
+    "id": "english",
+    "name": "英语",
+    "subtitle": "把世界说出来",
+    "english": "LOOK · BUILD · SAY",
+    "entry": "projects/english/index.html",
+    "question": "一张图，能不能变成你说的一句话？",
+    "description": "移动小球、拼句子、数物品；让画面、词序和实际意思互相对应。",
+    "tags": [
+      "场景英语",
+      "句子积木",
+      "单复数"
+    ],
+    "license": "MIT",
+    "importedVersion": "current"
+  },
+  {
+    "id": "computing",
+    "name": "信息与编程",
+    "subtitle": "让想法运行",
+    "english": "THINK · CODE · DEBUG",
+    "entry": "projects/computing/index.html",
+    "question": "机器人为什么没有照你的意思走？",
+    "description": "排指令、画像素、比较查找方法；看见程序怎样一步一步运行。",
+    "tags": [
+      "机器人指令",
+      "像素编码",
+      "查找实验"
+    ],
+    "license": "MIT",
+    "importedVersion": "current"
+  },
+  {
+    "id": "music",
+    "name": "音乐",
+    "subtitle": "听得见的规律",
+    "english": "LISTEN · ARRANGE · CREATE",
+    "entry": "projects/music/index.html",
+    "question": "你点的几个格子，会变成怎样的旋律？",
+    "description": "比较音高、排列节奏、创作八拍旋律；声音默认关闭，作品可备份。",
+    "tags": [
+      "音高与频率",
+      "节奏工作台",
+      "旋律创作"
+    ],
+    "license": "MIT",
+    "importedVersion": "current"
   }
 ]

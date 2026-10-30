@@ -39,3 +39,7 @@
 - `projects/chinese/vendor/hanzi-writer.min.js`：Hanzi Writer 3.7.3，MIT，作者 David Chanin；库许可证单列在 `HANZI_WRITER_LICENSE.txt`。官方 https://hanziwriter.org/ ，源码 https://github.com/chanind/hanzi-writer ，版本提交 `7cff0a3897f160840182c29577d965707cddb77d`。
 - `projects/chinese/stroke-data.js`：选取102字的原笔画路径及中线，由 JSON 包装为离线 JS；源自 Hanzi Writer Data / Make Me a Hanzi，数据提交 `68d10a4b21150cae5e1ebbd223eed289cf32d90c`，遵守 Arphic Public License（完整文本在 `projects/chinese/vendor/ARPHICPL.TXT`）；不要把这部分统称 MIT。SHA256和源版本见同目录manifest。未打包或分发系统字体。
 - 古诗选录古代公版作品，按条目标作者、篇名、出处链接；名句白话说明及教学文字为原创，不复制现代教材解释。字源引用香港中文大学汉语多功能字库的释义并原创简述。
+
+## 英语、信息与编程、音乐（2026-10-30）
+
+新增三馆和shared/workshop的图形、场景、教学文案、算法与声音合成代码为原创MIT实现，不额外引入第三方库、字体、音频或图像资产。参考British Council LearnEnglish Kids的语法分类、CS Unplugged的编程与查找教学思路、Google Chrome Music Lab的可视化音乐交互及MDN API文档。仅借鉴思想并链接来源，不复制其课程、图形或代码；不将被参考网站的许可改为MIT，不表示上游背书。

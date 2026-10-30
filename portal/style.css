@@ -22,3 +22,5 @@
 }
 
 .card.chinese{--accent:#afd0ae;--glow:#365d4e}.chinese .art{background:#173c36}
+
+.card.english{--accent:#9ed7d3;--glow:#315a5c}.card.computing{--accent:#c2afd9;--glow:#514364}.card.music{--accent:#e0abc2;--glow:#633e52}

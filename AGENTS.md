@@ -1,6 +1,6 @@
 # Family Lab 维护约定
 
-1. 一个公共首页、十一个独立项目。每个子项目只保留一份当前代码；不得创建 v1/v2/backup 等重复应用目录，历史交给 Git。原源码中的 v2.js 与测试基线不是第二套应用，不盲目删除。
+1. 一个公共首页、十四个独立项目。每个子项目只保留一份当前代码；不得创建 v1/v2/backup 等重复应用目录，历史交给 Git。原源码中的 v2.js 与测试基线不是第二套应用，不盲目删除。
 2. 进入子项目后保持原有界面与操作；首页不使用 iframe，不向子项目注入公共导航。默认新标签打开。
 3. 普通使用必须无需 npm、服务器或外网。入口必须使用相对路径，兼容仓库名子路径；禁止运行时 CDN、外部字体与远端数据依赖。
 4. 修改可读源码后，运行 `npm run build` 并提交生成后的离线 HTML。不要只改成品又让下次构建覆盖。
@@ -33,3 +33,5 @@
 26. 上述教学修改运行 `tests/learning-models.test.cjs` 和 `tests/learning-browser.py` 的真实 file/HTTP、WebGL 与上线URL检查，并保留原数学、全馆、手机验收。禁止以注入式截图冒充公开网站，禁止以测试数量证明教学完全准确。
 
 27. 语文馆 `projects/chinese/` 按带读音的字卡排序，区分现代字形、原创记忆联想与有来源的字源。不伪造古文字形、名句或多音字读法；未收录名句时明确标注。Hanzi Writer 和笔顺数据许可分别保留；全部运行资源本地提供。运行 `tests/chinese-models.test.cjs` 及 `tests/chinese-browser.py` 的真实 file、HTTP、线上和可信触摸验收，保留全部旧馆测试。
+
+28. 英语、信息与编程、音乐新增三馆分别在projects/english、computing、music；独立共享shared/workshop，不重写旧馆。保持画面/词序/算法/音频时钟对应；音乐默认静音，只用显式点击启音，暂停、退出及后台停止。作品只保存数据，不执行任意脚本。运行tests/workshops-models.test.cjs及workshops-browser.py真实file/HTTP/线上/触摸验收。不能把自动音频信号测试称为真机听感验证。
