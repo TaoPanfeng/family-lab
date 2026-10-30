@@ -1,0 +1,22 @@
+name: Prepare Chinese museum source
+on:
+  push:
+    branches: ['work/chinese-literacy']
+    paths: ['.github/workflows/chinese-source.yml']
+permissions:
+  contents: read
+jobs:
+  source:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Pack current tracked source
+        run: git archive --format=zip HEAD -o /tmp/chinese-source.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: chinese-source
+          path: /tmp/chinese-source.zip
+          retention-days: 3
