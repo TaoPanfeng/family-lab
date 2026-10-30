@@ -1,0 +1,12 @@
+{
+  "dataRef": "68d10a4b21150cae5e1ebbd223eed289cf32d90c",
+  "libraryRef": "7cff0a3897f160840182c29577d965707cddb77d",
+  "version": "3.7.3",
+  "characters": 102,
+  "sha256": {
+    "hanzi-writer.min.js": "17b11a1e025b780cb518d49b30faacc770dfa7fbc387aa3876e3e5c1bd31e642",
+    "HANZI_WRITER_LICENSE.txt": "7735d83cdf892c8db41c27103b42c89b4b63149770c1e08ae13cbbebb81da637",
+    "ARPHICPL.TXT": "5590533436c70f10f2f524ee61456238c290175c6662fbe1c700b5f038a6d328",
+    "stroke-data.js": "db02e4d0b3afc0d4055e4607ef7c9cbf8152f5c11b5dff2efa10696ce3bbd180"
+  }
+}
