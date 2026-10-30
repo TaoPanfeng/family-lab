@@ -27,6 +27,26 @@ def main():
     def check(name,ok):
         report['checks'].append({'name':name,'passed':bool(ok)});print(('PASS ' if ok else 'FAIL ')+name,flush=True)
         if not ok:raise AssertionError(name)
+    def stroke_points(pg,index):
+        # Move a real pointer along upstream stroke medians, mapped into the currently displayed SVG.
+        return pg.evaluate("""i=>{const c=ChineseTest.state().id.split('-')[0],r=document.querySelector('#writer-view').getBoundingClientRect(),t=HanziWriter.getScalingTransform(r.width,r.height,Math.min(r.width,r.height)*.08);return ChineseStrokes[c].medians[i].map(p=>({x:r.left+t.x+p[0]*t.scale,y:r.top+r.height-t.y-p[1]*t.scale}));}""",index)
+    def draw_stroke(pg,index,cdp=None,reverse=False):
+        points=stroke_points(pg,index)
+        if reverse:points.reverse()
+        first=points[0]
+        if cdp:
+            cdp.send('Input.dispatchTouchEvent',{'type':'touchStart','touchPoints':[dict(first,id=1)]})
+            prev=first
+            for target in points[1:]:
+                for j in range(1,5):
+                    pt={'x':prev['x']+(target['x']-prev['x'])*j/4,'y':prev['y']+(target['y']-prev['y'])*j/4,'id':1}
+                    cdp.send('Input.dispatchTouchEvent',{'type':'touchMove','touchPoints':[pt]})
+                prev=target
+            cdp.send('Input.dispatchTouchEvent',{'type':'touchEnd','touchPoints':[]})
+        else:
+            pg.mouse.move(first['x'],first['y']);pg.mouse.down()
+            for pt in points[1:]:pg.mouse.move(pt['x'],pt['y'],steps=4)
+            pg.mouse.up()
     def load(ctx):
         pg=ctx.new_page();pg.set_default_timeout(12000);pg.on('pageerror',lambda e:report['errors'].append(str(e)))
         pg.on('request',lambda req:report['externalRequests'].append(req.url) if urlsplit(req.url).scheme in ('http','https') and (a.file or a.inject or urlsplit(req.url).netloc!=urlsplit(base).netloc) else None)
@@ -46,6 +66,11 @@ def main():
                 choose(id)
                 details=page.evaluate('''()=>{const s=ChineseTest.state(),d=ChineseData.entries.find(e=>e.id===s.id);return {id:s.id,meaning:document.querySelector('#meaning').textContent,wordCount:document.querySelectorAll('#words button').length,paths:document.querySelectorAll('#split-view path').length,expected:ChineseStrokes[d.char].strokes.length,reading:document.querySelector('#title-pinyin').textContent,trap:document.querySelector('#trap').textContent};}''')
                 check(id+': distinct reading, three words, explanation and real vector glyph',details['id']==id and details['wordCount']==3 and len(details['meaning'])>=5 and details['paths']==details['expected'] and len(details['trap'])>5)
+                phrases=page.evaluate('ChineseSupplement.collocations[ChineseTest.state().id]')
+                seen=[]
+                for i,phrase in enumerate(phrases):
+                    page.locator('#words button').nth(i).click();seen.append(phrase in page.locator('#word-detail').inner_text())
+                check(id+': each word opens its specific collocation',all(seen))
                 page.locator('#step').click();check(id+': actual one-stroke state',state()['stroke']==1 and '第 1 /' in page.locator('#stroke-status').inner_text())
                 page.locator('#reset').click()
             choose('睡-shui4');page.locator('#character-box').scroll_into_view_if_needed();before=page.locator('#character-box').screenshot();page.locator('#split').click()
@@ -58,6 +83,23 @@ def main():
             page.locator('#speed').select_option('2');check('speed change restarts cleanly',state()['playing']);page.locator('#reset').click();check('reset leaves no stale animated SVG',not state()['playing'] and page.locator('#writer-view svg').count()==0)
             for q in ['shui','shuì','shui4','目','睡眠']:
                 page.locator('#search').fill(q);check('search '+q+' finds sleep', '睡-shui4' in state()['visible']);page.locator('#clear').click()
+            for q in ['qíng','qing2','QI\u0301NG']:
+                page.locator('#search').fill(q);check('exact tone search '+q,set(state()['visible'])=={'晴-qing2','情-qing2'});page.locator('#clear').click()
+            page.locator('#search').fill('qing3');check('third tone isolates 请',state()['visible']==['请-qing3']);page.locator('#clear').click()
+            choose('日-ri4');page.locator('#trace').click();page.wait_for_function('document.querySelector("#writer-view svg path")');page.locator('#character-box').scroll_into_view_if_needed()
+            draw_stroke(page,0,reverse=True)
+            page.wait_for_function('document.querySelector("#stroke-status").textContent.includes("红色提示")')
+            check('wrong stroke direction does not count as completed',state()['practiceStroke']==0 and state()['practice'])
+            page.wait_for_timeout(500)
+            for i in range(4):
+                if i==1:
+                    page.set_viewport_size({'width':1080,'height':1000});page.locator('#character-box').scroll_into_view_if_needed();page.wait_for_timeout(100)
+                draw_stroke(page,i);page.wait_for_function('n=>ChineseTest.state().practiceStroke===n',arg=i+1)
+                check(f'desktop genuine handwriting stroke {i+1}, including responsive resize',state()['practiceStroke']==i+1)
+            check('completion releases touch and avoids false calligraphy grading',not state()['practice'] and '不是书法评分' in page.locator('#stroke-status').inner_text())
+            page.locator('#trace').click();check('completed handwriting can restart',state()['practice']);page.locator('#trace').click();check('exit handwriting restores reading surface',not state()['practice'] and page.locator('#writer-view').is_hidden())
+            page.locator('#trace').click();choose('睡-shui4');check('navigation cancels active handwriting',not state()['practice'] and page.locator('#writer-view svg').count()==0)
+            page.set_viewport_size({'width':1440,'height':1000})
             page.locator('#search').fill('不存在的字卡');check('empty search hides stale lesson',not page.locator('#lesson').is_visible() and not state()['visible']);page.locator('#clear').click()
             page.locator('#alphabet [data-letter="q"]').click();check('Q filter is real',all(x.split('-')[1].startswith('q') for x in state()['visible']));page.locator('#clear').click()
             page.locator('#family').select_option('青字家族');check('family includes qing and jing', '清-qing1' in state()['visible'] and '睛-jing1' in state()['visible']);page.locator('#clear').click()
@@ -75,8 +117,10 @@ def main():
             with page.expect_download() as download:page.locator('#export').click()
             backup=json.loads(Path(download.value.path()).read_text());check('export contains actual writing',backup['notes']['睡-shui4']==literal)
             old=state();page.locator('#import').set_input_files({'name':'bad.json','mimeType':'application/json','buffer':b'{"unknown": true}'});page.wait_for_function('document.querySelector("#backup-status").textContent.startsWith("未导入")');check('invalid import leaves records unchanged',state()['notes']==old['notes'])
+            page.locator('#favorites').click();check('favorites before import stays scoped',state()['visible']==['睡-shui4'])
             incoming={'app':'family-lab-chinese','version':1,'favorites':['木-mu4'],'notes':{'睡-shui4':'不应覆盖旧句','木-mu4':'木头做成小船。'}}
             page.locator('#my-sentence').fill('我先保存这个睡前草稿。');page.locator('#import').set_input_files({'name':'valid.json','mimeType':'application/json','buffer':json.dumps(incoming).encode()});page.wait_for_function('document.querySelector("#backup-status").textContent.startsWith("已合并")');check('valid import preserves unsaved current draft and adds other notes',state()['notes'].get('睡-shui4')=='我先保存这个睡前草稿。' and state()['notes'].get('木-mu4')=='木头做成小船。')
+            check('import immediately updates active favorites filter',set(state()['visible'])=={'木-mu4','睡-shui4'});page.locator('#clear').click()
             if not a.inject:
                 page.reload(wait_until='load');page.wait_for_function('window.ChineseTest');check('records persist at real origin across reload',state()['notes'].get('睡-shui4')=='我先保存这个睡前草稿。' and '木-mu4' in state()['favorites'])
                 page.locator('.skip').focus();page.keyboard.press('Enter');check('skip link does not change current character',state()['id']=='睡-shui4')
@@ -105,7 +149,25 @@ def main():
             check('glyph reading area permits native page scrolling',page.evaluate('scrollY')>start+10)
             check('mobile inputs are browser-trusted touch',page.evaluate('__trusted.length>0&&__trusted.every(Boolean)'))
             page.locator('#step').tap();check('mobile stroke step works',state()['stroke']==1)
-            small=page.locator('#split,#animate,#step,#reset,#save-sentence,#check-sentence,#open-catalog').evaluate_all('es=>es.filter(e=>e.getBoundingClientRect().height<43).map(e=>e.id)');check('mobile primary buttons are at least44px',not small)
+            page.locator('#open-catalog').tap();page.locator('#clear').tap();page.locator('#search').fill('日');page.locator('#char-list [data-id="日-ri4"]').tap()
+            page.locator('#trace').tap();page.wait_for_function('document.querySelector("#writer-view svg path")')
+            page.locator('#character-box').evaluate('e=>e.scrollIntoView({block:"center"})');page.wait_for_timeout(100)
+            for i in range(4):
+                if i==1:
+                    page.set_viewport_size({'width':320,'height':780});page.locator('#character-box').evaluate('e=>e.scrollIntoView({block:"center"})');page.wait_for_timeout(100)
+                start=page.evaluate('scrollY');draw_stroke(page,i,cdp)
+                page.wait_for_function('n=>ChineseTest.state().practiceStroke===n',arg=i+1)
+                check(f'mobile real stroke {i+1} works without scrolling, also at 320px',abs(page.evaluate('scrollY')-start)<2)
+            check('mobile handwriting completion removes gesture lock',not state()['practice'] and page.locator('#character-box').evaluate('e=>getComputedStyle(e).touchAction')=='auto')
+            # The library SVG must no longer intercept native page scrolling after completion.
+            page.locator('#character-box').evaluate('e=>e.scrollIntoView({block:"center"})');page.wait_for_timeout(100)
+            rect=page.locator('#character-box').bounding_box();x=rect['x']+rect['width']/2;y=rect['y']+rect['height']/2;start=page.evaluate('scrollY')
+            cdp.send('Input.dispatchTouchEvent',{'type':'touchStart','touchPoints':[{'x':x,'y':y,'id':1}]})
+            for i in range(1,11):cdp.send('Input.dispatchTouchEvent',{'type':'touchMove','touchPoints':[{'x':x,'y':y-i*10,'id':1}]});page.wait_for_timeout(16)
+            cdp.send('Input.dispatchTouchEvent',{'type':'touchEnd','touchPoints':[]});page.wait_for_timeout(180)
+            check('finished handwriting permits native page scroll',page.evaluate('scrollY')>start+10)
+            page.locator('#trace').tap();page.locator('#trace').tap();check('mobile manual exit restores reading',not state()['practice'] and page.locator('#writer-view').is_hidden())
+            small=page.locator('#split,#animate,#step,#trace,#reset,#save-sentence,#check-sentence,#open-catalog').evaluate_all('es=>es.filter(e=>e.getBoundingClientRect().height<43).map(e=>e.id)');check('mobile primary buttons are at least44px',not small)
             check('browser pinch zoom is not disabled','user-scalable=no' not in page.locator('meta[name=viewport]').get_attribute('content'))
             for w,h in [(320,780),(390,844),(430,932),(844,390)]:
                 page.set_viewport_size({'width':w,'height':h});check(f'mobile {w}x{h} no overflow',page.evaluate('document.documentElement.scrollWidth<=innerWidth+1'))

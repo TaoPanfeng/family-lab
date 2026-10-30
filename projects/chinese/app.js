@@ -1,7 +1,7 @@
 /* Offline character explorer. Meaning, present-day form and etymology stay distinct. */
 (function () {
   'use strict';
-  const M=ChineseModel, D=ChineseData, entries=D.entries.slice().sort(M.compare);
+  const M=ChineseModel, D=ChineseData, S=ChineseSupplement, entries=D.entries.slice().sort(M.compare);
   const byId=new Map(entries.map(e=>[e.id,e])), $=id=>document.getElementById(id);
   const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const link=(url,text)=>`<a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(text)}</a>`;
@@ -11,6 +11,7 @@
   catch(e){storageOK=false;}
   let current=byId.get('睡-shui4'), visible=entries, letter='', favoritesOnly=false;
   let writer=null, epoch=0, playing=false, paused=false, split=false, stroke=0, quoteIndex=0;
+  let practice=false, practiceStroke=0;
   let noticeTimer;
   function notice(text) { $('notice').textContent=text;clearTimeout(noticeTimer);noticeTimer=setTimeout(()=>$('notice').textContent='',5000); }
   function persist() {
@@ -74,7 +75,8 @@
     $('split-view').hidden=false;$('writer-view').hidden=true;
   }
   function stopWriter() {
-    epoch++;playing=false;paused=false;
+    epoch++;playing=false;paused=false;practice=false;practiceStroke=0;
+    $('character-box').classList.remove('is-practicing');$('trace').textContent='描一描';$('trace').setAttribute('aria-pressed','false');
     if(writer){writer.pauseAnimation();writer.cancelQuiz();writer.hideCharacter({duration:0});writer=null;}
     $('writer-view').replaceChildren();$('pause').disabled=true;$('pause').textContent='暂停';
   }
@@ -83,16 +85,38 @@
     $('split').setAttribute('aria-pressed','false');
     $('stroke-status').textContent=`${ChineseStrokes[current.char]?.strokes.length||'—'} 笔 · 先看整体，再拆部件`;
   }
+  // The input coordinate space must match the actual responsive SVG, not a fixed 310px canvas.
+  function writerDimensions() {
+    const r=$('writer-view').getBoundingClientRect();
+    return {width:r.width,height:r.height,padding:Math.min(r.width,r.height)*.08};
+  }
+  if('ResizeObserver' in window)new ResizeObserver(()=>{
+    if(writer&&!$('writer-view').hidden)writer.updateDimensions(writerDimensions());
+  }).observe($('character-box'));
   function animate() {
     stopWriter();split=false;stroke=0;$('split').setAttribute('aria-pressed','false');
     if(!window.HanziWriter||!ChineseStrokes[current.char]){notice('笔顺资源未加载，请重新打开页面。');return;}
     const ownEpoch=epoch;
     $('split-view').hidden=true;$('writer-view').hidden=false;
-    writer=HanziWriter.create($('writer-view'),current.char,{width:310,height:310,padding:25,showCharacter:false,showOutline:true,strokeColor:'#286354',radicalColor:'#a24736',outlineColor:'#dce1d5',strokeAnimationSpeed:Number($('speed').value),delayBetweenStrokes:150,
+    writer=HanziWriter.create($('writer-view'),current.char,{...writerDimensions(),showCharacter:false,showOutline:true,strokeColor:'#286354',radicalColor:'#a24736',outlineColor:'#dce1d5',strokeAnimationSpeed:Number($('speed').value),delayBetweenStrokes:150,
       charDataLoader:(char,onLoad)=>onLoad(ChineseStrokes[char])});
-    const svg=$('writer-view').querySelector('svg');if(svg)svg.setAttribute('viewBox','0 0 310 310');
     playing=true;$('pause').disabled=false;$('stroke-status').textContent='正在逐笔演示；可暂停，也可重新播放。';
     writer.animateCharacter({onComplete:()=>{if(ownEpoch!==epoch)return;playing=false;$('pause').disabled=true;$('stroke-status').textContent=`${ChineseStrokes[current.char].strokes.length} 笔，演示完成。`;}}).catch(()=>{if(ownEpoch===epoch){notice('笔顺播放未完成，请点复位重试。');resetCharacter();}});
+  }
+  function traceCharacter() {
+    if(practice){resetCharacter();return;}
+    stopWriter();split=false;stroke=0;$('split').setAttribute('aria-pressed','false');
+    if(!window.HanziWriter||!ChineseStrokes[current.char]){notice('笔顺资源未加载，请重新打开页面。');return;}
+    const ownEpoch=epoch;
+    $('split-view').hidden=true;$('writer-view').hidden=false;
+    writer=HanziWriter.create($('writer-view'),current.char,{...writerDimensions(),showCharacter:false,showOutline:true,strokeColor:'#286354',highlightColor:'#a24736',outlineColor:'#dce1d5',drawingColor:'#a24736',charDataLoader:(char,onLoad)=>onLoad(ChineseStrokes[char])});
+    practice=true;$('character-box').classList.add('is-practicing');$('trace').textContent='结束练写';$('trace').setAttribute('aria-pressed','true');
+    $('stroke-status').textContent='按灰色轮廓写第一笔；写字区暂不滚页，点“结束练写”退出。';
+    writer.quiz({showHintAfterMisses:1,highlightOnComplete:false,
+      onMistake:()=>{if(ownEpoch===epoch)$('stroke-status').textContent='没关系，看看红色提示，再按方向写这一笔。';},
+      onCorrectStroke:info=>{if(ownEpoch!==epoch)return;practiceStroke=info.strokeNum+1;$('stroke-status').textContent=`已写 ${practiceStroke} / ${ChineseStrokes[current.char].strokes.length} 笔；接着写下一笔。`;},
+      onComplete:()=>{if(ownEpoch!==epoch)return;practice=false;$('character-box').classList.remove('is-practicing');$('trace').textContent='再描一次';$('trace').setAttribute('aria-pressed','false');$('stroke-status').textContent='这一轮笔顺练习完成！不是书法评分；还可以读词、自己造句。';}
+    });
   }
   function renderQuotes() {
     const quotes=current.quotes.map(id=>D.quotes.find(q=>q.id===id));
@@ -119,7 +143,8 @@
     $('parts').innerHTML=e.parts.map((p,i)=>(i?'<span class="plus">＋</span>':'')+`<div class="part-card">${p}<small>${esc(partGloss[p]||'字形部件')}</small></div>`).join('');
     $('structure-note').textContent=e.layout==='独体'?'独体字先观察整个字，不硬拆成几个词。':'部件卡表示现代字形观察，不是把几个词的意思机械相加。字形里的部件会缩窄、压扁或变形。';
     $('memory').textContent=e.memory;
-    $('etymology').innerHTML=e.etymology?`<span class="tag">字源线索 · ${e.etymology.type}</span><p>${esc(e.etymology.text)}</p>${link(e.source,'核对：香港中文大学汉语多功能字库')}`:'<span class="tag">先分清：记字故事 ≠ 字源考证</span><p>上面的联想用来帮你认字；本卡不把现代部件故事当作已考定的造字历史。</p>';
+    const etymology=e.etymology||S.etymologies[e.char];
+    $('etymology').innerHTML=etymology?`<span class="tag">字源线索 · ${etymology.type}</span><p>${esc(etymology.text)}</p>${link(e.source,'核对：香港中文大学汉语多功能字库')}`:'<span class="tag">先分清：记字故事 ≠ 字源考证</span><p>上面的联想用来帮你认字；本卡不把现代部件故事当作已考定的造字历史。</p>';
     $('trap').textContent=e.trap;document.querySelector('.caution').open=false;
     $('words').innerHTML=e.words.map(w=>`<button data-word="${w}">${w}</button>`).join('');
     $('word-detail').textContent='点一个词，再带着它说一句话。';
@@ -159,17 +184,18 @@
   $('open-catalog').onclick=()=>{const open=$('catalog-panel').classList.toggle('open');$('open-catalog').setAttribute('aria-expanded',open);if(open){$('catalog-panel').scrollIntoView({block:'start'});$('search').focus({preventScroll:true});}};
   $('split').onclick=()=>{stopWriter();split=!split;stroke=0;drawCharacter();$('split').setAttribute('aria-pressed',split);$('stroke-status').textContent=split?'分开观察：部件仍来自同一个字的笔画。':'合起来：再看它们原来的位置。';};
   $('animate').onclick=animate;
+  $('trace').onclick=traceCharacter;
   $('pause').onclick=()=>{if(!writer||!playing)return;paused=!paused;if(paused)writer.pauseAnimation();else writer.resumeAnimation();$('pause').textContent=paused?'继续':'暂停';$('stroke-status').textContent=paused?'已暂停，点“继续”接着看。':'正在逐笔演示。';};
   $('step').onclick=()=>{stopWriter();split=false;$('split').setAttribute('aria-pressed','false');const n=ChineseStrokes[current.char].strokes.length;stroke=stroke>=n?1:stroke+1;drawCharacter(stroke);$('stroke-status').textContent=`第 ${stroke} / ${n} 笔 · 再点一次看下一笔`;} ;
   $('reset').onclick=resetCharacter;
   $('speed').onchange=()=>{if(playing)animate();};
   const wordDetails={'睡眠':'“睡眠”是休息的一种状态；可以说“充足的睡眠”。','入睡':'“入睡”强调开始睡着；可以说“慢慢入睡”。','午睡':'“午睡”指午间的睡眠；可以说“午睡一会儿”。','清水':'“清水”说水比较清；与“浑水”对照。','晴天':'“晴天”说天气；不能写成“清天”。','心情':'“心情”说心里的感受；可以说“愉快的心情”。','请问':'“请问”放在问题前，表达礼貌。','眼睛':'“眼睛”里睛常读轻声；不要因为青像清，就把睛读成qīng。','森林':'“森林”指大片树木生长的地方，不限三棵树。','休息':'“休息”是暂停活动、恢复精神；跑累了可以休息。','家人':'“家人”是家庭里亲近的人；可以说“关心家人”。'};
-  $('words').onclick=e=>{const b=e.target.closest('[data-word]');if(!b)return;for(const el of $('words').querySelectorAll('button'))el.setAttribute('aria-pressed',el===b);const w=b.dataset.word;$('word-detail').textContent=wordDetails[w]||`用“${w}”试着表达一个具体情景。先想：这个词说的是事物、动作，还是感受？`;$('writing-prompt').textContent=`现在试着用“${w}”说一句话：谁，在哪里，发生了什么？`;};
+  $('words').onclick=e=>{const b=e.target.closest('[data-word]');if(!b)return;for(const el of $('words').querySelectorAll('button'))el.setAttribute('aria-pressed',el===b);const w=b.dataset.word;const phrase=S.collocations[current.id]?.[current.words.indexOf(w)];$('word-detail').textContent=(phrase?'搭配示例：'+phrase+'。':'')+(wordDetails[w]||'把这个搭配放进一句完整的话，再补上谁、在哪里或发生了什么。');$('writing-prompt').textContent=`现在试着用“${w}”说一句话：谁，在哪里，发生了什么？`;};
   function saveSentence() {const text=$('my-sentence').value.slice(0,500);if(text.trim())saved.notes[current.id]=text;else delete saved.notes[current.id];const ok=persist();$('sentence-status').textContent=ok?'已保存在当前浏览器；可以导出备份。':'暂时只能保留在本页，请导出备份。';}
   $('save-sentence').onclick=saveSentence;
   $('check-sentence').onclick=()=>{const text=$('my-sentence').value.trim();$('sentence-status').textContent=!text?'先说一句，再把它写下来。':!text.includes(current.char)?`这句还没有用到“${current.char}”。把刚学的词放进去试试。`:`已经用到了“${current.char}”。再读一遍：谁做了什么？能不能加一个看到、听到或闻到的细节？这是写作提示，不是自动判分。`;};
   $('export').onclick=()=>{saveSentence();const data={app:'family-lab-chinese',version:1,...saved};const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='语文探索馆-我的记录.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);$('backup-status').textContent='备份已生成，包含收藏和你写的句子。';};
-  $('import').onchange=async e=>{const file=e.target.files[0];if(!file)return;try{if(file.size>200000)throw Error('备份过大，未导入。');const parsed=JSON.parse(await file.text());M.validateBackup(parsed,entries);const draft=$('my-sentence').value;if(draft.trim())saved.notes[current.id]=draft;else delete saved.notes[current.id];saved=M.mergeBackup(saved,parsed,entries);const ok=persist();render();$('backup-status').textContent=ok?'已合并；原有句子不会被覆盖。':'已合并到本页，但浏览器无法保存，请导出。';}catch(err){$('backup-status').textContent='未导入：'+err.message;}finally{e.target.value='';}};
+  $('import').onchange=async e=>{const file=e.target.files[0];if(!file)return;try{if(file.size>200000)throw Error('备份过大，未导入。');const parsed=JSON.parse(await file.text());M.validateBackup(parsed,entries);const draft=$('my-sentence').value;if(draft.trim())saved.notes[current.id]=draft;else delete saved.notes[current.id];saved=M.mergeBackup(saved,parsed,entries);const ok=persist();render();applyFilters();$('backup-status').textContent=ok?'已合并；原有句子不会被覆盖。':'已合并到本页，但浏览器无法保存，请导出。';}catch(err){$('backup-status').textContent='未导入：'+err.message;}finally{e.target.value='';}};
   function localVoice() {return 'speechSynthesis' in window?speechSynthesis.getVoices().filter(v=>v.localService&&/^zh(-|_)/i.test(v.lang)).sort((a,b)=>(/^zh[-_]CN$/i.test(b.lang)?1:0)-(/^zh[-_]CN$/i.test(a.lang)?1:0))[0]:null;}
   function updateVoice() {const voice=localVoice();$('speak').disabled=!voice;$('voice-status').textContent=voice?'朗读使用本地设备语音；多音字仍以本页拼音为准。':'此设备未提供本地中文语音，朗读暂不可用；拼音、文字与笔顺不受影响。';}
   if('speechSynthesis' in window)speechSynthesis.addEventListener('voiceschanged',updateVoice);
@@ -197,5 +223,5 @@
   options();let initial;try{initial=decodeURIComponent(location.hash.slice(1));}catch(e){initial='';}
   current=byId.get(initial)||entries.find(e=>e.char===initial)||current;render();
   if(!storageOK)notice('原有记录未能读取；请检查浏览器存储设置，并及时导出本页记录。');
-  window.ChineseTest={ids:()=>entries.map(e=>e.id),state:()=>({id:current.id,visible:visible.map(e=>e.id),split,stroke,playing,paused,favorites:saved.favorites.slice(),notes:{...saved.notes}})};
+  window.ChineseTest={ids:()=>entries.map(e=>e.id),state:()=>({id:current.id,visible:visible.map(e=>e.id),split,stroke,playing,paused,practice,practiceStroke,favorites:saved.favorites.slice(),notes:{...saved.notes}})};
 })();

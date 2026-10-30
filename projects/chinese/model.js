@@ -24,12 +24,23 @@
     const ak=normalize(a.numberPinyin),bk=normalize(b.numberPinyin);
     return (ak<bk?-1:ak>bk?1:0) || Number(a.numberPinyin.slice(-1))-Number(b.numberPinyin.slice(-1)) || a.char.codePointAt(0)-b.char.codePointAt(0);
   }
+  function readingQuery(value) {
+    const raw=String(value).trim().toLowerCase().normalize('NFC').replace(/u:/g,'v');
+    if(!/^[a-züāáǎàēéěèīíǐìōóǒòūúǔùǖǘǚǜ1-5]+$/u.test(raw))return null;
+    const numeric=/([1-5])$/.exec(raw);
+    let marked=0;
+    for(const marks of Object.values(tones))for(let i=0;i<marks.length;i++)if(raw.includes(marks[i]))marked=i+1;
+    const tone=numeric?Number(numeric[1]):marked;
+    if(!tone)return null;
+    return normalize(raw)+tone;
+  }
   function filter(entries, options={}) {
-    const q=normalize(options.query||'');
+    const q=normalize(options.query||''), reading=readingQuery(options.query||'');
     return entries.filter(e=>
       (!options.letter || normalize(e.numberPinyin)[0]===options.letter.toLowerCase()) &&
       (!options.family || e.family===options.family) &&
       (!options.favoritesOnly || (options.favorites||[]).includes(e.id)) &&
+      (!reading || e.numberPinyin===reading) &&
       (!q || [e.char,e.numberPinyin,e.sourceChar,e.parts.join(''),e.words.join(''),e.meaning].some(s=>normalize(s).includes(q)))
     ).sort(compare);
   }
@@ -50,5 +61,5 @@
     // Do not overwrite a learner's existing sentence during a merge.
     return {favorites:[...new Set([...current.favorites,...safe.favorites])],notes:{...safe.notes,...current.notes}};
   }
-  return {normalize,pinyin,compare,filter,validateBackup,mergeBackup};
+  return {normalize,pinyin,compare,readingQuery,filter,validateBackup,mergeBackup};
 });

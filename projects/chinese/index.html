@@ -14,7 +14,7 @@
 <div id="alphabet" class="alphabet" aria-label="拼音首字母筛选"></div>
 <p id="count" class="muted" aria-live="polite"></p>
 <nav id="char-list" aria-label="按拼音排序的字卡"></nav>
-<p class="small">按拼音字母、声调排序。多音字按读音分别列出。这里是精选入门字卡，不是完整字典。</p>
+<p class="small">按拼音字母、声调排序。输qing看同音节，输qíng或qing2只看第二声。多音字按读音分别列出。这里是精选入门字卡，不是完整字典。</p>
 <details class="backup"><summary>我的句子与备份</summary><p class="small">只保存在当前浏览器。清理数据前先导出；请勿写入姓名、学校等私人信息。</p><button id="export">导出记录</button><label class="file-label" for="import">导入备份<input id="import" type="file" accept="application/json,.json"></label><p id="backup-status" role="status"></p></details>
 </aside>
 <main id="lesson" tabindex="-1">
@@ -24,9 +24,9 @@
 <div class="character-column"><div class="section-label"><span>01 / 看见字形</span><span id="structure"></span></div>
 <div class="character-box" id="character-box"><div id="split-view" aria-label="当前汉字的结构图"></div><div id="writer-view" hidden></div></div>
 <div id="stroke-status" class="muted" role="status"></div>
-<div class="toolbar" aria-label="字形观察与笔顺"><button id="split" aria-pressed="false">拆开看</button><button id="animate">▶ 看笔顺</button><button id="pause" disabled>暂停</button><button id="step">下一笔</button><button id="reset">复位</button></div>
+<div class="toolbar" aria-label="字形观察与笔顺"><button id="split" aria-pressed="false">拆开看</button><button id="animate">▶ 看笔顺</button><button id="pause" disabled>暂停</button><button id="step">下一笔</button><button id="trace" aria-pressed="false">描一描</button><button id="reset">复位</button></div>
 <label class="speed-label" for="speed">笔顺速度 <select id="speed"><option value="0.5">慢慢看</option><option value="1" selected>正常</option><option value="2">快一点</option></select></label>
-<p class="small">笔顺按随包字形资料演示；不以动画替代学校书写规范。拆分颜色只用于观察部件。</p></div>
+<p class="small">笔顺按随包字形资料演示。点“描一描”按提示写；结束练写后，字形区恢复正常滑页。这里练笔顺，不作书法评分。</p></div>
 <div class="discovery"><div class="section-label">02 / 拆开来，想一想</div><div id="parts" class="parts"></div><p id="structure-note" class="small"></p><div class="memory"><span class="tag">帮助记忆的联想</span><p id="memory"></p></div><div id="etymology" class="etymology"></div><details class="caution"><summary>🪞 这个字容易误会在哪里？</summary><p id="trap"></p></details></div>
 </section>
 <div class="two-column">
@@ -39,5 +39,5 @@
 </main></div>
 <dialog id="quiz"><form method="dialog"><button class="close" aria-label="关闭挑战">×</button></form><p class="eyebrow">不是抢答，是找线索</p><h2>辨字小挑战</h2><p id="quiz-count"></p><h3 id="quiz-question"></h3><div id="quiz-options"></div><p id="quiz-feedback" role="status"></p><button id="quiz-next" disabled>下一题 →</button><p class="small">练习反馈不等于已经掌握；答错就看看偏旁和上下文，再试一遍。</p></dialog>
 <div id="notice" role="status"></div>
-<script src="data.js"></script><script src="model.js"></script><script src="stroke-data.js"></script><script src="vendor/hanzi-writer.min.js"></script><script src="app.js"></script>
+<script src="data.js"></script><script src="supplement.js"></script><script src="model.js"></script><script src="stroke-data.js"></script><script src="vendor/hanzi-writer.min.js"></script><script src="app.js"></script>
 </body></html>

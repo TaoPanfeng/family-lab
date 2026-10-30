@@ -2,3 +2,11 @@
 @media(max-width:1100px){.layout{gap:24px;grid-template-columns:225px minmax(0,1fr)}.hero{gap:20px;padding:22px}.two-column{grid-template-columns:1fr}.hero{grid-template-columns:minmax(200px,.85fr) minmax(0,1fr)}.paper{padding:22px}.part-card{min-width:62px;padding:8px 12px}.memory p{font-size:21px}}
 @media(max-width:800px){.top{gap:10px;flex-wrap:wrap;padding:10px 16px}.top small{display:none}.top>span{font-size:14px}.top button{padding:7px 9px;font-size:13px}#open-catalog{display:inline-block}.layout{display:block;padding:20px 14px}aside{position:static;max-height:none;display:none;margin-bottom:26px;padding:16px;background:var(--paper);border:1px solid var(--line);border-radius:16px}aside.open{display:block}#char-list{max-height:40dvh}.alphabet button{min-height:44px;min-width:38px}.lesson-head{gap:10px}#title-char{font-size:54px}#title-pinyin{font-size:26px}#favorite{font-size:12px;padding:6px 9px}.hero{grid-template-columns:1fr}.character-box{width:min(100%,310px)}.two-column{gap:16px}.paper{padding:20px;border-radius:16px}.reading-row{gap:15px}.pager{width:100%;justify-content:space-between}.memory p{font-size:24px}#meaning{font-size:15px}.section-label{font-size:11px}#lesson{scroll-margin-top:15px}.toolbar button{flex:1;min-width:70px}.top>a{font-size:14px}h3{font-size:19px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+
+/* Only the explicitly enabled handwriting surface captures touch; reading stays scrollable. */
+.character-box.is-practicing{touch-action:none;outline:3px solid var(--gold);outline-offset:3px}
+.character-box.is-practicing #writer-view,.character-box.is-practicing svg{touch-action:none}
+.word-detail{font-size:15px;line-height:1.85}
+/* Hanzi Writer installs input handlers even outside a quiz: let reading gestures pass through. */
+#writer-view{pointer-events:none}
+.character-box.is-practicing #writer-view{pointer-events:auto}

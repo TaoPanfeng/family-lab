@@ -44,3 +44,20 @@ test('licensed libraries and vector paths match recorded SHA256, with offline lo
  for(const [name,hash] of Object.entries(mf.sha256)){const raw=fs.readFileSync(base+(name==='stroke-data.js'?'':'vendor/')+name);assert.equal(crypto.createHash('sha256').update(raw).digest('hex'),hash);}
  assert.match(fs.readFileSync(base+'app.js','utf8'),/charDataLoader:/);assert.match(fs.readFileSync(base+'vendor/HANZI_WRITER_LICENSE.txt','utf8'),/MIT/);assert.match(fs.readFileSync(base+'vendor/ARPHICPL.TXT','utf8'),/ARPHIC|Arphic/);
 });
+
+const Supplement=require('../projects/chinese/supplement.js');
+test('all three words on every reading card have a specific original collocation',()=>{
+ assert.equal(Object.keys(Supplement.collocations).length,D.entries.length);
+ for(const e of D.entries){const phrases=Supplement.collocations[e.id];assert.equal(phrases.length,3,e.id);e.words.forEach((word,i)=>assert(phrases[i].includes(word)&&phrases[i].length>word.length,e.id+':'+word));}
+});
+test('explicit tone narrows a reading; unaccented pinyin keeps useful alternatives',()=>{
+ for(const q of ['qing2','qíng','QÍNG'])assert.deepEqual(M.filter(D.entries,{query:q}).map(e=>e.id),['情-qing2','晴-qing2']);
+ assert.deepEqual(M.filter(D.entries,{query:'qing3'}).map(e=>e.id),['请-qing3']);
+ assert(M.filter(D.entries,{query:'qing'}).some(e=>e.char==='清'));
+ assert.deepEqual(M.filter(D.entries,{query:'shui4'}).map(e=>e.char),['睡']);
+ assert.equal(M.readingQuery('lv4'),'lv4');assert.equal(M.readingQuery('lǜ'),'lv4');assert.equal(M.readingQuery('睡眠'),null);
+});
+test('fourteen glyphs have source-linked etymology, separate from mnemonic',()=>{
+ const covered=new Set();for(const e of D.entries)if(e.etymology||Supplement.etymologies[e.char]){covered.add(e.char);assert.match(e.source,/^https:\/\/humanum.arts.cuhk.edu.hk\//);}
+ assert.equal(covered.size,14);assert.match(Supplement.etymologies['想'].text,/声旁/);assert.match(Supplement.etymologies['诗'].text,/历史表音/);
+});

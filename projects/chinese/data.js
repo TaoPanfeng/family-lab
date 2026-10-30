@@ -525,7 +525,7 @@ const data={
         "高山"
       ],
       "sentence": "沿着山路，我们看见了云海。",
-      "trap": "山峰指尖顶；山脉是一系列相连的山。",
+      "trap": "山峰指山的高处或顶端；山脉是一系列相连的山。",
       "etymology": null,
       "sourceChar": "山",
       "source": "https://humanum.arts.cuhk.edu.hk/Lexis/lexi-mf/search.php?word=山",
