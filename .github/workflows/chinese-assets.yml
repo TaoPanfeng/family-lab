@@ -1,0 +1,63 @@
+name: Prepare offline Chinese stroke assets
+on:
+  push:
+    branches: ['work/chinese-literacy']
+    paths: ['.github/workflows/chinese-assets.yml']
+permissions:
+  contents: write
+jobs:
+  assets:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Fetch version-pinned stroke paths and licensed animation runtime
+        run: |
+          python - <<'PY'
+          import concurrent.futures, hashlib, json, pathlib, time, urllib.request, urllib.parse
+          root=pathlib.Path('projects/chinese'); out=root/'vendor'; out.mkdir(parents=True,exist_ok=True)
+          dataref='68d10a4b21150cae5e1ebbd223eed289cf32d90c'
+          libref='7cff0a3897f160840182c29577d965707cddb77d'
+          chars='睡休木林森本末日月明目看青清晴情请睛眼山水火土石田禾米竹草花叶果雨云风雪星光春夏秋冬人从众口耳手足心思想念信言语诗读书字学问闻好安家河江湖海桥树校鱼鸟虫牛羊马犬猫早晚天上下左右东西南北大小多少长乐行觉种重'
+          def get(url):
+              for n in range(3):
+                  try:
+                      with urllib.request.urlopen(urllib.request.Request(url,headers={'User-Agent':'Family-Lab-Chinese'}),timeout=30) as r:return r.read()
+                  except Exception:
+                      if n==2:raise
+                      time.sleep(2)
+          def one(ch):
+              data=json.loads(get('https://raw.githubusercontent.com/chanind/hanzi-writer-data/'+dataref+'/data/'+urllib.parse.quote(ch)+'.json'))
+              assert len(data['strokes'])==len(data['medians'])>0
+              return ch,data
+          with concurrent.futures.ThreadPoolExecutor(max_workers=6) as pool:data=dict(pool.map(one,chars))
+          (root/'stroke-data.js').write_text('/* Selected unmodified Hanzi Writer stroke paths; see vendor/ARPHICPL.TXT. */\nwindow.ChineseStrokes='+json.dumps(data,ensure_ascii=False,separators=(',',':'))+';\n')
+          assets={'hanzi-writer.min.js':'https://cdn.jsdelivr.net/npm/hanzi-writer@3.7.3/dist/hanzi-writer.min.js','HANZI_WRITER_LICENSE.txt':'https://raw.githubusercontent.com/chanind/hanzi-writer/'+libref+'/LICENSE','ARPHICPL.TXT':'https://raw.githubusercontent.com/chanind/hanzi-writer-data/'+dataref+'/ARPHICPL.TXT'}
+          manifest={'dataRef':dataref,'libraryRef':libref,'version':'3.7.3','characters':len(data),'sha256':{}}
+          for name,url in assets.items():
+              raw=get(url);assert len(raw)>500; (out/name).write_bytes(raw);manifest['sha256'][name]=hashlib.sha256(raw).hexdigest()
+          manifest['sha256']['stroke-data.js']=hashlib.sha256((root/'stroke-data.js').read_bytes()).hexdigest()
+          (out/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
+          PY
+      - name: Commit offline assets without replacing newer work
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh auth setup-git
+          git fetch origin work/chinese-literacy
+          test "$(git rev-parse origin/work/chinese-literacy)" = "$GITHUB_SHA"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- projects/chinese
+          git commit -m 'feat(chinese): 随仓库提供102字笔顺和本地动画库，不依赖运行时CDN'
+          git push origin HEAD:work/chinese-literacy
+      - uses: actions/upload-artifact@v4
+        with:
+          name: chinese-assets
+          path: projects/chinese
+          retention-days: 3
