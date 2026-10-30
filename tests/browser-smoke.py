@@ -68,7 +68,7 @@ try:
     report['browser']=browser.version
     context=browser.new_context(viewport={'width':1440,'height':1040},locale='zh-CN',timezone_id='Asia/Shanghai',accept_downloads=True)
     page=open_page(context,'home','index.html')
-    check('首页恰好十个项目入口',page.locator('[data-project]').count()==10)
+    check('首页恰好十一个项目入口',page.locator('[data-project]').count()==11)
     for item in json.loads((ROOT/'catalog.json').read_text()):
         link=page.locator(f'[data-project="{item["id"]}"]')
         check('首页入口存在且指向原文件：'+item['name'],link.get_attribute('href')==item['entry'] and (ROOT/item['entry']).is_file())
@@ -120,6 +120,13 @@ try:
             before=page.locator('#zoom-label').inner_text()
             page.locator('[data-action="timeline-zoom"][data-factor="1.7"]').click()
             check('历史时间轴放大改变刻度',page.locator('#zoom-label').inner_text()!=before)
+        elif slug=='chinese':
+            page.wait_for_function('!!window.ChineseTest')
+            check('语文112个拼音条目',page.locator('#char-list [data-id]').count()==112)
+            page.locator('#animate').click()
+            page.wait_for_function('ChineseTest.state().playing')
+            check('语文真实笔顺资源',page.locator('#writer-view path').count()>0)
+            page.locator('#reset').click()
         elif slug=='posture':
             page.wait_for_function('!!window.PostureLab')
             page.locator('[data-category="all"]').click()

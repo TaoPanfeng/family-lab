@@ -34,3 +34,8 @@
 - KaTeX 0.16.25，MIT。`shared/vendor/katex/katex.min.js` 与 `LICENSE` 随仓库提供。仅输出原生 MathML，未打包字体文件，不使用运行时 CDN。上游：https://github.com/KaTeX/KaTeX 。`shared/formula.js` 为本项目的受限文本适配层，`trust:false`。
 - MakeHuman 官方图形数据，固定提交 a8bc2d54ff0ac92e78ff71431b1023eda42bf482，CC0-1.0。连续人体为原数据改编，许可、来源与改编边界见 `projects/martial/HUMAN_ASSET.md`。MakeHuman 程序本身为 AGPL，本次没有导入其程序逻辑。
 - 化学过程、显微样本、呼吸图与数学专属交互均为本项目原创示意，不是 RSC、NHLBI、OpenStax 的原插图，不冒充实验实拍或显微照片。机制资料在各页列出；不复制受限课程。
+
+## 语文笔顺与诗文
+- `projects/chinese/vendor/hanzi-writer.min.js`：Hanzi Writer 3.7.3，MIT，作者 David Chanin；库许可证单列在 `HANZI_WRITER_LICENSE.txt`。官方 https://hanziwriter.org/ ，源码 https://github.com/chanind/hanzi-writer ，版本提交 `7cff0a3897f160840182c29577d965707cddb77d`。
+- `projects/chinese/stroke-data.js`：选取102字的原笔画路径及中线，由 JSON 包装为离线 JS；源自 Hanzi Writer Data / Make Me a Hanzi，数据提交 `68d10a4b21150cae5e1ebbd223eed289cf32d90c`，遵守 Arphic Public License（完整文本在 `projects/chinese/vendor/ARPHICPL.TXT`）；不要把这部分统称 MIT。SHA256和源版本见同目录manifest。未打包或分发系统字体。
+- 古诗选录古代公版作品，按条目标作者、篇名、出处链接；名句白话说明及教学文字为原创，不复制现代教材解释。字源引用香港中文大学汉语多功能字库的释义并原创简述。

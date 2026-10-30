@@ -15,13 +15,13 @@ function resolveLocal(from, url) {
 }
 function refs(html, attribute) { const markup=html.replace(/<script\b[^>]*>[\s\S]*?<\/script\s*>/gi,'').replace(/<style\b[^>]*>[\s\S]*?<\/style\s*>/gi,''); return [...markup.matchAll(new RegExp('\\b'+attribute+'="([^"]+)"','g'))].map(x=>x[1]); }
 function local(url) { return !/^(?:[a-z]+:|\/\/|#)/i.test(url); }
-test('ten independent current projects, unique identifiers and entries',()=>{
-  assert.equal(catalog.length,10); assert.equal(new Set(catalog.map(x=>x.id )).size,10);
-  assert.deepEqual(catalog.map(x=>x.id).sort(),['astronomy','biology','chemistry','cosmos','geography','history','martial','math','physics','posture']);
-  assert.equal(new Set(catalog.map(x=>x.entry )).size,10);
+test('eleven independent current projects, unique identifiers and entries',()=>{
+  assert.equal(catalog.length,11); assert.equal(new Set(catalog.map(x=>x.id )).size,11);
+  assert.deepEqual(catalog.map(x=>x.id).sort(),['astronomy','biology','chemistry','chinese','cosmos','geography','history','martial','math','physics','posture']);
+  assert.equal(new Set(catalog.map(x=>x.entry )).size,11);
 });
 test('each homepage card opens the original entry in a separate tab',()=>{
-  const links=[...home.matchAll(/<a\b[^>]*data-project="([^"]+)"[^>]*>/g)];assert.equal(links.length,10);
+  const links=[...home.matchAll(/<a\b[^>]*data-project="([^"]+)"[^>]*>/g)];assert.equal(links.length,11);
   for(const item of catalog){const link=links.find(x=>x[1]===item.id)[0];assert(link.includes(`href="${item.entry}"`));assert.match(link,/target="_blank"/);assert.match(link,/rel="noopener"/);}
 });
 test('home has no iframe or runtime external dependency',()=>{

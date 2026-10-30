@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>语文 · 字里有世界</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<a class="skip" href="#lesson">跳到字卡</a>
+<header class="top"><a href="../../index.html">← 万物</a><span>语文探索馆 <small>字里有世界</small></span><button id="open-catalog" aria-controls="catalog-panel" aria-expanded="false">字卡目录</button><button id="review">辨字小挑战</button></header>
+<div class="layout">
+<aside id="catalog-panel" aria-label="拼音字卡目录">
+<div class="brand"><span class="seal" aria-hidden="true">字</span><div><p class="eyebrow">LETTERS, STORIES & YOU</p><h1>一笔一画，<br>读懂一个世界。</h1></div></div>
+<p class="intro">先看形，再懂义。<br>从一个字，走到自己的句子。</p>
+<label for="search">找一个字、拼音、部件或词语</label><div class="search-row"><input id="search" type="search" placeholder="睡 / shui / shuì / 目" autocomplete="off"><button id="clear" aria-label="清除全部筛选">清除</button></div>
+<label for="family">一起认识</label><select id="family"><option value="">全部主题</option></select>
+<div class="filter-row"><button id="favorites" aria-pressed="false">只看收藏 ☆</button><button id="start">从“睡”开始</button></div>
+<div id="alphabet" class="alphabet" aria-label="拼音首字母筛选"></div>
+<p id="count" class="muted" aria-live="polite"></p>
+<nav id="char-list" aria-label="按拼音排序的字卡"></nav>
+<p class="small">按拼音字母、声调排序。多音字按读音分别列出。这里是精选入门字卡，不是完整字典。</p>
+<details class="backup"><summary>我的句子与备份</summary><p class="small">只保存在当前浏览器。清理数据前先导出；请勿写入姓名、学校等私人信息。</p><button id="export">导出记录</button><label class="file-label" for="import">导入备份<input id="import" type="file" accept="application/json,.json"></label><p id="backup-status" role="status"></p></details>
+</aside>
+<main id="lesson" tabindex="-1">
+<section class="lesson-head"><div><p id="family-label" class="eyebrow"></p><h2><span id="title-char"></span><span id="title-pinyin"></span></h2><p id="meaning"></p></div><button id="favorite" aria-pressed="false">☆ 收藏这个读音</button></section>
+<div class="reading-row"><div id="readings" aria-label="本字的常用读音"></div><div class="pager"><button id="prev">← 上一字</button><span id="position"></span><button id="next">下一字 →</button></div></div>
+<section class="paper hero">
+<div class="character-column"><div class="section-label"><span>01 / 看见字形</span><span id="structure"></span></div>
+<div class="character-box" id="character-box"><div id="split-view" aria-label="当前汉字的结构图"></div><div id="writer-view" hidden></div></div>
+<div id="stroke-status" class="muted" role="status"></div>
+<div class="toolbar" aria-label="字形观察与笔顺"><button id="split" aria-pressed="false">拆开看</button><button id="animate">▶ 看笔顺</button><button id="pause" disabled>暂停</button><button id="step">下一笔</button><button id="reset">复位</button></div>
+<label class="speed-label" for="speed">笔顺速度 <select id="speed"><option value="0.5">慢慢看</option><option value="1" selected>正常</option><option value="2">快一点</option></select></label>
+<p class="small">笔顺按随包字形资料演示；不以动画替代学校书写规范。拆分颜色只用于观察部件。</p></div>
+<div class="discovery"><div class="section-label">02 / 拆开来，想一想</div><div id="parts" class="parts"></div><p id="structure-note" class="small"></p><div class="memory"><span class="tag">帮助记忆的联想</span><p id="memory"></p></div><div id="etymology" class="etymology"></div><details class="caution"><summary>🪞 这个字容易误会在哪里？</summary><p id="trap"></p></details></div>
+</section>
+<div class="two-column">
+<section class="paper"><div class="section-label">03 / 字，走进词里</div><h3>这样搭配，就会用了。</h3><div id="words" class="word-list"></div><p id="word-detail" class="word-detail" role="status">点一个词，再带着它说一句话。</p><div class="original"><span class="tag">原创生活例句</span><p id="sentence"></p></div><p class="small">同一个字，在不同词里可能换意思。名词、动词、量词不要只按拆字故事理解。</p></section>
+<section class="paper"><div class="section-label">04 / 在名句里重逢</div><div id="quotes"></div></section>
+</div>
+<section class="paper related"><div class="section-label">05 / 看相像，也看不同</div><h3 id="related-title"></h3><div id="related"></div><p id="related-hint" class="small"></p></section>
+<section class="paper write"><div class="section-label">06 / 轮到我表达</div><h3>我也来写一句。</h3><p id="writing-prompt"></p><label for="my-sentence">我的句子（最多500字）</label><textarea id="my-sentence" maxlength="500" rows="3" placeholder="谁，在什么地方，做了什么？再加一个看到或听到的小细节。"></textarea><div class="toolbar"><button id="save-sentence">保存我的句子</button><button id="check-sentence">看看还可以加什么</button><button id="speak">朗读例句</button></div><p id="sentence-status" role="status"></p><p id="voice-status" class="small"></p></section>
+<footer class="sources"><details><summary>资料、字源边界与离线说明</summary><p>“字形观察”说明现代字怎么写；“记忆联想”是本馆原创的小故事；只有单列“字源线索”的内容才作为有来源的历史解释。没有把所有合体字硬解释成意义相加。</p><p id="dictionary-source"></p><p>名句取古代公版作品的常见文本，标作者、篇名与核对入口；白话解释和例句为本馆原创。未收录名句的字不冒造“名人名言”。多音字仅列本馆选取的常用读音，不声称穷尽。</p><p>所有字卡、字形和动画随仓库提供，断网可用；外部字典与诗文链接需联网。朗读仅在设备有本地中文语音时启用，不发送文字给外部服务。</p><p><a href="vendor/HANZI_WRITER_LICENSE.txt">Hanzi Writer：MIT</a> · <a href="vendor/ARPHICPL.TXT">笔顺数据：Arphic Public License</a> · <a href="README.md">内容范围与维护说明</a></p></details></footer>
+</main></div>
+<dialog id="quiz"><form method="dialog"><button class="close" aria-label="关闭挑战">×</button></form><p class="eyebrow">不是抢答，是找线索</p><h2>辨字小挑战</h2><p id="quiz-count"></p><h3 id="quiz-question"></h3><div id="quiz-options"></div><p id="quiz-feedback" role="status"></p><button id="quiz-next" disabled>下一题 →</button><p class="small">练习反馈不等于已经掌握；答错就看看偏旁和上下文，再试一遍。</p></dialog>
+<div id="notice" role="status"></div>
+<script src="data.js"></script><script src="model.js"></script><script src="stroke-data.js"></script><script src="vendor/hanzi-writer.min.js"></script><script src="app.js"></script>
+</body></html>

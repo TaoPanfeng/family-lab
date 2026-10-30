@@ -1,6 +1,6 @@
 # 万物 · 家庭探索馆
 
-**一个首页，十个独立空间；每个项目只保留当前代码。**
+**一个首页，十一个独立空间；每个项目只保留当前代码。**
 
 在线入口：https://taopanfeng.github.io/family-lab/
 
@@ -29,6 +29,7 @@ cd family-lab
 | 宇宙 | `projects/cosmos/index.html` |
 | 武术 | `projects/martial/index.html` |
 | 数学 | `projects/math/index.html` |
+| 语文 | `projects/chinese/index.html` |
 
 原有五馆的核心实验保留；物理侧栏另有双缝干涉与菲索齿轮实验。生物、地理、宇宙、武术共31个主题，可切换儿童/进阶、调参数、慢放、暂停、逐帧与拖动时间条，收藏问题和导出观察笔记。
 
@@ -104,3 +105,7 @@ Pages 首次设置为 Settings → Pages → Source → GitHub Actions；配置�
 ## 教学清晰度整改
 
 数学新增逐节点第二情境、正式MathML公式与22个聚焦概念交互，相关基础工具单独标注；化学新增 [六组分阶段实验](projects/chemistry/experiments/index.html)，生物新增 [虚拟显微镜](projects/biology/microscope/index.html) 和重绘的呼吸过程。武术主体改用有明确CC0授权的连续人体网格，动作仍是教学示意。来源、范围与验收见 [教学整改](docs/LEARNING_CLARITY.md)。
+
+## 语文：字里有世界
+
+102个精选汉字、112个常用读音条目按拼音排序；可按字、拼音、部件、词语检索。提供现代字形拆分、逐笔播放/暂停/单步、原创记忆联想、词语搭配与例句、19段古代公版诗句、12道辨字练习及造句备份。字源与联想分开标注，未收录名句与读音不冒称穷尽。朗读仅在设备提供本地中文语音时启用。见 [语文说明](projects/chinese/README.md)。

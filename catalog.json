@@ -158,5 +158,21 @@
     ],
     "license": "MIT",
     "importedVersion": "current"
+  },
+  {
+    "id": "chinese",
+    "name": "语文",
+    "subtitle": "字里有世界",
+    "english": "A CHARACTER, A WORLD",
+    "entry": "projects/chinese/index.html",
+    "question": "一个“睡”字，怎样藏着眼睛的故事？",
+    "description": "按拼音找到102个字，拆开观察，逐笔书写；从词语、古诗读到自己的句子。",
+    "tags": [
+      "拆字与笔顺",
+      "拼音检索",
+      "词语与名句"
+    ],
+    "license": "MIT；笔顺数据另遵Arphic许可",
+    "importedVersion": "current"
   }
 ]

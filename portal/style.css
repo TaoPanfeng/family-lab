@@ -20,3 +20,5 @@
  button,select,summary{touch-action:manipulation}
  dialog{max-height:90dvh;overscroll-behavior:contain}
 }
+
+.card.chinese{--accent:#afd0ae;--glow:#365d4e}.chinese .art{background:#173c36}
