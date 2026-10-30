@@ -3,7 +3,7 @@ name: Restore and verify three practical workshops
 on:
   push:
     branches: ['work/three-workshops']
-    paths: ['.delivery/workshops/manifest.json']
+    paths: ['.delivery/workshops/manifest.json', '.github/workflows/restore-workshops.yml']
 
 permissions:
   contents: write
@@ -19,6 +19,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
