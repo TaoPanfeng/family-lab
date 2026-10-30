@@ -127,7 +127,7 @@ try:
                 check(slug+'课题初始化：'+ident,page.evaluate('WorkshopTest.state().lesson')==ident)
         elif slug=='chinese':
             page.wait_for_function('!!window.ChineseTest')
-            check('语文112个拼音条目',page.locator('#char-list [data-id]').count()==142)
+            check('语文112个拼音条目',page.locator('#char-list [data-id]').count()==112)
             page.locator('#animate').click()
             page.wait_for_function('ChineseTest.state().playing')
             check('语文真实笔顺资源',page.locator('#writer-view path').count()>0)
