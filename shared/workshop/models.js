@@ -4,11 +4,13 @@
 const positions=['in','on','under','next to'];
 const nouns={apple:['apples','苹果','an'],book:['books','书','a'],box:['boxes','盒子','a'],child:['children','孩子','a']};
 const sentences=[
- {words:['I','am','happy'],meaning:'我很开心。',rule:'I 和 am 搭配；happy 说的是“开心”这个状态。不是每句话都在说动作。',roles:['谁','连接词','什么状态']},
- {words:['She','is','reading'],meaning:'她正在读书。',rule:'She 后用 is；is reading 一起表示“正在读”。不要把 is 丢掉。',roles:['谁','正在（前半）','正在（后半）']},
+ {words:['I','am','happy'],meaning:'我很开心。',rule:'I 和 am 搭配；happy 说的是“开心”这个状态。不是每句话都在说动作。',roles:['谁','系动词','什么状态']},
+ {words:['She','is','reading'],meaning:'她正在读书。',rule:'She 后用 is；is reading 一起表示“正在读”。不要把 is 丢掉。',roles:['谁','助动词 is','动作的 -ing 形式']},
  {words:['We','can','swim'],meaning:'我们会游泳。',rule:'can 后用动词原形 swim，不用 swims。换成 He can swim 也一样。',roles:['谁','能够','做什么']},
  {words:['He','likes','apples'],meaning:'他喜欢苹果。',rule:'这里说平常的喜好：He 后用 likes。换成 I，就说 I like apples。',roles:['谁','喜欢','什么']}
 ];
+// Malformed pasted URL fragments must not prevent offline lessons from loading.
+function lessonHash(hash){try{return decodeURIComponent(String(hash||'').replace(/^#/,''));}catch(_){return '';}}
 function integer(v,min,max){if(!Number.isInteger(v)||v<min||v>max)throw Error('参数超出范围。');return v;}
 function plural(noun,count){integer(count,1,6);if(!Object.hasOwn(nouns,noun))throw Error('未知名词。');return count===1?noun:nouns[noun][0];}
 function robot(commands){if(!Array.isArray(commands)||commands.length>32||commands.some(c=>typeof c!=='string'||!/^([LR]|F[1-4]?)$/.test(c)))throw Error('指令无效或超过32块。');
@@ -35,5 +37,5 @@ function backup(input,subject,ids){if(!input||input.app!=='family-lab-workshop'|
  const allowed=subject==='computing'?['pixels','program']:subject==='music'?['rhythm','melody']:[];
  for(const [k,v] of Object.entries(input.works)){if(!allowed.includes(k))throw Error('作品不属于本馆。');works[k]=validateWork(k,v);}return {app:input.app,version:1,subject,favorites:[...new Set(input.favorites)],notes,works};
 }
-return {positions,nouns,sentences,plural,robot,search,pixels,frequency,beatSeconds,validateWork,backup};
+return {positions,nouns,sentences,lessonHash,plural,robot,search,pixels,frequency,beatSeconds,validateWork,backup};
 });
