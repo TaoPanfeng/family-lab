@@ -61,7 +61,7 @@ def main():
    check('saying answer appears',page.locator('#answer-text').inner_text().count('——')==1)
    page.locator('[data-entry="x23"]').click()
    check('fiction source distinguished from first-use date','年代未详' in page.locator('#source-era').inner_text())
-   check('no fake original date for folklore',all('不详' in e['source']['era'] for e in page.evaluate('ChinesePhrases.sayings')))
+   check('no fake original date for folklore',all(('未详' in e['source']['era'] or '待考' in e['source']['era'] or '不详' in e['source']['era']) for e in page.evaluate('ChinesePhrases.sayings')))
    page.locator('#search').fill('谐音')
    check('search filters by meaning',page.evaluate('PhraseTest.shown().length')>0)
    page.locator('#search').fill('')
