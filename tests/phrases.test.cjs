@@ -29,7 +29,7 @@ for(const e of data.sayings)test('saying exposes no unverified exact first-use d
   assert.equal(e.kind,'saying');
   assert(e.front.length>=3&&e.back.length>=2);
   assert(e.meaning.length>=8&&e.example.length>=8);
-  assert.match(e.source.era,/年代未详|年代未详|年代未详|年代未详/);
+  assert.match(e.source.era,/不详|待考/);
   assert.match(e.source.note,/不编造|不等于/);
   assert(!e.source.url);
 });
