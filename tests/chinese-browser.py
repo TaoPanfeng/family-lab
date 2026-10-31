@@ -60,8 +60,8 @@ def main():
             page=load(ctx)
             def state():return page.evaluate('ChineseTest.state()')
             def choose(id):page.locator('#char-list [data-id="'+id+'"]').click()
-            ids=page.evaluate('ChineseTest.ids()');check('112 sorted reading entries and sleep landing page',len(ids)==132 and state()['id']=='睡-shui4')
-            check('pinyin order begins an and ends zuo',ids[0]=='安-an1' and ids[-1]=='左-zuo3')
+            ids=page.evaluate('ChineseTest.ids()');check('132 sorted reading entries and sleep landing page',len(ids)==132 and state()['id']=='睡-shui4')
+            check('pinyin order begins ai and ends zuo',ids[0]=='爱-ai4' and ids[-1]=='左-zuo3')
             for id in ids:
                 choose(id)
                 details=page.evaluate('''()=>{const s=ChineseTest.state(),d=ChineseData.entries.find(e=>e.id===s.id);return {id:s.id,meaning:document.querySelector('#meaning').textContent,wordCount:document.querySelectorAll('#words button').length,paths:document.querySelectorAll('#split-view path').length,expected:ChineseStrokes[d.char].strokes.length,reading:document.querySelector('#title-pinyin').textContent,trap:document.querySelector('#trap').textContent};}''')
