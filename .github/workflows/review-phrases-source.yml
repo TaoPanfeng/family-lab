@@ -1,0 +1,22 @@
+name: Review current Chinese expansion source
+on:
+  push:
+    branches: ['work/chinese-phrases']
+    paths: ['.github/workflows/review-phrases-source.yml']
+permissions:
+  contents: read
+jobs:
+  snapshot:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Create source archive from the checked-out commit
+        run: git archive --format=zip HEAD > /tmp/family-lab-phrases-source.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: phrases-source-snapshot
+          path: /tmp/family-lab-phrases-source.zip
+          retention-days: 3
