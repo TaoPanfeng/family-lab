@@ -37,3 +37,11 @@ Hanzi Writer 3.7.3 是MIT库；102字路径来自 Hanzi Writer Data / Make Me a 
 ## 本轮参考与修正
 
 Hanzi Writer 官方文档（https://hanziwriter.org/docs.html）的本地字形加载、动画、quiz及尺寸更新用于观察和描写；Make Me a Hanzi提供笔画路径，字源解释不直接从路径推断。词语搭配、易错说明和练习反馈为原创，字源另据中文大学字库逐字核对。修复带调搜索误混声调、导入后收藏目录未即时更新，以及响应式描字的输入坐标误差。
+
+## 常见成语与歇后语（2026年10月扩展）
+
+语文馆字卡从102字、112条读音扩到122字、132条读音，新增20字的笔顺数据在 `stroke-extra.js`，许可记录在 `vendor/extra-manifest.json`。原有练写、造句和浏览器收藏记录的存储键不变。
+
+新增 `projects/chinese/phrases.html`：30条有典籍线索的常见成语、32条歇后语。每条提供儿童故事（成语分三步、歇后语先猜后看）、生活例句、误用提醒、出处、作品成书时期或传说时代、确切成形年代是否可考。**典籍编定时间、故事事件时间和固定表达的出现时间严格区分**；民间口语不能仅凭人物故事写“起源于某年”，不虚构文献。
+
+专题保留本地收藏和造句、受控导入导出；与原字卡记录分开保存。运行不请求远端服务，外部典籍核验链接需联网。专项测试 `node --test tests/phrases.test.cjs`，真实离线/HTTP/上线测试 `tests/phrases-browser.py`；加上原有中文测试与所有十四馆回归。参考中国哲学书电子化计划（https://ctext.org）、中国文化研究院（https://chiculture.org.hk/sc/china-five-thousand-years/2894）、汉字笔画资料的原许可。内容是精选，不等于完整辞海或完成全部字源考据。
