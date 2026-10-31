@@ -48,3 +48,5 @@ jobs:
 # Verify revised wording for all source-era uncertainty labels.
 
 # Retry end-to-end tests after broadening uncertainty labels.
+
+# Retry after awaiting asynchronous import result.
