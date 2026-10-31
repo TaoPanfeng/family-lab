@@ -1,0 +1,86 @@
+name: Verify final glyph teaching corrections
+on:
+  push:
+    branches: ['work/chinese-phrases']
+    paths: ['.github/workflows/check-glyph-details.yml']
+permissions:
+  contents: write
+jobs:
+  review:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Correct modern form without confusing it with historical origin
+        run: |
+          python - <<'PY'
+          import hashlib,json,pathlib
+          p=pathlib.Path('projects/chinese/extra-characters.js');raw=p.read_bytes()
+          actual=hashlib.sha1(b'blob '+str(len(raw)).encode()+b'\0'+raw).hexdigest()
+          if actual!='b02bbc263d30a08ae05b37192ba3528265412249':
+              raise RuntimeError('Glyph source changed; review before modifying')
+          text=raw.decode('utf-8');prefix,body=text.split('function(){return ',1)
+          d=json.loads(body.rsplit(';});',1)[0]);e={v['char']:v for v in d['entries']}
+          assert e['友']['layout']=='左右' and e['友']['parts']==['又','又']
+          e['友']['layout']='半包围'
+          # Describe the two visible strokes in text rather than require a rare extension-B font.
+          e['友']['parts']=['横、撇','又']
+          e['友']['trap']='现代“友”不是左右并排的两个“又”：先观察上方的横、撇与下方的又。古文字两只手的解释另看字源资料，不能直接代替今天的笔画。'
+          e['勤']['trap']='勤奋不是一刻也不能休息；劳逸结合、合理安排同样重要。'
+          e['虎']['trap']='虎口既可以指老虎的嘴，也可以指拇指与食指之间的部位；要结合句子理解。'
+          p.write_text(prefix+'function(){return '+json.dumps(d,ensure_ascii=False,indent=2)+';});\n',encoding='utf-8')
+          t=pathlib.Path('tests/phrases.test.cjs')
+          t.write_text(t.read_text()+'''\ntest('new glyphs distinguish modern form from historical mnemonics and preserve word senses',()=>{
+            const glyph=Object.fromEntries(extra.entries.map(e=>[e.char,e]));
+            assert.equal(glyph['友'].layout,'半包围');
+            assert.deepEqual(glyph['友'].parts,['横、撇','又']);
+            assert.match(glyph['友'].trap,/古文字.*不能直接代替/);
+            assert.match(glyph['勤'].trap,/劳逸结合/);
+            assert.match(glyph['虎'].trap,/既可以.*也可以/);
+          });\n''',encoding='utf-8')
+          doc=pathlib.Path('projects/chinese/README.md')
+          doc.write_text(doc.read_text()+'\n新增字卡复核：“友”的现代字形按半包围观察横、撇与又，不再标成左右两个又；古文字两手的解释单独查证（香港中文大学汉语多功能字库）。修正“勤”的劳逸结合提示，保留“虎口”的字面与人体部位两种意思。\n',encoding='utf-8')
+          PY
+      - name: Run all character and phrase content checks
+        run: node --test tests/chinese-models.test.cjs tests/phrases.test.cjs
+      - name: Install browser driver and screenshot fonts
+        env:
+          DEBIAN_FRONTEND: noninteractive
+          NEEDRESTART_MODE: a
+        run: |
+          python -m pip install --disable-pip-version-check playwright==1.57.0
+          sudo -E apt-get -o Acquire::Retries=2 -o Acquire::http::Timeout=15 update -qq
+          sudo -E apt-get -o Acquire::Retries=2 -o Acquire::http::Timeout=15 install -y --no-install-recommends fonts-wqy-zenhei
+          test -n "$(fc-list :lang=zh file | head -n 1)"
+      - name: Real file and HTTP character navigation and handwriting
+        run: |
+          python tests/chinese-browser.py --file --browser /usr/bin/google-chrome --out .qa/glyph-file
+          python tools/prepare-site.py
+          python tests/chinese-browser.py --site --browser /usr/bin/google-chrome --out .qa/glyph-http
+      - name: Commit reviewed corrections without overwriting newer work
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh auth setup-git
+          git fetch origin work/chinese-phrases
+          test "$(git rev-parse origin/work/chinese-phrases)" = "$GITHUB_SHA"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- projects/chinese/extra-characters.js tests/phrases.test.cjs projects/chinese/README.md
+          git commit -m 'fix(chinese): 校正友的现代字形、勤的劳逸提示及虎口的多义解释'
+          git push origin HEAD:refs/heads/work/chinese-phrases
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: glyph-final-review
+          path: .qa
+          include-hidden-files: true
+          retention-days: 7
