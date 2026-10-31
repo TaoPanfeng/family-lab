@@ -8,6 +8,7 @@ const chemistryFiles = fs.readdirSync(path.join(root,'projects/chemistry/tests')
 const suites = [
   ['英语、编程与音乐教学模型','.', ['--test','tests/workshops-models.test.cjs']],
   ['语文字音、字形与备份边界','.', ['--test','tests/chinese-models.test.cjs']],
+  ['成语歇后语年代、检索与本地记录','.', ['--test','tests/phrases.test.cjs']],
   ['教学语义、正式公式、化学守恒与显微光学','.', ['--test','tests/learning-models.test.cjs']],
   ['手机指针生命周期与手势隔离','.', ['--test','tests/mobile-touch.test.cjs']],
   ['数学知识结构、证明与定量模型','.', ['--test','tests/math-models.test.cjs']],
