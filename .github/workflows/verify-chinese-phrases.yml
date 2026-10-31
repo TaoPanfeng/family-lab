@@ -44,3 +44,5 @@ jobs:
           if-no-files-found: ignore
 
 # Rerun after correcting content, dictionary range and dating assertions.
+
+# Verify revised wording for all source-era uncertainty labels.
