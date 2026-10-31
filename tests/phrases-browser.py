@@ -73,7 +73,7 @@ def main():
      check('each source and example render '+id,len(page.locator('#source-era').inner_text())>2 and len(page.locator('#daily-example').inner_text())>5)
    page.locator('#import').set_input_files({'name':'invalid.json','mimeType':'application/json','buffer':b'{"notes":{"__proto__":"X"}}'})
    page.wait_for_function("document.querySelector('#backup-info').textContent.includes('未导入')")
-   check('invalid import rejected','未导入' in page.locator('#backup-info').inner_text())
+   check('invalid import rejected','未导入' in page.locator('#backup-info').text_content())
    page.screenshot(path=str(out/'phrases-desktop.png'),full_page=True)
    page.set_viewport_size({'width':390,'height':844})
    page.reload(wait_until='load');page.wait_for_function('window.PhraseTest')
