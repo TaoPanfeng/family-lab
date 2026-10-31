@@ -5,9 +5,9 @@
       "id": "友-you3",
       "char": "友",
       "numberPinyin": "you3",
-      "layout": "左右",
+      "layout": "半包围",
       "parts": [
-        "又",
+        "横、撇",
         "又"
       ],
       "meaning": "朋友之间友好相处，互相帮助。",
@@ -18,7 +18,7 @@
         "友谊"
       ],
       "sentence": "好朋友一起整理书架，互相帮助。",
-      "trap": "手拉手也可记成友情；不要把现代拆形当作全部字源。",
+      "trap": "现代“友”不是左右并排的两个“又”：先观察上方的横、撇与下方的又。古文字两只手的解释另看字源资料，不能直接代替今天的笔画。",
       "etymology": null,
       "sourceChar": "友",
       "source": "https://humanum.arts.cuhk.edu.hk/Lexis/lexi-mf/search.php?word=%E5%8F%8B",
@@ -139,7 +139,7 @@
         "勤快"
       ],
       "sentence": "每天读一页书，勤奋会慢慢积累成果。",
-      "trap": "勤奋不是不停休息，合理安排很重要。",
+      "trap": "勤奋不是一刻也不能休息；劳逸结合、合理安排同样重要。",
       "etymology": null,
       "sourceChar": "勤",
       "source": "https://humanum.arts.cuhk.edu.hk/Lexis/lexi-mf/search.php?word=%E5%8B%A4",
@@ -449,7 +449,7 @@
         "虎牙"
       ],
       "sentence": "小老虎出现在故事里，我们观察它的条纹。",
-      "trap": "不要把虎口一词理解成真的老虎嘴巴，它也指手上的部位。",
+      "trap": "虎口既可以指老虎的嘴，也可以指拇指与食指之间的部位；要结合句子理解。",
       "etymology": null,
       "sourceChar": "虎",
       "source": "https://humanum.arts.cuhk.edu.hk/Lexis/lexi-mf/search.php?word=%E8%99%8E",

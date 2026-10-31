@@ -99,3 +99,12 @@ test('navigation connects existing character cards and new phrase section, offli
   assert.match(phrase,/src="phrases.js"/);
   assert.doesNotMatch(phrase,/https?:\/\/[^\s"'<>]+\.js/);
 });
+
+test('new glyphs distinguish modern form from historical mnemonics and preserve word senses',()=>{
+  const glyph=Object.fromEntries(extra.entries.map(e=>[e.char,e]));
+  assert.equal(glyph['友'].layout,'半包围');
+  assert.deepEqual(glyph['友'].parts,['横、撇','又']);
+  assert.match(glyph['友'].trap,/古文字.*不能直接代替/);
+  assert.match(glyph['勤'].trap,/劳逸结合/);
+  assert.match(glyph['虎'].trap,/既可以.*也可以/);
+});
