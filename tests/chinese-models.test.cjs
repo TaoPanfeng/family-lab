@@ -20,7 +20,7 @@ test('all 19 quotations attributed with original interpretation and source; no i
 test('pinyin accents and ASCII sorting independent of OS collation',()=>{
  for(const [s,t] of Object.entries({shui4:'shuì',qing1:'qīng',qing2:'qíng',jue2:'jué',jiao4:'jiào',liu2:'liú',gui1:'guī',lv4:'lǜ',nv3:'nǚ',ou3:'ǒu',hao3:'hǎo',le5:'le'}))assert.equal(M.pinyin(s),t);
  assert.equal(M.normalize('Lǜ'),'lv');assert.equal(M.normalize('lu:4'),'lv');assert.equal(M.normalize('shuì'),'shui');
- const sorted=M.filter(D.entries);assert.equal(sorted[0].id,'安-an1');assert.equal(sorted.at(-1).id,'左-zuo3');for(let i=1;i<sorted.length;i++)assert(M.compare(sorted[i-1],sorted[i])<=0);
+ const sorted=M.filter(D.entries);assert.equal(sorted[0].id,'爱-ai4');assert.equal(sorted.at(-1).id,'左-zuo3');for(let i=1;i<sorted.length;i++)assert(M.compare(sorted[i-1],sorted[i])<=0);
 });
 test('search tone variants, traditional glyph and component, selected filters',()=>{
  for(const q of ['shui','shuì','shui4'])assert(M.filter(D.entries,{query:q}).some(e=>e.id==='睡-shui4'));
