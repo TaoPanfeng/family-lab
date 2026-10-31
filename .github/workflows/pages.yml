@@ -283,7 +283,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          branch='work/three-workshops'
+          branch='work/chinese-phrases'
           gh auth setup-git
           head="$(git ls-remote --heads origin "refs/heads/$branch" | cut -f1)"
           if test -z "$head"; then
