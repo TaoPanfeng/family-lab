@@ -8,6 +8,9 @@ const $=id=>document.getElementById(id);
 const key='family-lab.chinese.phrases.v1';
 let kind='idiom',selected=D.idioms[0],shown=[],stage=1,visibleAnswer=false,onlyFaves=false;
 let state={favorites:[],notes:{}};
+// Drafts survive card changes and redraws; saving and exporting remain explicit actions.
+const drafts=Object.create(null);
+function hasDraft(id){return Object.prototype.hasOwnProperty.call(drafts,id);}
 function safeBackup(raw){
   if(!raw||raw.app!=='family-lab-chinese-phrases'||raw.version!==1||!Array.isArray(raw.favorites)||!raw.notes||typeof raw.notes!=='object'||Array.isArray(raw.notes))throw Error('记录格式不正确');
   if(raw.favorites.length>all.length||Object.keys(raw.notes).length>all.length)throw Error('记录数量超出范围');
@@ -50,14 +53,16 @@ function render(){
   $('reveal').textContent=visibleAnswer?'收起答案':'我猜好了，看答案';$('reveal').setAttribute('aria-expanded',String(visibleAnswer));
   $('story-section').querySelector('.section-label').textContent=e.kind==='idiom'?'02 · 看故事怎么发展':'02 · 拆开想想，为什么这样说';
   renderStages(e);
-  $('daily-example').textContent=e.example;
-  $('pitfall').textContent=e.kind==='idiom'?'⚠️ 易误用：'+e.pitfall:'🪞 先看字面：'+e.meaning+'（多为民间口语，未必有可考的最早年代）';
+  // Do not reveal a saying's answer indirectly in its example before the learner asks for it.
+  $('daily-example').textContent=e.kind==='saying'&&!visibleAnswer?'先猜一猜，再点“看答案”读生活中的用法。':e.example;
+  $('pitfall').textContent=e.kind==='idiom'?'⚠️ 易误用：'+e.pitfall:visibleAnswer?'🪞 先看字面：'+e.meaning+'（多为民间口语，未必有可考的最早年代）':'🪞 想一想：这里是在打比方，还是在借用读音？';
   $('source-work').textContent=s.work;$('source-era').textContent=s.era;$('source-type').textContent=s.type;$('source-note').textContent=s.note;
   $('source-link-holder').replaceChildren();
   if(s.url&&/^https:\/\//.test(s.url)){const a=document.createElement('a');a.href=s.url;a.target='_blank';a.rel='noopener noreferrer';a.textContent='查阅原典或词条（需要联网）';$('source-link-holder').append(a);}
   else $('source-link-holder').textContent='这一条目前没有可以确认的最早文献链接，不补造。';
   $('favorite').setAttribute('aria-pressed',String(state.favorites.includes(e.id)));$('favorite').textContent=state.favorites.includes(e.id)?'★ 已收藏':'☆ 收藏';
-  $('my-sentence').value=state.notes[e.id]||'';$('saved-msg').textContent=state.notes[e.id]?'已读取你此前保存的造句。':'';
+  $('my-sentence').value=hasDraft(e.id)?drafts[e.id]:(state.notes[e.id]||'');
+  $('saved-msg').textContent=hasDraft(e.id)?'草稿暂留在本页；刷新或关闭前请保存或导出。':state.notes[e.id]?'已读取你此前保存的造句。':'';
   renderList();
 }
 function pick(id,scroll){const e=byId.get(id);if(!e)return;selected=e;kind=e.kind;stage=1;visibleAnswer=false;
@@ -76,10 +81,11 @@ $('story-prev').onclick=()=>{stage=Math.max(1,stage-1);renderStages(selected);};
 $('story-next').onclick=()=>{stage=Math.min(3,stage+1);renderStages(selected);};
 $('story-all').onclick=()=>{stage=3;renderStages(selected);};
 $('favorite').onclick=()=>{const id=selected.id;state.favorites=state.favorites.includes(id)?state.favorites.filter(x=>x!==id):[...state.favorites,id];persist();render();};
-$('save').onclick=()=>{state.notes[selected.id]=$('my-sentence').value.trim().slice(0,200);persist();$('saved-msg').textContent='已保存当前词语的造句。';};
+$('my-sentence').addEventListener('input',()=>{drafts[selected.id]=$('my-sentence').value.slice(0,200);$('saved-msg').textContent='草稿暂留在本页；刷新或关闭前请保存或导出。';});
+$('save').onclick=()=>{const id=selected.id;state.notes[id]=$('my-sentence').value.trim().slice(0,200);if(persist()){delete drafts[id];$('saved-msg').textContent='已保存当前词语的造句。';}else{drafts[id]=$('my-sentence').value.slice(0,200);$('saved-msg').textContent='未能保存到浏览器，只暂留在本页；请导出记录。';}};
 $('practice').onclick=()=>{const list=all.filter(x=>x.kind===kind);const i=list.findIndex(x=>x.id===selected.id);pick(list[(i+1)%list.length].id,false);};
-$('export').onclick=()=>{const blob=new Blob([JSON.stringify({app:'family-lab-chinese-phrases',version:1,...state},null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='语文-成语歇后语-学习记录.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1200);};
-$('import').onchange=async e=>{const file=e.target.files[0];if(!file)return;try{if(file.size>200000)throw Error('文件过大');const incoming=safeBackup(JSON.parse(await file.text()));state.favorites=[...new Set([...state.favorites,...incoming.favorites])];state.notes=Object.assign(Object.create(null),incoming.notes,state.notes);persist();$('backup-info').textContent='导入成功。原有造句优先保留，没有被覆盖。';render();}catch(error){$('backup-info').textContent='未导入：'+error.message;}finally{e.target.value='';}};
+$('export').onclick=()=>{const blob=new Blob([JSON.stringify({app:'family-lab-chinese-phrases',version:1,favorites:state.favorites,notes:{...state.notes,...drafts}},null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='语文-成语歇后语-学习记录.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1200);};
+$('import').onchange=async e=>{const file=e.target.files[0];if(!file)return;try{if(file.size>200000)throw Error('文件过大');const incoming=safeBackup(JSON.parse(await file.text()));state.favorites=[...new Set([...state.favorites,...incoming.favorites])];state.notes=Object.assign(Object.create(null),incoming.notes,state.notes);const saved=persist();$('backup-info').textContent=saved?'导入成功。原有造句和本页草稿优先保留，没有被覆盖。':'记录仅合并到本页，未能写入浏览器；请导出备份。';render();}catch(error){$('backup-info').textContent='未导入：'+error.message;}finally{e.target.value='';}};
 const hash=location.hash.slice(1);if(byId.has(hash))pick(hash,false);else render();
 window.PhraseTest={all,shown:()=>shown.map(x=>x.id),state:()=>({selected:selected.id,kind,stage,visibleAnswer,records:state})};
 })();
