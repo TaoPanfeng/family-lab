@@ -52,3 +52,5 @@ jobs:
 # Retry after awaiting asynchronous import result.
 
 # Verify collapsed backup result via DOM textContent.
+
+# Re-run after updating 132-card browser order expectation.
