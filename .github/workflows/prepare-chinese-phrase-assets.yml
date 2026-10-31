@@ -1,0 +1,53 @@
+name: Prepare additional Chinese stroke assets
+on:
+  push:
+    branches: [work/chinese-phrases]
+    paths: [.github/workflows/prepare-chinese-phrase-assets.yml]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Download pinned, licensed vector data only
+        run: |
+          python - <<'PY'
+          import json, hashlib, pathlib, urllib.request, urllib.parse
+          folder=pathlib.Path('projects/chinese')
+          ref=json.loads((folder/'vendor/manifest.json').read_text())['dataRef']
+          chars='友爱礼让诚勤勇耐知识笔纸写听说走跑兔虎龙'
+          data={}; hashes={}
+          for c in chars:
+              url='https://raw.githubusercontent.com/chanind/hanzi-writer-data/'+ref+'/'+urllib.parse.quote(c)+'.json'
+              with urllib.request.urlopen(url,timeout=30) as response: raw=response.read()
+              item=json.loads(raw)
+              if not item.get('strokes') or len(item['strokes'])!=len(item.get('medians',[])): raise ValueError(c)
+              data[c]=item;hashes[c]=hashlib.sha256(raw).hexdigest()
+          script='/* Additional paths: Hanzi Writer Data, Arphic Public License; see vendor/extra-manifest.json. */\nObject.assign(window.ChineseStrokes,'+json.dumps(data,ensure_ascii=False,separators=(',',':'))+');\n'
+          (folder/'stroke-extra.js').write_text(script)
+          manifest={'dataRef':ref,'characters':len(data),'source':'https://github.com/chanind/hanzi-writer-data','license':'ARPHICPL.TXT','downloadSHA256':hashes,'scriptSHA256':hashlib.sha256(script.encode()).hexdigest()}
+          (folder/'vendor/extra-manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n')
+          PY
+      - name: Commit only prepared assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh auth setup-git
+          git fetch origin work/chinese-phrases
+          test "$(git rev-parse origin/work/chinese-phrases)" = "$GITHUB_SHA"
+          git add projects/chinese/stroke-extra.js projects/chinese/vendor/extra-manifest.json
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'feat(chinese): 补充友爱礼诚等20字的固定版本笔顺并记录校验值'
+          git push origin HEAD:work/chinese-phrases
+      - uses: actions/upload-artifact@v4
+        with:
+          name: additional-character-assets
+          path: |
+            projects/chinese/stroke-extra.js
+            projects/chinese/vendor/extra-manifest.json
+          retention-days: 7
