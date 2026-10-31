@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><title>成语与歇后语 · 字里有世界</title><link rel="stylesheet" href="phrases.css"></head>
+<body>
+<a class="skip" href="#study">跳到学习内容</a>
+<header class="top"><a href="../../index.html">← 万物</a><a href="index.html">语文 · 识字</a><strong>成语与歇后语</strong><span id="total">成语30 · 歇后语32</span></header>
+<div class="wrap">
+  <aside class="sidenav" aria-label="学习目录">
+    <div class="header-card"><p class="cap">WORD STORIES · 语言有故事</p><h1>一句话里，<br>藏着一段历史。</h1><p>先猜、再看出处、再举自己的例子。<br>同一份话，不一定同一种用法。</p></div>
+    <div class="tabs" role="group" aria-label="学习分类"><button id="tab-idiom" data-kind="idiom" aria-pressed="true">成语</button><button id="tab-saying" data-kind="saying" aria-pressed="false">歇后语</button></div>
+    <label for="search">搜词语、出处、年代、意思</label><input id="search" type="search" placeholder="守株 / 韩非子 / 三国 / 太公" autocomplete="off">
+    <div class="filters"><label><input id="only-faves" type="checkbox"> 只看我的收藏</label><button id="clear" type="button">清除筛选</button></div>
+    <div class="list-summary"><strong id="count"></strong><span id="list-hint">按内容精选，不代表全部收录。</span></div>
+    <div class="entry-list" id="entry-list" role="navigation" aria-label="词语列表"></div>
+    <details class="backup"><summary>我的造句与记录</summary><p>仅保存在当前浏览器，清理网站数据前请导出。不要填写姓名、地址等隐私。</p><button id="export" type="button">导出学习记录</button><label for="import" class="file-button">导入记录<input id="import" type="file" accept=".json,application/json"></label><p id="backup-info" role="status"></p></details>
+  </aside>
+  <main id="study" tabindex="-1">
+    <div class="intro"><p class="cap" id="kind-title">① 成语 · 读典故</p><h2 id="term">守株待兔</h2><p id="intro-tip">一个故事，怎么变成一句话？</p></div>
+    <div class="pager"><button id="previous" type="button">← 上一个</button><span id="position">1 / 30</span><button id="following" type="button">下一个 →</button><button id="favorite" type="button" aria-pressed="false">☆ 收藏</button></div>
+    <section class="paper">
+      <div class="section-label">01 · 先猜一猜</div>
+      <div class="question"><h3 id="prompt"></h3><button id="reveal" class="primary" type="button" aria-expanded="false">我猜好了，看答案</button></div>
+      <div id="answer" class="answer" hidden><p class="large" id="answer-text"></p><p id="meaning"></p></div>
+    </section>
+    <section id="story-section" class="paper">
+      <div class="section-label">02 · 看故事怎么发展</div><div id="story" class="story"></div>
+      <div class="storybar"><button id="story-prev" type="button">上一步</button><span id="story-progress" aria-live="polite"></span><button id="story-next" type="button">下一步</button><button id="story-all" type="button">看完整故事</button></div>
+      <p class="hint">故事采用简洁的原创儿童语言讲述，不等于古书逐字翻译。</p>
+    </section>
+    <section class="paper">
+      <div class="section-label">03 · 放到生活里</div>
+      <div class="daily"><p id="daily-example"></p></div><p id="pitfall" class="hint"></p>
+      <label for="my-sentence">你来造一句（最多200字）</label><textarea id="my-sentence" maxlength="200" rows="2" placeholder="谁遇到了什么事？为什么适合用这句话？"></textarea>
+      <div class="actions"><button id="save" type="button">保存我的例句</button><button id="practice" type="button">换一个，继续挑战</button></div><p id="saved-msg" role="status"></p>
+    </section>
+    <section class="paper source-card">
+      <div class="section-label">04 · 时间、出处与查证</div>
+      <dl><dt>故事或说法来自哪里</dt><dd id="source-work"></dd><dt>时代与大致年代</dt><dd id="source-era"></dd><dt>可核实的程度</dt><dd id="source-type"></dd></dl>
+      <p id="source-note" class="notice"></p>
+      <p id="source-link-holder"></p>
+      <details><summary>年代为什么不能全写成某一年？</summary><p>“故事发生在什么时候”“哪本书写过这件事”“现在这句成语／歇后语在何时固定成形”，是三个不同的问题。比如明代小说中有孙悟空的筋斗云，不表示当时一定已经有现代说法“孙悟空翻筋斗——十万八千里”。有证据写证据，没有就写“年代未详”。</p></details>
+    </section>
+  </main>
+</div>
+<div id="toast" role="status" aria-live="polite"></div>
+<script src="phrases-data.js"></script><script src="phrases.js"></script>
+</body></html>
