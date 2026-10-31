@@ -22,7 +22,7 @@ jobs:
           chars='友爱礼让诚勤勇耐知识笔纸写听说走跑兔虎龙'
           data={}; hashes={}
           for c in chars:
-              url='https://raw.githubusercontent.com/chanind/hanzi-writer-data/'+ref+'/'+urllib.parse.quote(c)+'.json'
+              url='https://raw.githubusercontent.com/chanind/hanzi-writer-data/'+ref+'/data/'+urllib.parse.quote(c)+'.json'
               with urllib.request.urlopen(url,timeout=30) as response: raw=response.read()
               item=json.loads(raw)
               if not item.get('strokes') or len(item['strokes'])!=len(item.get('medians',[])): raise ValueError(c)
