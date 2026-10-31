@@ -60,7 +60,7 @@ def main():
             page=load(ctx)
             def state():return page.evaluate('ChineseTest.state()')
             def choose(id):page.locator('#char-list [data-id="'+id+'"]').click()
-            ids=page.evaluate('ChineseTest.ids()');check('112 sorted reading entries and sleep landing page',len(ids)==112 and state()['id']=='睡-shui4')
+            ids=page.evaluate('ChineseTest.ids()');check('112 sorted reading entries and sleep landing page',len(ids)==132 and state()['id']=='睡-shui4')
             check('pinyin order begins an and ends zuo',ids[0]=='安-an1' and ids[-1]=='左-zuo3')
             for id in ids:
                 choose(id)
