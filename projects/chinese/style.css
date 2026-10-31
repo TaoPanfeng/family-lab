@@ -12,3 +12,8 @@
 .character-box.is-practicing #writer-view{pointer-events:auto}
 /* Wrap whole controls onto another row rather than split a Chinese action label. */
 .toolbar button{white-space:nowrap;min-width:max-content}
+
+/* A clear path from character cards to idiom and saying study, including narrow phones. */
+.top .phrase-link{white-space:nowrap;background:var(--light);border-radius:10px;padding:7px 12px;text-decoration:none;font-weight:700}
+.top .phrase-link:hover,.top .phrase-link:focus-visible{background:var(--green);color:white}
+@media(max-width:560px){.top .phrase-link{flex:1;text-align:center;order:3}.top #review{order:4;flex:1}.top{flex-wrap:wrap;gap:8px}}
