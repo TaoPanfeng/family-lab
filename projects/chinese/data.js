@@ -2968,5 +2968,7 @@ const data={
     }
   ]
 };
+const extra=typeof module==="object"&&module.exports?require('./extra-characters.js'):root.ChineseExtraCharacters;
+if(extra)data.entries.push(...extra.entries);
 if(typeof module==="object"&&module.exports)module.exports=data;else root.ChineseData=data;
 })(typeof globalThis!=="undefined"?globalThis:this);
