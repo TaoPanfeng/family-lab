@@ -1,5 +1,5 @@
 /* Original word collocations; etymology summaries checked against the linked CUHK entries. */
-(function(root,factory){const value=factory();if(typeof module==='object'&&module.exports)module.exports=value;else root.ChineseSupplement=value;})(typeof globalThis!=='undefined'?globalThis:this,function(){
+(function(root,factory){const value=factory();const extra=typeof module==="object"&&module.exports?require("./extra-characters.js"):root.ChineseExtraCharacters;if(extra)Object.assign(value.collocations,extra.collocations);if(typeof module==='object'&&module.exports)module.exports=value;else root.ChineseSupplement=value;})(typeof globalThis!=='undefined'?globalThis:this,function(){
   'use strict';
   return {
   "collocations": {
