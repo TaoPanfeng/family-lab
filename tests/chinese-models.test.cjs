@@ -1,10 +1,10 @@
 'use strict';
 const {test}=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm'),crypto=require('node:crypto');
 const D=require('../projects/chinese/data.js'),M=require('../projects/chinese/model.js');
-const context={window:{}};vm.runInNewContext(fs.readFileSync('projects/chinese/stroke-data.js','utf8'),context);const S=context.window.ChineseStrokes;
+const context={window:{}};vm.runInNewContext(fs.readFileSync('projects/chinese/stroke-data.js','utf8'),context);vm.runInNewContext(fs.readFileSync('projects/chinese/stroke-extra.js','utf8'),context);const S=context.window.ChineseStrokes;
 const entry=id=>D.entries.find(e=>e.id===id);
-test('112 reading entries, 102 unique characters, matching offline vector data',()=>{
- assert.equal(D.entries.length,112);assert.equal(new Set(D.entries.map(e=>e.char)).size,102);assert.equal(new Set(D.entries.map(e=>e.id)).size,112);
+test('132 reading entries, 122 unique characters, matching offline vector data',()=>{
+ assert.equal(D.entries.length,132);assert.equal(new Set(D.entries.map(e=>e.char)).size,122);assert.equal(new Set(D.entries.map(e=>e.id)).size,132);
  assert.deepEqual(Object.keys(S).sort(),[...new Set(D.entries.map(e=>e.char))].sort());
 });
 for(const e of D.entries)test(e.id+': useful card, words, literal example and documented scope',()=>{
