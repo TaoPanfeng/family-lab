@@ -2,6 +2,8 @@
 (function(){
 'use strict';
 const D=ChinesePhrases;
+const stories=globalThis.ChineseStories||{};
+let storyRenderedId=null;
 const all=[...D.idioms,...D.sayings];
 const byId=new Map(all.map(e=>[e.id,e]));
 const $=id=>document.getElementById(id);
@@ -24,7 +26,7 @@ try{const text=localStorage.getItem(key);if(text)state=safeBackup(JSON.parse(tex
 function persist(){try{localStorage.setItem(key,JSON.stringify({app:'family-lab-chinese-phrases',version:1,...state}));return true;}catch(e){say('当前浏览器禁止保存，请及时导出记录');return false;}}
 function say(message){$('toast').textContent=message;clearTimeout(say.timeout);say.timeout=setTimeout(()=>$('toast').textContent='',3400);}
 function summary(e){return e.kind==='idiom'?e.title:e.front+'——'+e.back;}
-function searchable(e){const s=e.source;return [summary(e),e.meaning,...(e.steps||[]),e.example,e.pitfall,s.work,s.era].filter(Boolean).join('');}
+function searchable(e){const s=e.source,story=stories[e.id];return [summary(e),e.meaning,...(e.steps||[]),e.example,e.pitfall,s.work,s.era,...(story?story.paragraphs:[])].filter(Boolean).join('');}
 function sourceFor(e){return e.source;}
 function renderList(){
   const keyword=$('search').value.trim();
@@ -42,16 +44,55 @@ function renderStages(e){
   stages.forEach((text,i)=>{const div=document.createElement('div');div.className='stage'+(i>=stage?' locked':'');div.hidden=i>=stage&&e.kind==='saying';const label=document.createElement('span');label.textContent='第 '+(i+1)+' 步';const p=document.createElement('p');p.textContent=i>=stage?'先预测下一步':text;div.append(label,p);$('story').append(div);});
   $('story-progress').textContent=stage+' / '+stages.length;$('story-prev').disabled=stage<=1;$('story-next').disabled=stage>=stages.length;
 }
+// Full narrative is separate from the original three-line recap, visible without quiz unlocks.
+function renderFullStory(e){
+  if(storyRenderedId===e.id)return;
+  storyRenderedId=e.id;
+  const story=stories[e.id],title=e.kind==='idiom'?e.title:e.front;
+  $('reading-term').textContent=title;
+  $('full-story-title').textContent=title+' · 完整故事';
+  $('full-story-body').replaceChildren();
+  $('story-reference').replaceChildren();
+  $('story-comprehension').open=false;
+  if(!story){
+    $('story-kind').textContent='故事资源未加载';
+    $('full-story-note').textContent='请刷新页面重试；不要把下方三句梗概当作完整故事。无需清除收藏和造句。';
+    $('story-why').textContent='';$('story-comprehension').hidden=true;return;
+  }
+  $('story-kind').textContent=story.kind;
+  $('full-story-note').textContent=story.note;
+  story.paragraphs.forEach((text,i)=>{
+    const block=document.createElement('section'),heading=document.createElement('h4'),paragraph=document.createElement('p');
+    block.className='narrative-part';block.dataset.part=String(i+1);
+    heading.textContent=['起因 · 发生了什么','经过 · 接着怎么样','结果 · 后来怎样了'][i];
+    paragraph.textContent=text;block.append(heading,paragraph);$('full-story-body').append(block);
+  });
+  $('story-why').textContent=story.why;
+  $('story-comprehension').hidden=false;
+  $('story-question').textContent='读懂了吗？'+story.question;
+  $('story-response').textContent=story.answer;
+  if(story.reference){
+    const link=document.createElement('a');link.href=story.reference;link.target='_blank';link.rel='noopener noreferrer';
+    link.textContent='本篇补充查证（需联网）';$('story-reference').append(link);
+  }else $('story-reference').textContent='典籍、成书时期与流传年代见下方“时间、出处与查证”。';
+}
+function goTo(target,focus){
+  const element=$(target);if(!element)return;
+  const focused=$(focus)||element;focused.focus({preventScroll:true});
+  element.scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'instant':'smooth'});
+}
+function openFullStory(){goTo('full-story','full-story-title');}
 function render(){
   const e=selected, s=sourceFor(e);
+  renderFullStory(e);
   $('kind-title').textContent=e.kind==='idiom'?'① 成语 · 读典故':'② 歇后语 · 猜下一句';
   $('term').textContent=e.kind==='idiom'?e.title:e.front+' —— ？';
-  $('intro-tip').textContent=e.kind==='idiom'?'先看故事，试着说出深层意思。':'先猜后半句，再看谐音或比喻。';
+  $('intro-tip').textContent='完整正文就在下方：起因 → 经过 → 结果 → 为什么这样说。';
   $('prompt').textContent=e.kind==='idiom'?'“'+e.title+'”是夸谁、提醒谁，还是告诉我们怎样做？':'“'+e.front+'”——后半句会是什么？';
   $('answer-text').textContent=e.kind==='idiom'?e.title:e.front+' —— '+e.back;
   $('meaning').textContent=e.meaning;$('answer').hidden=!visibleAnswer;
-  $('reveal').textContent=visibleAnswer?'收起答案':'我猜好了，看答案';$('reveal').setAttribute('aria-expanded',String(visibleAnswer));
-  $('story-section').querySelector('.section-label').textContent=e.kind==='idiom'?'02 · 看故事怎么发展':'02 · 拆开想想，为什么这样说';
+  $('reveal').textContent=visibleAnswer?'收起释义':'看意思，对照一下';$('reveal').setAttribute('aria-expanded',String(visibleAnswer));
+  $('story-section').querySelector('.section-label').textContent=e.kind==='idiom'?'故事回顾 · 三步梗概（不是完整正文）':'语言回顾 · 拆开想一想（不是完整正文）';
   renderStages(e);
   // Do not reveal a saying's answer indirectly in its example before the learner asks for it.
   $('daily-example').textContent=e.kind==='saying'&&!visibleAnswer?'先猜一猜，再点“看答案”读生活中的用法。':e.example;
@@ -67,7 +108,7 @@ function render(){
 }
 function pick(id,scroll){const e=byId.get(id);if(!e)return;selected=e;kind=e.kind;stage=1;visibleAnswer=false;
   for(const button of document.querySelectorAll('[data-kind]'))button.setAttribute('aria-pressed',String(button.dataset.kind===kind));
-  render();if(scroll&&matchMedia('(max-width:800px)').matches)$('study').scrollIntoView({block:'start'});}
+  render();if(scroll&&matchMedia('(max-width:800px)').matches)openFullStory();}
 function move(n){const i=shown.findIndex(x=>x.id===selected.id);if(i+n>=0&&i+n<shown.length)pick(shown[i+n].id,false);}
 function setKind(value){kind=value;onlyFaves=false;$('only-faves').checked=false;$('search').value='';pick((kind==='idiom'?D.idioms:D.sayings)[0].id,false);}
 $('entry-list').addEventListener('click',e=>{const b=e.target.closest('[data-entry]');if(b)pick(b.dataset.entry,true);});
@@ -79,7 +120,10 @@ $('previous').onclick=()=>move(-1);$('following').onclick=()=>move(1);
 $('reveal').onclick=()=>{visibleAnswer=!visibleAnswer;render();};
 $('story-prev').onclick=()=>{stage=Math.max(1,stage-1);renderStages(selected);};
 $('story-next').onclick=()=>{stage=Math.min(3,stage+1);renderStages(selected);};
-$('story-all').onclick=()=>{stage=3;renderStages(selected);};
+$('story-all').onclick=()=>{stage=3;renderStages(selected);openFullStory();};
+$('read-full-story').onclick=openFullStory;
+$('to-directory').onclick=()=>goTo('phrase-directory','search');
+$('story-to-source').onclick=()=>goTo('phrase-source');
 $('favorite').onclick=()=>{const id=selected.id;state.favorites=state.favorites.includes(id)?state.favorites.filter(x=>x!==id):[...state.favorites,id];persist();render();};
 $('my-sentence').addEventListener('input',()=>{drafts[selected.id]=$('my-sentence').value.slice(0,200);$('saved-msg').textContent='草稿暂留在本页；刷新或关闭前请保存或导出。';});
 $('save').onclick=()=>{const id=selected.id;state.notes[id]=$('my-sentence').value.trim().slice(0,200);if(persist()){delete drafts[id];$('saved-msg').textContent='已保存当前词语的造句。';}else{drafts[id]=$('my-sentence').value.slice(0,200);$('saved-msg').textContent='未能保存到浏览器，只暂留在本页；请导出记录。';}};

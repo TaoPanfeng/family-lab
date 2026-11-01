@@ -108,3 +108,41 @@ test('new glyphs distinguish modern form from historical mnemonics and preserve 
   assert.match(glyph['勤'].trap,/劳逸结合/);
   assert.match(glyph['虎'].trap,/既可以.*也可以/);
 });
+
+const stories=require('../projects/chinese/stories-data.js');
+test('every existing idiom and saying has a complete narrative, not just recap lines',()=>{
+  assert.deepEqual(Object.keys(stories).sort(),[...byId.keys()].sort());
+});
+for(const [id,story] of Object.entries(stories))test('complete child-readable narrative and explanation: '+id,()=>{
+  assert.equal(story.paragraphs.length,3);
+  assert.equal(new Set(story.paragraphs).size,3);
+  assert(story.paragraphs.every(p=>typeof p==='string'&&p.length>=45));
+  assert(story.paragraphs.join('').length>=210);
+  assert(story.why.length>=35);
+  assert(story.question.length>=10&&story.answer.length>=20);
+  assert(story.kind&&story.note.length>20);
+  assert(!story.paragraphs.some(p=>byId.get(id).steps?.includes(p)));
+  if(story.kind.includes('原创'))assert.match(story.note,/创作|原创/);
+  if(story.reference)sourceUrl(story.reference);
+});
+test('retellings distinguish evidence, folklore and invented teaching scenes',()=>{
+  for(const id of ['i04','i24','i25','i26','i27','i30','x01','x05','x23','x28']){
+    assert.match(stories[id].kind,/原创/);
+    assert.match(stories[id].note,/原创|创作/);
+  }
+  assert.match(stories.i06.note,/盗钟.*盗铃/);
+  assert.match(stories.i17.note,/齐威王.*淳于髡.*楚庄王/);
+  assert.match(stories.i18.note,/不增写/);
+  assert.match(stories.x25.note,/小说.*不等于正史/);
+  assert.match(stories.x05.why,/舅.*旧/);
+  assert.match(stories.x14.paragraphs.join(''),/声调并不一样/);
+  assert.match(stories.x16.paragraphs.join(''),/并没有变窄/);
+});
+test('mobile and desktop share one always-visible full story with an obvious entry',()=>{
+  const html=fs.readFileSync(path+'phrases.html','utf8');
+  assert.match(html,/id="read-full-story"[^>]*>.*读完整故事/);
+  assert.match(html,/id="full-story-body"/);
+  assert.match(html,/src="stories-data.js"/);
+  assert(html.indexOf('id="full-story"')<html.indexOf('id="meaning-practice"'));
+  assert.doesNotMatch(html,/<(?:details|section)[^>]*id="full-story"[^>]*hidden/);
+});
