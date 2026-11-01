@@ -34,14 +34,14 @@ function renderList(){
   $('count').textContent='找到 '+shown.length+' 条 · 此类共 '+all.filter(x=>x.kind===kind).length+' 条';
   $('entry-list').replaceChildren();
   if(!shown.length){const p=document.createElement('p');p.textContent='没有找到，试试清除筛选。';$('entry-list').append(p);}
-  for(const e of shown){const button=document.createElement('button');button.type='button';button.className='item'+(e.id===selected.id?' selected':'');button.dataset.entry=e.id;button.setAttribute('aria-current',e.id===selected.id?'true':'false');const label=document.createElement('span');label.textContent=e.kind==='idiom'?e.title:e.front;const small=document.createElement('small');small.textContent=state.favorites.includes(e.id)?'★ 已收藏':e.kind==='idiom'?'读故事':'猜下一句';button.append(label,small);$('entry-list').append(button);}
+  for(const e of shown){const button=document.createElement('button');button.type='button';button.className='item'+(e.id===selected.id?' selected':'');button.dataset.entry=e.id;button.setAttribute('aria-current',e.id===selected.id?'true':'false');const label=document.createElement('span');label.textContent=e.kind==='idiom'?e.title:e.front;const small=document.createElement('small');small.textContent=state.favorites.includes(e.id)?'★ 已收藏':'读完整故事';button.append(label,small);$('entry-list').append(button);}
   const index=shown.findIndex(x=>x.id===selected.id);$('position').textContent=index>=0?(index+1)+' / '+shown.length:'筛选外';
   $('previous').disabled=index<=0;$('following').disabled=index<0||index>=shown.length-1;
 }
 function renderStages(e){
-  const stages=e.kind==='idiom'?e.steps:[e.front+'，你先猜它后面会怎么说。',e.meaning,'看答案：'+e.back+'。再试着联系生活。'];
+  const stages=e.kind==='idiom'?e.steps:[e.front+'，试着回忆它的后半句。',e.meaning,'对照答案：'+e.back+'。再试着联系生活。'];
   $('story').replaceChildren();
-  stages.forEach((text,i)=>{const div=document.createElement('div');div.className='stage'+(i>=stage?' locked':'');div.hidden=i>=stage&&e.kind==='saying';const label=document.createElement('span');label.textContent='第 '+(i+1)+' 步';const p=document.createElement('p');p.textContent=i>=stage?'先预测下一步':text;div.append(label,p);$('story').append(div);});
+  stages.forEach((text,i)=>{const div=document.createElement('div');div.className='stage'+(i>=stage?' locked':'');div.hidden=i>=stage&&e.kind==='saying';const label=document.createElement('span');label.textContent='第 '+(i+1)+' 步';const p=document.createElement('p');p.textContent=i>=stage?'先回想下一步':text;div.append(label,p);$('story').append(div);});
   $('story-progress').textContent=stage+' / '+stages.length;$('story-prev').disabled=stage<=1;$('story-next').disabled=stage>=stages.length;
 }
 // Full narrative is separate from the original three-line recap, visible without quiz unlocks.
@@ -85,17 +85,17 @@ function openFullStory(){goTo('full-story','full-story-title');}
 function render(){
   const e=selected, s=sourceFor(e);
   renderFullStory(e);
-  $('kind-title').textContent=e.kind==='idiom'?'① 成语 · 读典故':'② 歇后语 · 猜下一句';
+  $('kind-title').textContent=e.kind==='idiom'?'① 成语 · 读典故':'② 歇后语 · 故事讲解';
   $('term').textContent=e.kind==='idiom'?e.title:e.front+' —— ？';
   $('intro-tip').textContent='完整正文就在下方：起因 → 经过 → 结果 → 为什么这样说。';
-  $('prompt').textContent=e.kind==='idiom'?'“'+e.title+'”是夸谁、提醒谁，还是告诉我们怎样做？':'“'+e.front+'”——后半句会是什么？';
+  $('prompt').textContent=e.kind==='idiom'?'“'+e.title+'”是夸谁、提醒谁，还是告诉我们怎样做？':'读完故事，“'+e.front+'”的后半句为什么这样说？';
   $('answer-text').textContent=e.kind==='idiom'?e.title:e.front+' —— '+e.back;
   $('meaning').textContent=e.meaning;$('answer').hidden=!visibleAnswer;
   $('reveal').textContent=visibleAnswer?'收起释义':'看意思，对照一下';$('reveal').setAttribute('aria-expanded',String(visibleAnswer));
   $('story-section').querySelector('.section-label').textContent=e.kind==='idiom'?'故事回顾 · 三步梗概（不是完整正文）':'语言回顾 · 拆开想一想（不是完整正文）';
   renderStages(e);
-  // Do not reveal a saying's answer indirectly in its example before the learner asks for it.
-  $('daily-example').textContent=e.kind==='saying'&&!visibleAnswer?'先猜一猜，再点“看答案”读生活中的用法。':e.example;
+  // Keep the optional meaning exercise separate from the always-visible complete narrative.
+  $('daily-example').textContent=e.kind==='saying'&&!visibleAnswer?'读完故事，点“看意思，对照一下”，再看生活中的用法。':e.example;
   $('pitfall').textContent=e.kind==='idiom'?'⚠️ 易误用：'+e.pitfall:visibleAnswer?'🪞 先看字面：'+e.meaning+'（多为民间口语，未必有可考的最早年代）':'🪞 想一想：这里是在打比方，还是在借用读音？';
   $('source-work').textContent=s.work;$('source-era').textContent=s.era;$('source-type').textContent=s.type;$('source-note').textContent=s.note;
   $('source-link-holder').replaceChildren();
