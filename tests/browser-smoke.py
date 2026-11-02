@@ -68,7 +68,7 @@ try:
     report['browser']=browser.version
     context=browser.new_context(viewport={'width':1440,'height':1040},locale='zh-CN',timezone_id='Asia/Shanghai',accept_downloads=True)
     page=open_page(context,'home','index.html')
-    check('首页恰好十四个项目入口',page.locator('[data-project]').count()==14)
+    check('首页恰好十五个项目入口',page.locator('[data-project]').count()==15)
     for item in json.loads((ROOT/'catalog.json').read_text()):
         link=page.locator(f'[data-project="{item["id"]}"]')
         check('首页入口存在且指向原文件：'+item['name'],link.get_attribute('href')==item['entry'] and (ROOT/item['entry']).is_file())
@@ -125,6 +125,10 @@ try:
             for ident in page.evaluate('WorkshopTest.ids()'):
                 page.locator(f'[data-lesson="{ident}"]').click()
                 check(slug+'课题初始化：'+ident,page.evaluate('WorkshopTest.state().lesson')==ident)
+        elif slug=='psychology':
+            page.wait_for_function('!!window.PsychologyTest')
+            check('心理学60条概念',len(page.evaluate('PsychologyTest.ids()'))==60)
+            check('心理学默认知识诅咒',page.locator('#term-title').inner_text()=='知识诅咒')
         elif slug=='chinese':
             page.wait_for_function('!!window.ChineseTest')
             # Original 112 reading cards plus 20 additions; check rendered unique cards, not just loaded data.

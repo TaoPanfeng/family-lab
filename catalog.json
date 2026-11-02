@@ -166,7 +166,7 @@
     "english": "A CHARACTER, A WORLD",
     "entry": "projects/chinese/index.html",
     "question": "一个“睡”字，怎样藏着眼睛的故事？",
-    "description": "按拼音找到102个字，拆开观察，逐笔书写；从词语、古诗读到自己的句子。",
+    "description": "按拼音找122个字，拆字、练写、组词；读30个成语与32条歇后语的完整小故事。",
     "tags": [
       "拆字与笔顺",
       "拼音检索",
@@ -219,6 +219,22 @@
       "音高与频率",
       "节奏工作台",
       "旋律创作"
+    ],
+    "license": "MIT",
+    "importedVersion": "current"
+  },
+  {
+    "id": "psychology",
+    "name": "心理学",
+    "subtitle": "看懂思考与关系",
+    "english": "UNDERSTAND · QUESTION · REFLECT",
+    "entry": "projects/psychology/index.html",
+    "question": "我已经懂了，你为什么还不懂？",
+    "description": "从知识诅咒开始，分类认识60个心理学概念；用孩子、生活与工作中的例子，照见自己的盲点。",
+    "tags": [
+      "分类名词",
+      "双情境例子",
+      "来源与边界"
     ],
     "license": "MIT",
     "importedVersion": "current"

@@ -43,3 +43,7 @@
 ## 英语、信息与编程、音乐（2026-10-30）
 
 新增三馆和shared/workshop的图形、场景、教学文案、算法与声音合成代码为原创MIT实现，不额外引入第三方库、字体、音频或图像资产。参考British Council LearnEnglish Kids的语法分类、CS Unplugged的编程与查找教学思路、Google Chrome Music Lab的可视化音乐交互及MDN API文档。仅借鉴思想并链接来源，不复制其课程、图形或代码；不将被参考网站的许可改为MIT，不表示上游背书。
+
+## 心理学馆与知识卡基础组件
+
+`projects/psychology/` 与 `shared/knowledge/` 为本站原创实现及中文教学表述，采用各自MIT许可。只链接APA词典、OpenStax、Noba、大学/专业机构页面及原始论文；未下载复制这些来源的整段内容或插图。示例为假设教学情境，不冒充来源中的实验。外部页面保留其各自权利及许可。
