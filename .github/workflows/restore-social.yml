@@ -61,29 +61,6 @@ jobs:
           (folder/'restored-paths.json').write_text(json.dumps(list(files)))
           print('Restored and checked',len(files),'reviewed source files.')
           PY
-      - name: Extend existing release workflow without removing original checks
-        run: |
-          python - <<'PY'
-          import hashlib,pathlib
-          p=pathlib.Path('.github/workflows/pages.yml');raw=p.read_bytes()
-          actual=hashlib.sha1(b'blob '+str(len(raw)).encode()+b'\0'+raw).hexdigest()
-          if actual!='bf201f571ad19fdfd6b6a2f5af9f4b50dd61d04d':raise RuntimeError('Release workflow changed; reconcile first')
-          text=raw.decode('utf-8')
-          def once(old,new):
-              global text
-              if text.count(old)!=1:raise RuntimeError('Unexpected workflow edit context: '+old)
-              text=text.replace(old,new)
-          once("'music','psychology'}","'music','psychology','social'}")
-          once('len(catalog) != 15','len(catalog) != 16')
-          text=text.replace('fifteen','sixteen').replace('Fifteen','Sixteen')
-          once('      - name: English computing and music via real file URLs','      - name: Social communication scenarios and trusted mobile gestures via file URLs\n        run: python tests/social-browser.py --file --browser "$(command -v google-chrome)" --out .qa/social-file\n      - name: English computing and music via real file URLs')
-          once('      - name: English computing and music via HTTP','      - name: Social communication scenarios and trusted mobile gestures via HTTP\n        run: python tests/social-browser.py --site --browser "$(command -v google-chrome)" --out .qa/social-http\n      - name: English computing and music via HTTP')
-          once('          python tests/workshops-browser.py --base "$SITE_URL"','          python tests/social-browser.py --base "$SITE_URL" --browser "$(command -v google-chrome)" --out .qa/live-social\n          python tests/workshops-browser.py --base "$SITE_URL"')
-          once("for path in ['projects/psychology/data.js'","for path in ['projects/social/index.html','projects/social/data.js','projects/social/model.js','projects/social/app.js','projects/social/style.css','projects/psychology/data.js'")
-          once('            .qa/live-psychology\n','            .qa/live-psychology\n            .qa/live-social\n')
-          once("branch='work/psychology'","branch='work/social-communication'")
-          p.write_text(text,encoding='utf-8')
-          PY
       - name: Build all galleries and run every content and model regression
         run: |
           npm --prefix projects/history ci --ignore-scripts --no-audit --no-fund
@@ -119,7 +96,7 @@ jobs:
           python - <<'PY'
           import json,subprocess
           paths=json.load(open('.delivery/social/restored-paths.json'))
-          paths+=['.github/workflows/pages.yml','index.html','source.html','projects/astronomy/日月地实验室.html','projects/physics/index.html','projects/physics/BUILD_MANIFEST.json','projects/posture/index.html','projects/chemistry/chemistry-explorer.html']
+          paths+=['index.html','source.html','projects/astronomy/日月地实验室.html','projects/physics/index.html','projects/physics/BUILD_MANIFEST.json','projects/posture/index.html','projects/chemistry/chemistry-explorer.html']
           subprocess.run(['git','add','--',*paths],check=True)
           PY
           git config user.name 'github-actions[bot]'
