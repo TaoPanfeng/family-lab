@@ -238,5 +238,21 @@
     ],
     "license": "MIT",
     "importedVersion": "current"
+  },
+  {
+    "id": "social",
+    "name": "人情世故",
+    "subtitle": "真诚表达，彼此有界",
+    "english": "LISTEN · EXPRESS · FOLLOW THROUGH",
+    "entry": "projects/social/index.html",
+    "question": "对方生气了，怎样把话说清、把事做好？",
+    "description": "48个原创生活场景，按场合分类；先选ABCD或直接看解析，学习表达、补救与边界。",
+    "tags": [
+      "情境选择",
+      "默认隐藏答案",
+      "语言与行动"
+    ],
+    "license": "MIT",
+    "importedVersion": "current"
   }
 ]

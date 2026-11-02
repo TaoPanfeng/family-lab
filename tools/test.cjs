@@ -6,6 +6,7 @@ const root = path.resolve(__dirname, '..');
 const offline = process.argv.includes('--offline');
 const chemistryFiles = fs.readdirSync(path.join(root,'projects/chemistry/tests')).filter(f=>f.endsWith('.test.cjs')).sort().map(f=>'tests/'+f);
 const suites = [
+  ['人情世故情境、来源、选择与记录','.', ['--test','tests/social.test.cjs']],
   ['心理学概念、来源与本地记录','.', ['--test','tests/psychology.test.cjs']],
   ['英语、编程与音乐教学模型','.', ['--test','tests/workshops-models.test.cjs']],
   ['语文字音、字形与备份边界','.', ['--test','tests/chinese-models.test.cjs']],

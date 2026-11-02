@@ -26,3 +26,5 @@
 .card.english{--accent:#9ed7d3;--glow:#315a5c}.card.computing{--accent:#c2afd9;--glow:#514364}.card.music{--accent:#e0abc2;--glow:#633e52}
 
 .card.psychology{--card-ink:#acd7c3;--accent:#acd7c3;--glow:#345f52}
+
+.card.social{--card-ink:#e3c99c;--accent:#e3c99c;--glow:#67583d}.social .art{background:#293c34}

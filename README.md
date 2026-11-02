@@ -1,6 +1,6 @@
 # 万物 · 家庭探索馆
 
-**一个首页，十四个独立空间；每个项目只保留当前代码。**
+**一个首页，十六个独立空间；每个项目只保留当前代码。**
 
 在线入口：https://taopanfeng.github.io/family-lab/
 
@@ -30,6 +30,11 @@ cd family-lab
 | 武术 | `projects/martial/index.html` |
 | 数学 | `projects/math/index.html` |
 | 语文 | `projects/chinese/index.html` |
+| 英语 | `projects/english/index.html` |
+| 信息与编程 | `projects/computing/index.html` |
+| 音乐 | `projects/music/index.html` |
+| 心理学 | `projects/psychology/index.html` |
+| 人情世故 | `projects/social/index.html` |
 
 原有五馆的核心实验保留；物理侧栏另有双缝干涉与菲索齿轮实验。生物、地理、宇宙、武术共31个主题，可切换儿童/进阶、调参数、慢放、暂停、逐帧与拖动时间条，收藏问题和导出观察笔记。
 
@@ -108,7 +113,7 @@ Pages 首次设置为 Settings → Pages → Source → GitHub Actions；配置�
 
 ## 语文：字里有世界
 
-102个精选汉字、112个常用读音条目按拼音排序；可按字、拼音、部件、词语检索。提供现代字形拆分、逐笔播放/暂停/单步、原创记忆联想、词语搭配与例句、19段古代公版诗句、12道辨字练习及造句备份。字源与联想分开标注，未收录名句与读音不冒称穷尽。朗读仅在设备提供本地中文语音时启用。见 [语文说明](projects/chinese/README.md)。
+122个精选汉字、132个常用读音条目按拼音排序；可按字、拼音、部件、词语检索。提供现代字形拆分、逐笔播放/暂停/单步、原创记忆联想、词语搭配与例句、19段古代公版诗句、12道辨字练习及造句备份。字源与联想分开标注，未收录名句与读音不冒称穷尽。朗读仅在设备提供本地中文语音时启用。见 [语文说明](projects/chinese/README.md)。
 
 ## 新增：英语、信息与编程、音乐
 
@@ -122,3 +127,7 @@ Pages 首次设置为 Settings → Pages → Source → GitHub Actions；配置�
 ## 心理学探索馆
 
 [心理学](projects/psychology/index.html)：6类、60个精选概念，从知识诅咒开始；每条有定义、白话、孩子与工作生活两个原创情境、容易误解处、一个可尝试的行动及专业来源。对照概念、分类和英文搜索、收藏与已读、备份合并；无诊断评分，不采集心理症状或私人经历。详见[内容与证据边界](projects/psychology/README.md)。
+
+## 心理学与人情世故
+
+[心理学](projects/psychology/index.html)已先行发布：6类60个名词，各含定义、两个原创例子、误区与专业资料。随后实现[人情世故](projects/social/index.html)：8类48个原创场景、ABCD选择与默认隐藏的参考回答；可直接学习、看逐项理由、尝试一句话/完整表达/后续接话，并落实具体行动。两馆不是诊断、情商测评或保证操控他人情绪的工具。收藏与看过仅存本机；练说文字不保存、不上传。范围与测试见[人情世故说明](projects/social/README.md)。

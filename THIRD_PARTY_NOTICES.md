@@ -47,3 +47,7 @@
 ## 心理学馆与知识卡基础组件
 
 `projects/psychology/` 与 `shared/knowledge/` 为本站原创实现及中文教学表述，采用各自MIT许可。只链接APA词典、OpenStax、Noba、大学/专业机构页面及原始论文；未下载复制这些来源的整段内容或插图。示例为假设教学情境，不冒充来源中的实验。外部页面保留其各自权利及许可。
+
+## 人情世故馆（2026-11-02）
+
+`projects/social/` 的代码、图形、48个场景、选项、台词与说明由本站原创，采用MIT许可。复用原有 `shared/knowledge/`，未额外引入外部库、字体、图像或录音。仅链接爱荷华大学、西澳卫生部门、UNICEF、CCL、Gottman Institute、俄亥俄州立大学、love is respect、StopBullying.gov的一般沟通与安全资源；资料保留各自权利，不复制其量表或付费课程，不表示机构为本站案例和答案背书。

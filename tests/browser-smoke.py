@@ -68,7 +68,7 @@ try:
     report['browser']=browser.version
     context=browser.new_context(viewport={'width':1440,'height':1040},locale='zh-CN',timezone_id='Asia/Shanghai',accept_downloads=True)
     page=open_page(context,'home','index.html')
-    check('首页恰好十五个项目入口',page.locator('[data-project]').count()==15)
+    check('首页恰好十六个项目入口',page.locator('[data-project]').count()==16)
     for item in json.loads((ROOT/'catalog.json').read_text()):
         link=page.locator(f'[data-project="{item["id"]}"]')
         check('首页入口存在且指向原文件：'+item['name'],link.get_attribute('href')==item['entry'] and (ROOT/item['entry']).is_file())
@@ -125,6 +125,11 @@ try:
             for ident in page.evaluate('WorkshopTest.ids()'):
                 page.locator(f'[data-lesson="{ident}"]').click()
                 check(slug+'课题初始化：'+ident,page.evaluate('WorkshopTest.state().lesson')==ident)
+        elif slug=='social':
+            page.wait_for_function('!!window.SocialTest')
+            check('人情世故48场景与隐藏答案',page.evaluate('SocialData.entries.length')==48 and page.locator('#answers').is_hidden())
+            page.locator('#reveal').click()
+            check('人情世故参考回答真实展开',page.locator('#answers').is_visible() and len(page.locator('#response-text').inner_text())>20)
         elif slug=='psychology':
             page.wait_for_function('!!window.PsychologyTest')
             check('心理学60条概念',len(page.evaluate('PsychologyTest.ids()'))==60)
