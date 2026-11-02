@@ -2,7 +2,7 @@ name: Restore and verify social communication
 on:
   push:
     branches: ['work/social-communication']
-    paths: ['.delivery/social/manifest.json']
+    paths: ['.delivery/social/manifest.json', '.github/workflows/restore-social.yml']
 permissions:
   contents: write
 concurrency:
@@ -16,6 +16,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
@@ -40,7 +41,6 @@ jobs:
           if hashlib.sha256(packed).hexdigest()!=manifest['archive_sha256']:raise RuntimeError('Archive checksum mismatch')
           files=json.loads(lzma.decompress(packed))
           if len(files)!=manifest['files']:raise RuntimeError('File count mismatch')
-          # Check all old versions before applying anything; no remote branch is changed on failure.
           for name,item in files.items():
               rel=pathlib.PurePosixPath(name);path=root/name
               if rel.is_absolute() or '..' in rel.parts or not rel.parts or rel.parts[0] in ('.git','.github','.delivery'):raise RuntimeError('Unsafe path: '+name)
