@@ -40,7 +40,7 @@ try:
    page.locator('#stepAll').click();check(t['id']+': all steps and endpoint',page.locator('#steps li').count()==t['steps'] and page.locator('#stepNext').is_disabled())
    page.locator('#stepBack').click();check(t['id']+': reverse step',page.locator('#steps li').count()==t['steps']-1)
    if page.locator('#proofCard').is_visible():
-    if t['id'] in ['multiplication','area','triangle-area','pythagoras','identities','quadratic','circle','fraction-ops','arithmetic-sequence','geometric-sequence','trig-identities','linear-function','function-domain','function-transform','trig-functions','right-trig','sine-cosine-law','radians'] and page.locator('#proofStepNext').is_visible() and not page.locator('#proofStepNext').is_disabled():
+    if t['id'] in ['multiplication','area','triangle-area','pythagoras','identities','quadratic','circle','fraction-ops','arithmetic-sequence','geometric-sequence','trig-identities','linear-function','function-domain','function-transform','trig-functions','right-trig','sine-cosine-law','radians','exponential','logarithms','conics','space-geometry'] and page.locator('#proofStepNext').is_visible() and not page.locator('#proofStepNext').is_disabled():
      clean="(e)=>{const c=e.cloneNode(true);[...c.querySelectorAll('text')].filter(n=>n.textContent.startsWith('步骤')).forEach(n=>n.remove());return c.innerHTML}"
      before=page.locator('#proofVisual svg').evaluate(clean);page.locator('#proofStepNext').click();after=page.locator('#proofVisual svg').evaluate(clean);check(t['id']+': proof changes actual diagram geometry',before!=after);page.locator('#proofStepBack').click()
     route_count=page.locator('#proofRoutes [data-route]').count()
