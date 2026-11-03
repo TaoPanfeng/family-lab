@@ -842,7 +842,7 @@
   },
   "linear-function": {
     "title": "一次函数 y=kx+b 为什么是直线？",
-    "conditions": "k、b为常数，x为实数。",
+    "conditions": "k、b为固定实数常量，x在实数范围内变化；图像画在直角坐标平面中。",
     "routes": [
       {
         "name": "变化率与初始值",
@@ -920,7 +920,7 @@
   },
   "trig-functions": {
     "title": "正弦、余弦为什么周期是2π？",
-    "conditions": "角度以弧度计；单位圆半径为1。",
+    "conditions": "角度θ以弧度计，单位圆半径为1；正弦余弦定义在所有实数角上。",
     "routes": [
       {
         "name": "单位圆转一整圈",
