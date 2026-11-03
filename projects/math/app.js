@@ -70,6 +70,26 @@ if(id==='multiplication'){
  if(n>=1)s+='<path d="M245 35 V275" stroke="#286b83" stroke-width="3"/>';
  if(n>=2)s+='<path d="M95 155 H395" stroke="#286b83" stroke-width="3"/>';
  s+='<text x="170" y="100" text-anchor="middle" font-size="20" fill="#204b5a">a²</text><text x="320" y="100" text-anchor="middle" font-size="20" fill="#204b5a">ab</text><text x="170" y="220" text-anchor="middle" font-size="20" fill="#204b5a">ab</text><text x="320" y="220" text-anchor="middle" font-size="20" fill="#204b5a">b²</text>';
+}else if(id==='exponential'){
+ s='<path d="M55 255 H490 M75 280 V30" stroke="#789da8" stroke-width="2"/>';
+ const pts=[];for(let k=0;k<=5;k++){const xx=80+k*70,yy=250-Math.pow(1.55,k)*22;pts.push((k?'L':'M')+xx+' '+yy);}
+ s+='<path d="'+pts.join(' ')+'" fill="none" stroke="#286b83" stroke-width="4"/>';
+ if(n>=1)s+='<circle cx="150" cy="'+(250-1.55*22)+'" r="7" fill="#d27b45"/><circle cx="220" cy="'+(250-1.55*1.55*22)+'" r="7" fill="#d27b45"/>';
+ s+=t(370,70,'每步乘以 a');
+}else if(id==='logarithms'){
+ s='<path d="M55 255 H490 M75 280 V30" stroke="#789da8" stroke-width="2"/><path d="M90 250 Q140 160 220 115 T470 65" fill="none" stroke="#286b83" stroke-width="4"/>';
+ if(n>=1)s+='<path d="M90 250 Q180 185 250 145 T470 110" fill="none" stroke="#d27b45" stroke-width="3" stroke-dasharray="6 4"/>';
+ s+=t(350,55,'logₐb = x ⇔ aˣ=b');
+}else if(id==='conics'){
+ s='<path d="M55 160 H490 M270 25 V295" stroke="#789da8" stroke-width="2"/>';
+ if(n<2)s+='<ellipse cx="270" cy="160" rx="170" ry="90" fill="none" stroke="#286b83" stroke-width="4"/><circle cx="170" cy="160" r="5" fill="#d27b45"/><circle cx="370" cy="160" r="5" fill="#d27b45"/>';
+ else s+='<path d="M95 160 Q270 -70 445 160" fill="none" stroke="#286b83" stroke-width="4"/><circle cx="355" cy="160" r="6" fill="#d27b45"/><path d="M355 25 V285" stroke="#d27b45" stroke-dasharray="6 4"/>';
+ s+=t(270,310,n<2?'椭圆：到两焦点距离和固定':'抛物线：到焦点与准线距离相等');
+}else if(id==='space-geometry'){
+ s='<path d="M125 100 L300 55 L425 120 L250 165 Z M125 100 V235 L250 300 V165 M250 300 L425 255 V120" fill="#cce5ed" stroke="#286b83" stroke-width="3"/>';
+ if(n>=1)s+='<path d="M125 235 L300 190 L425 255" fill="none" stroke="#d27b45" stroke-width="3" stroke-dasharray="6 4"/>';
+ if(n>=2)s+=t(270,30,'底面积 × 高');
+ s+=t(270,325,'三维：长、宽、高');
 }else if(id==='quadratic'){
  const lines=['ax²+bx+c=0','x²+(b/a)x=−c/a','x²+(b/a)x=−c/a','两边同时加 (b/2a)²','(x+b/2a)²=Δ/(4a²)','Δ=b²−4ac','x+b/(2a)=±√Δ/(2|a|)','x=(−b±√Δ)/(2a)'];
  s='<rect x="25" y="35" width="490" height="250" rx="12" fill="#edf4f6" stroke="#8baab4"/>';
