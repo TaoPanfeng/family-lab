@@ -79,7 +79,8 @@ if(id==='multiplication'){
  const y=v=>255-(v*35+65),x=v=>95+v*58;
  s+='<path d="M'+x(-1)+' '+y(-1)+' L'+x(5)+' '+y(5)+'" stroke="#286b83" stroke-width="4"/>';
  s+=t(395,60,'y=kx+b')+t(400,90,'斜率 k')+t(125,235,'截距 b');
- if(n>=2)s+='<circle cx="'+x(1)+'" cy="'+y(1)+'" r="6" fill="#d27b45"/><circle cx="'+x(3)+'" cy="'+y(3)+'" r="6" fill="#d27b45"/>';
+ if(n>=1)s+='<circle cx="'+x(1)+'" cy="'+y(1)+'" r="6" fill="#d27b45"/>';
+ if(n>=2)s+='<circle cx="'+x(3)+'" cy="'+y(3)+'" r="6" fill="#d27b45"/><path d="M'+x(1)+' '+y(1)+' L'+x(3)+' '+y(1)+' L'+x(3)+' '+y(3)+'" fill="none" stroke="#d27b45" stroke-width="3" stroke-dasharray="5 4"/>';
 }else if(id==='function-domain'){
  s='<rect x="45" y="55" width="170" height="210" rx="12" fill="#dceef3" stroke="#286b83" stroke-width="2"/><rect x="325" y="55" width="170" height="210" rx="12" fill="#f6e8d9" stroke="#945a35" stroke-width="2"/>';
  s+=t(130,85,'定义域 A')+t(410,85,'值域 B');
