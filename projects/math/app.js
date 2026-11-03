@@ -36,6 +36,27 @@ if(id==='multiplication'){
  if(n>=4)s+='<polygon points="'+(x+a)+','+y+' '+(x+z)+','+(y+a)+' '+(x+z-a)+','+(y+z)+' '+x+','+(y+z-b)+'" fill="#9bcbd8" stroke="#286b83" stroke-width="3"/>';
  if(n>=4)s+=t(x+z/2,y+z/2,'c²');
  s+=t(x+z/2,y+z+24,n>=4?'中间正方形边长 c':'拼入全等直角三角形');
+}else if(id==='fraction-ops'){
+ s='<rect x="45" y="45" width="210" height="190" fill="#e8f2f5" stroke="#286b83" stroke-width="2"/>';
+ if(n>=1){for(let k=1;k<4;k++)s+='<path d="M'+(45+k*52.5)+' 45 V235" stroke="#286b83" stroke-width="2"/>';for(let k=1;k<2;k++)s+='<path d="M45 '+(45+k*95)+' H255" stroke="#286b83" stroke-width="2"/>';}
+ if(n>=2)s+='<rect x="45" y="45" width="52.5" height="95" fill="#df9c68" opacity=".8"/>';
+ if(n>=3)s+='<rect x="97.5" y="45" width="52.5" height="95" fill="#df9c68" opacity=".8"/>';
+ s+=t(360,105,n>=3?'3/6 + 2/6':'1/2 + 1/3')+t(360,155,n>=3?'= 5/6':'先把份额变成一样大')+t(360,210,'每个小格代表 1/6');
+}else if(id==='arithmetic-sequence'){
+ const nums=Array.from({length:5},(_,k)=>k+1);
+ nums.forEach((v,k)=>{const y=55+k*42;s+='<rect x="'+(75+k*82)+'" y="'+y+'" width="58" height="30" rx="5" fill="#c9e3eb" stroke="#286b83"/>'+t(104+k*82,y+21,String(v));});
+ if(n>=1)s+='<path d="M100 35 H460" stroke="#c46e43" stroke-width="3"/>';
+ if(n>=2)s+=t(270,285,'首尾配对：1+5 = 2+4');
+ if(n>=3)s+=t(270,315,'每一对的和相同');
+}else if(id==='geometric-sequence'){
+ const vals=[1,2,4,8,16];vals.forEach((v,k)=>{const h=20+v*5;s+='<rect x="'+(55+k*94)+'" y="'+(245-h)+'" width="54" height="'+h+'" fill="#8bbdca" stroke="#286b83"/>';});
+ s+=t(270,290,n>=2?'每一项乘公比 r':'等比数列：相邻两项的比相同');
+}else if(id==='trig-identities'){
+ s='<circle cx="185" cy="160" r="110" fill="none" stroke="#286b83" stroke-width="3"/><path d="M55 160 H315 M185 30 V290" stroke="#789da8" stroke-width="2"/>';
+ const x=185+110*Math.cos(Math.PI/4),y=160-110*Math.sin(Math.PI/4);
+ s+='<path d="M185 160 L'+x+' '+y+' L'+x+' 160 Z" fill="#e5aa75" stroke="#945a35" stroke-width="3"/>'+t(380,125,'cos θ = x/r')+t(380,165,'sin θ = y/r');
+ if(n>=1)s+=t(380,215,'x²+y²=r²');
+ if(n>=2)s+=t(380,250,'sin²θ+cos²θ=1');
 }else if(id==='identities'){
  s='<rect x="95" y="35" width="300" height="240" fill="#edf4f6" stroke="#286b83" stroke-width="3"/>';
  if(n>=1)s+='<path d="M245 35 V275" stroke="#286b83" stroke-width="3"/>';
