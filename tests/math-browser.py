@@ -40,6 +40,8 @@ try:
    page.locator('#stepAll').click();check(t['id']+': all steps and endpoint',page.locator('#steps li').count()==t['steps'] and page.locator('#stepNext').is_disabled())
    page.locator('#stepBack').click();check(t['id']+': reverse step',page.locator('#steps li').count()==t['steps']-1)
    if page.locator('#proofCard').is_visible():
+    if page.locator('#proofStepNext').is_visible() and not page.locator('#proofStepNext').is_disabled():
+     before=page.locator('#proofVisual').inner_html();page.locator('#proofStepNext').click();check(t['id']+': proof step updates paired diagram',before!=page.locator('#proofVisual').inner_html());page.locator('#proofStepBack').click()
     old=page.locator('#proofSteps').inner_text();page.locator('[data-route="1"]').click();check(t['id']+': two actual proof routes',old!=page.locator('#proofSteps').inner_text())
    if not t['lab']:check(t['id']+': honest reading-only node',page.locator('#reset').is_disabled() and page.locator('#controls input').count()==0)
   for id,spec in specs.items():
