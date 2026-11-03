@@ -9,7 +9,48 @@ function save(){try{localStorage.setItem(key,JSON.stringify(store));persistent=t
 function say(message){$('status').textContent=message;let el=document.getElementById('recordStatus');if(el)el.textContent=message;}
 function show(view){activeView=view;for(let name of ['learning','map','records'])$(name).hidden=name!==view;$('roadmap').setAttribute('aria-pressed',view==='map');$('notebook').setAttribute('aria-pressed',view==='records');}
 function list(){const q=$('search').value.trim().toLowerCase(),stage=$('stage').value,group=$('group').value;const items=D.topics.filter(t=>(!stage||t.stage===stage)&&(!group||t.group===group)&&(!favoritesOnly||store.favorites.includes(t.id))&&(!q||[t.title,t.child,t.formal,...t.applications.map(a=>a.text)].join(' ').toLowerCase().includes(q)));$('resultCount').textContent=`找到 ${items.length} / ${D.topics.length} 个知识点`;$('topics').innerHTML=items.length?items.map(t=>`<button class="topic${t.id===current.id?' active':''}" data-topic="${E(t.id)}"${t.id===current.id?' aria-current="page"':''}><small>${E(t.stage)} · ${E(D.groups[t.group])}</small>${store.practiced.includes(t.id)?'✓ ':''}${E(t.title)}</button>`).join(''):'<p class="small">没有找到。换个关键词，或清除筛选。</p><button data-clear>清除筛选</button>';}
-function proofPicture(id,n){let s='',t=(x,y,v)=>'<text x="'+x+'" y="'+y+'" text-anchor="middle" font-size="19" fill="#204b5a">'+v+'</text>';if(id==='multiplication'){for(let r=0;r<3;r++)for(let k=0;k<4;k++)s+='<circle cx="'+(170+k*55)+'" cy="'+(55+r*55)+'" r="15" fill="'+(n>=3&&k===0?'#d47a45':'#3985a2')+'"/>';s+=t(270,260,'3行 × 每行4个 = 12');}else if(id==='area'){s='<rect x="100" y="45" width="300" height="210" fill="#cce5ed" stroke="#286b83" stroke-width="3"/>';if(n>=1)s+='<path d="M250 45 V255" stroke="#c46e43" stroke-width="3" stroke-dasharray="7 5"/>';if(n>=2)s+='<path d="M100 150 H400" stroke="#c46e43" stroke-width="3" stroke-dasharray="7 5"/>';s+=t(250,290,'长 a · 宽 b · 单位正方形');}else if(id==='circle'){s='<circle cx="180" cy="160" r="112" fill="#cce5ed" stroke="#286b83" stroke-width="3"/>';for(let k=0;k<Math.min(12,n+2);k++){let a=k*Math.PI/6;s+='<path d="M180 160 L'+(180+112*Math.cos(a))+' '+(160+112*Math.sin(a))+'" stroke="#c46e43" stroke-width="2"/>';}s+='<path d="M180 160 L292 160" stroke="#286b83" stroke-width="3"/>'+t(390,145,'半径 r')+t(390,185,'圆周 2πr');}else if(id==='triangle-area'){s='<polygon points="95,65 410,65 330,220 15,220" fill="#c5e3eb" stroke="#286b83" stroke-width="3"/>';if(n>=1)s+='<path d="M95 65 L95 220" stroke="#c46e43" stroke-width="3" stroke-dasharray="7 5"/>';if(n>=2)s+='<path d="M95 65 L330 220" stroke="#c46e43" stroke-width="3"/>';s+=t(215,275,'底 b · 垂直高 h');}else if(id==='pythagoras'){s='<rect x="105" y="25" width="300" height="250" fill="#e9f2f5" stroke="#286b83" stroke-width="4"/>';for(let k=0;k<4;k++){let x=105+(k%2)*150,y=25+Math.floor(k/2)*125;s+='<path d="M'+x+' '+y+' l150 0 l-75 125 z" fill="#e6b17f" stroke="#945a35" stroke-width="2"/>';}s+=t(255,165,'c²');s+=t(255,310,'外框边长 a+b');}else if(id==='identities'){s='<rect x="95" y="35" width="300" height="240" fill="#e9f2f5" stroke="#286b83" stroke-width="3"/><path d="M245 35 V275 M95 155 H395" stroke="#286b83" stroke-width="3"/>';s+=t(170,100,'a²')+t(320,100,'ab')+t(170,220,'ab')+t(320,220,'b²');}else if(id==='quadratic'){s='<rect x="25" y="35" width="490" height="250" rx="12" fill="#edf4f6" stroke="#8baab4"/>';s+=t(270,100,'x² + (b/a)x = −c/a')+t(270,165,'两边同时加 (b/2a)²')+t(270,230,'(x+b/2a)² = Δ/(4a²)');}else if(id==='circle'){s='<circle cx="175" cy="150" r="105" fill="#cce5ed" stroke="#286b83" stroke-width="3"/><path d="M175 150 L175 45 A105 105 0 0 1 280 150 Z" fill="#e5ad78" stroke="#945a35"/>';s+=t(390,140,'半径 r')+t(390,180,'圆周长 2πr');}s+=t(470,315,'步骤 '+(n+1));if(!s)s=t(270,165,'推理步骤 '+(n+1));return '<svg viewBox="0 0 540 330" role="img" aria-label="当前证明步骤图示">'+s+'</svg>';}
+function proofPicture(id,n){
+let s='',t=(x,y,v)=>'<text x="'+x+'" y="'+y+'" text-anchor="middle" font-size="18" fill="#204b5a">'+v+'</text>';
+if(id==='multiplication'){
+ for(let r=0;r<3;r++)for(let k=0;k<4;k++)s+='<rect x="'+(150+k*48)+'" y="'+(35+r*48)+'" width="34" height="34" rx="5" fill="'+(n>=1&&r===Math.min(2,Math.floor((n-1)/2))?'#df945f':'#80b9ca')+'" stroke="#286b83"/>';
+ if(n>=3)s+='<path d="M135 125 H355" stroke="#b75c37" stroke-width="3" stroke-dasharray="6 5"/>';
+ s+=t(250,220,'3行 × 每行4个 = 12个');
+}else if(id==='area'){
+ s='<rect x="95" y="45" width="300" height="190" fill="#cce5ed" stroke="#286b83" stroke-width="3"/>';
+ if(n>=1){s+='<path d="M245 45 V235" stroke="#c46e43" stroke-width="3" stroke-dasharray="7 5"/>';for(let x=110;x<390;x+=30)s+='<path d="M'+x+' 45 V235" stroke="#9dbbc5" stroke-width="1"/>';for(let y=65;y<230;y+=30)s+='<path d="M95 '+y+' H395" stroke="#9dbbc5" stroke-width="1"/>';}
+ if(n>=2)s+='<rect x="245" y="45" width="150" height="190" fill="#e9b27f" opacity=".65"/>';
+ s+=t(245,280,'长 a × 宽 b');
+}else if(id==='triangle-area'){
+ if(n<3){s='<polygon points="100,55 410,55 340,225 30,225" fill="#c5e3eb" stroke="#286b83" stroke-width="3"/>';if(n>=1)s+='<path d="M100 55 V225" stroke="#c46e43" stroke-width="3" stroke-dasharray="7 5"/>';if(n>=2)s+='<polygon points="100,55 30,225 100,225" fill="#e7a66f" stroke="#945a35" stroke-width="2"/>';}
+ else{s='<rect x="100" y="55" width="310" height="170" fill="#c5e3eb" stroke="#286b83" stroke-width="3"/><polygon points="410,55 340,225 410,225" fill="#e7a66f" stroke="#945a35" stroke-width="2"/>';}
+ s+=t(250,275,n>=3?'剪下的三角形平移到缺口':'平行四边形：底 b，高 h');
+}else if(id==='pythagoras'){
+ const x=110,y=25,a=120,b=160,z=a+b;
+ s='<rect x="'+x+'" y="'+y+'" width="'+z+'" height="'+z+'" fill="#f6fafb" stroke="#286b83" stroke-width="4"/>';
+ s+='<polygon points="'+x+','+y+' '+(x+a)+','+y+' '+x+','+(y+b)+'" fill="#e7b17e" stroke="#945a35" stroke-width="2"/>';
+ s+='<polygon points="'+(x+z)+','+y+' '+(x+z)+','+(y+a)+' '+(x+b)+','+y+'" fill="#e7b17e" stroke="#945a35" stroke-width="2"/>';
+ s+='<polygon points="'+(x+z)+','+(y+z)+' '+(x+z-a)+','+(y+z)+' '+(x+z)+','+(y+z-b)+'" fill="#e7b17e" stroke="#945a35" stroke-width="2"/>';
+ s+='<polygon points="'+x+','+(y+z)+' '+x+','+(y+z-b)+' '+(x+b)+','+(y+z)+'" fill="#e7b17e" stroke="#945a35" stroke-width="2"/>';
+ s+='<polygon points="'+(x+a)+','+y+' '+(x+z)+','+(y+a)+' '+(x+b)+','+(y+z)+' '+x+','+(y+b)+'" fill="#9bcbd8" stroke="#286b83" stroke-width="3"/>';
+ s+=t(x+z/2,y+z/2,'c²')+t(x+z/2,y+z+24,'外框边长 a+b');
+}else if(id==='identities'){
+ s='<rect x="95" y="35" width="300" height="240" fill="#edf4f6" stroke="#286b83" stroke-width="3"/>';
+ if(n>=1)s+='<path d="M245 35 V275" stroke="#286b83" stroke-width="3"/>';
+ if(n>=2)s+='<path d="M95 155 H395" stroke="#286b83" stroke-width="3"/>';
+ s+='<text x="170" y="100" text-anchor="middle" font-size="20" fill="#204b5a">a²</text><text x="320" y="100" text-anchor="middle" font-size="20" fill="#204b5a">ab</text><text x="170" y="220" text-anchor="middle" font-size="20" fill="#204b5a">ab</text><text x="320" y="220" text-anchor="middle" font-size="20" fill="#204b5a">b²</text>';
+}else if(id==='quadratic'){
+ const lines=['ax²+bx+c=0','x²+(b/a)x=−c/a','x²+(b/a)x=−c/a','两边同时加 (b/2a)²','(x+b/2a)²=Δ/(4a²)','Δ=b²−4ac','x+b/(2a)=±√Δ/(2|a|)','x=(−b±√Δ)/(2a)'];
+ s='<rect x="25" y="35" width="490" height="250" rx="12" fill="#edf4f6" stroke="#8baab4"/>';
+ s+=t(270,105,lines[Math.min(n,lines.length-1)])+t(270,170,'配方：两边做相同运算')+t(270,235,'Δ=b²−4ac');
+}else if(id==='circle'){
+ s='<circle cx="180" cy="160" r="112" fill="#cce5ed" stroke="#286b83" stroke-width="3"/>';
+ const count=4+n*3;
+ for(let k=0;k<count;k++){let a=k*2*Math.PI/count;s+='<path d="M180 160 L'+(180+112*Math.cos(a))+' '+(160+112*Math.sin(a))+'" stroke="#c46e43" stroke-width="1.5"/>';}
+ s+='<path d="M180 160 L292 160" stroke="#286b83" stroke-width="3"/>'+t(390,140,'半径 r')+t(390,185,'底边趋近 πr');
+}else{s=t(270,160,'证明步骤 '+(n+1));}
+s+=t(470,315,'步骤 '+(n+1));
+return '<svg viewBox="0 0 540 330" role="img" aria-label="当前证明步骤图示">'+s+'</svg>';
+}
 function proof(){const data=P[current.id];$('proofCard').hidden=!data;if(!data)return;const steps=data.routes[route].steps;proofStep=Math.min(proofStep,steps.length-1);$('proofTitle').innerHTML=F.legacy(data.title);$('conditions').innerHTML='成立条件：'+F.legacy(data.conditions);$('proofRoutes').innerHTML=data.routes.map((r,i)=>`<button data-route="${i}" aria-pressed="${route===i}">${i+1} · ${E(r.name)}</button>`).join('');$('proofSteps').innerHTML=steps.map((s,i)=>`<li class="${i===proofStep?'proof-current':''}">${s.includes('\\(')?F.rich(s):F.legacy(s)}</li>`).join('');$('proofVisual').innerHTML=proofPicture(current.id,proofStep);$('proofStepCount').textContent='第 '+(proofStep+1)+' / '+steps.length+' 步';$('proofStepBack').disabled=proofStep===0;$('proofStepNext').disabled=proofStep===steps.length-1;}
 function steps(){let shown=current.steps.slice(0,step+1);$('steps').innerHTML=shown.map((s,i)=>`<li class="${i===step?'current':''}">${s.includes('\\(')?F.rich(s):F.legacy(s)}</li>`).join('');$('stepBack').disabled=step===0;$('stepNext').disabled=step===current.steps.length-1;$('stepAll').disabled=step===current.steps.length-1;$('stepStatus').textContent=`第${step+1} / ${current.steps.length}步；看不懂就退回一步，再动手试。`;}
 function controlMax(c){if(current.lab==='fractions'&&c.key==='n')return params.d;if(current.lab==='sets'&&c.key==='overlap')return Math.min(params.a,params.b);if(current.lab==='combinations'&&c.key==='k')return params.n;if(current.lab==='optimization'&&c.key==='w')return params.p/2-.5;return c.max;}
