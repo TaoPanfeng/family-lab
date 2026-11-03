@@ -16,10 +16,17 @@ if(id==='multiplication'){
  if(n>=3)s+='<path d="M135 125 H355" stroke="#b75c37" stroke-width="3" stroke-dasharray="6 5"/>';
  s+=t(250,220,'3行 × 每行4个 = 12个');
 }else if(id==='area'){
- s='<rect x="95" y="45" width="300" height="190" fill="#cce5ed" stroke="#286b83" stroke-width="3"/>';
- if(n>=1){s+='<path d="M245 45 V235" stroke="#c46e43" stroke-width="3" stroke-dasharray="7 5"/>';for(let x=110;x<390;x+=30)s+='<path d="M'+x+' 45 V235" stroke="#9dbbc5" stroke-width="1"/>';for(let y=65;y<230;y+=30)s+='<path d="M95 '+y+' H395" stroke="#9dbbc5" stroke-width="1"/>';}
- if(n>=2)s+='<rect x="245" y="45" width="150" height="190" fill="#e9b27f" opacity=".65"/>';
- s+=t(245,280,'长 a × 宽 b');
+ if(route===2){
+  s='<polygon points="110,80 270,80 330,220 50,220" fill="#cce5ed" stroke="#286b83" stroke-width="3"/>';
+  if(n>=1)s+='<polygon points="270,80 430,80 490,220 210,220" fill="#e9b27f" opacity=".8" stroke="#945a35" stroke-width="3"/>';
+  if(n>=2)s+='<path d="M110 80 L430 80 L490 220 L50 220 Z" fill="#9bcbd8" opacity=".45" stroke="#286b83" stroke-width="3"/>';
+  s+=t(270,275,n>=2?'拼成底 a+b、高 h 的平行四边形':'两个全等梯形');
+ }else{
+  s='<rect x="95" y="45" width="300" height="190" fill="#cce5ed" stroke="#286b83" stroke-width="3"/>';
+  if(n>=1){s+='<path d="M245 45 V235" stroke="#c46e43" stroke-width="3" stroke-dasharray="7 5"/>';for(let x=110;x<390;x+=30)s+='<path d="M'+x+' 45 V235" stroke="#9dbbc5" stroke-width="1"/>';for(let y=65;y<230;y+=30)s+='<path d="M95 '+y+' H395" stroke="#9dbbc5" stroke-width="1"/>';}
+  if(n>=2)s+='<rect x="245" y="45" width="150" height="190" fill="#e9b27f" opacity=".65"/>';
+  s+=t(245,280,'长 a × 宽 b');
+ }
 }else if(id==='triangle-area'){
  if(n<3){s='<polygon points="100,55 410,55 340,225 30,225" fill="#c5e3eb" stroke="#286b83" stroke-width="3"/>';if(n>=1)s+='<path d="M100 55 V225" stroke="#c46e43" stroke-width="3" stroke-dasharray="7 5"/>';if(n>=2)s+='<polygon points="100,55 30,225 100,225" fill="#e7a66f" stroke="#945a35" stroke-width="2"/>';}
  else{s='<rect x="100" y="55" width="310" height="170" fill="#c5e3eb" stroke="#286b83" stroke-width="3"/><polygon points="410,55 340,225 410,225" fill="#e7a66f" stroke="#945a35" stroke-width="2"/>';}
