@@ -74,6 +74,29 @@ if(id==='multiplication'){
  const lines=['ax²+bx+c=0','x²+(b/a)x=−c/a','x²+(b/a)x=−c/a','两边同时加 (b/2a)²','(x+b/2a)²=Δ/(4a²)','Δ=b²−4ac','x+b/(2a)=±√Δ/(2|a|)','x=(−b±√Δ)/(2a)'];
  s='<rect x="25" y="35" width="490" height="250" rx="12" fill="#edf4f6" stroke="#8baab4"/>';
  s+=t(270,105,lines[Math.min(n,lines.length-1)])+t(270,170,'配方：两边做相同运算')+t(270,235,'Δ=b²−4ac');
+}else if(id==='linear-function'){
+ s='<path d="M70 255 H470 M95 280 V35" stroke="#789da8" stroke-width="2"/>';
+ const y=v=>255-(v*35+65),x=v=>95+v*58;
+ s+='<path d="M'+x(-1)+' '+y(-1)+' L'+x(5)+' '+y(5)+'" stroke="#286b83" stroke-width="4"/>';
+ s+=t(395,60,'y=kx+b')+t(400,90,'斜率 k')+t(125,235,'截距 b');
+ if(n>=2)s+='<circle cx="'+x(1)+'" cy="'+y(1)+'" r="6" fill="#d27b45"/><circle cx="'+x(3)+'" cy="'+y(3)+'" r="6" fill="#d27b45"/>';
+}else if(id==='function-domain'){
+ s='<rect x="45" y="55" width="170" height="210" rx="12" fill="#dceef3" stroke="#286b83" stroke-width="2"/><rect x="325" y="55" width="170" height="210" rx="12" fill="#f6e8d9" stroke="#945a35" stroke-width="2"/>';
+ s+=t(130,85,'定义域 A')+t(410,85,'值域 B');
+ for(let k=0;k<3;k++){let yy=125+k*48;s+='<circle cx="95" cy="'+yy+'" r="9" fill="#286b83"/><circle cx="'+(370+k*25)+'" cy="'+yy+'" r="9" fill="#d27b45"/>';if(n>=1)s+='<path d="M105 '+yy+' L'+(360+k*25)+' '+yy+'" stroke="#286b83" stroke-width="2"/>';}
+ s+=t(270,305,n>=2?'实际输出集合才是值域':'每个输入必须唯一对应一个输出');
+}else if(id==='function-transform'){
+ s='<path d="M60 255 H490 M80 280 V30" stroke="#789da8" stroke-width="2"/><path d="M100 235 Q180 35 260 235" fill="none" stroke="#286b83" stroke-width="4"/>';
+ if(n>=1)s+='<path d="M180 235 Q260 35 340 235" fill="none" stroke="#d27b45" stroke-width="4" stroke-dasharray="7 4"/>';
+ if(n>=2)s+='<path d="M180 195 Q260 -5 340 195" fill="none" stroke="#29916f" stroke-width="3"/>';
+ s+=t(270,300,'原图像 → 右移 h → 上移 k');
+}else if(id==='trig-functions'||id==='right-trig'||id==='radians'||id==='sine-cosine-law'){
+ s='<circle cx="190" cy="160" r="112" fill="none" stroke="#286b83" stroke-width="3"/><path d="M55 160 H325 M190 28 V292" stroke="#789da8" stroke-width="2"/>';
+ const theta=Math.PI/4,x=190+112*Math.cos(theta),y=160-112*Math.sin(theta);
+ s+='<path d="M190 160 L'+x+' '+y+' L'+x+' 160 Z" fill="#e5aa75" stroke="#945a35" stroke-width="3"/>';
+ s+=t(405,105,'cos θ')+t(405,145,'sin θ');
+ if(n>=1)s+=t(405,195,'sin²θ+cos²θ=1');
+ if(n>=2)s+=t(405,240,'周期 2π');
 }else if(id==='circle'){
  s='<circle cx="180" cy="160" r="112" fill="#cce5ed" stroke="#286b83" stroke-width="3"/>';
  const count=4+n*3;
