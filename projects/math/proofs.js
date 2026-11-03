@@ -839,7 +839,7 @@
         ]
       }
     ]
-  }
+  },
   "linear-function": {
     "title": "一次函数 y=kx+b 为什么是直线？",
     "conditions": "k、b为常数，x为实数。",
