@@ -82,8 +82,10 @@ if(id==='multiplication'){
  s+=t(350,55,'logₐb = x ⇔ aˣ=b');
 }else if(id==='conics'){
  s='<path d="M55 160 H490 M270 25 V295" stroke="#789da8" stroke-width="2"/>';
- if(n<2)s+='<ellipse cx="270" cy="160" rx="170" ry="90" fill="none" stroke="#286b83" stroke-width="4"/><circle cx="170" cy="160" r="5" fill="#d27b45"/><circle cx="370" cy="160" r="5" fill="#d27b45"/>';
- else s+='<path d="M95 160 Q270 -70 445 160" fill="none" stroke="#286b83" stroke-width="4"/><circle cx="355" cy="160" r="6" fill="#d27b45"/><path d="M355 25 V285" stroke="#d27b45" stroke-dasharray="6 4"/>';
+ if(n<2){
+  s+='<ellipse cx="270" cy="160" rx="170" ry="90" fill="none" stroke="#286b83" stroke-width="4"/><circle cx="170" cy="160" r="5" fill="#d27b45"/><circle cx="370" cy="160" r="5" fill="#d27b45"/>';
+  if(n>=1)s+='<path d="M95 160 H170 M170 160 H445" stroke="#d27b45" stroke-width="3" stroke-dasharray="6 4"/><circle cx="95" cy="160" r="5" fill="#286b83"/>';
+ }else s+='<path d="M95 160 Q270 -70 445 160" fill="none" stroke="#286b83" stroke-width="4"/><circle cx="355" cy="160" r="6" fill="#d27b45"/><path d="M355 25 V285" stroke="#d27b45" stroke-dasharray="6 4"/>';
  s+=t(270,310,n<2?'椭圆：到两焦点距离和固定':'抛物线：到焦点与准线距离相等');
 }else if(id==='space-geometry'){
  s='<path d="M125 100 L300 55 L425 120 L250 165 Z M125 100 V235 L250 300 V165 M250 300 L425 255 V120" fill="#cce5ed" stroke="#286b83" stroke-width="3"/>';
