@@ -40,10 +40,12 @@ try:
    page.locator('#stepAll').click();check(t['id']+': all steps and endpoint',page.locator('#steps li').count()==t['steps'] and page.locator('#stepNext').is_disabled())
    page.locator('#stepBack').click();check(t['id']+': reverse step',page.locator('#steps li').count()==t['steps']-1)
    if page.locator('#proofCard').is_visible():
-    if t['id'] in ['multiplication','area','triangle-area','pythagoras','identities','quadratic','circle'] and page.locator('#proofStepNext').is_visible() and not page.locator('#proofStepNext').is_disabled():
+    if t['id'] in ['multiplication','area','triangle-area','pythagoras','identities','quadratic','circle','fraction-ops','arithmetic-sequence','geometric-sequence','trig-identities'] and page.locator('#proofStepNext').is_visible() and not page.locator('#proofStepNext').is_disabled():
      clean="(e)=>{const c=e.cloneNode(true);[...c.querySelectorAll('text')].filter(n=>n.textContent.startsWith('步骤')).forEach(n=>n.remove());return c.innerHTML}"
      before=page.locator('#proofVisual svg').evaluate(clean);page.locator('#proofStepNext').click();after=page.locator('#proofVisual svg').evaluate(clean);check(t['id']+': proof changes actual diagram geometry',before!=after);page.locator('#proofStepBack').click()
-    old=page.locator('#proofSteps').inner_text();page.locator('[data-route="1"]').click();check(t['id']+': two actual proof routes',old!=page.locator('#proofSteps').inner_text())
+    route_count=page.locator('#proofRoutes [data-route]').count()
+    for route_index in range(1,route_count):
+     old=page.locator('#proofSteps').inner_text();page.locator('[data-route="'+str(route_index)+'"]').click();check(t['id']+': proof route '+str(route_index+1)+' is distinct',old!=page.locator('#proofSteps').inner_text())
    if not t['lab']:check(t['id']+': honest reading-only node',page.locator('#reset').is_disabled() and page.locator('#controls input').count()==0)
   for id,spec in specs.items():
    select(page,next(t['id'] for t in topics if t['lab']==id))
