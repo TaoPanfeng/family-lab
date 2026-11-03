@@ -1,7 +1,7 @@
 (function(root){"use strict";const proofs={
   "commutative": {
     "title": "为什么交换因数，结果不变？",
-    "conditions": "这里讨论非负整数乘法；点阵是有限个相同对象。",
+    "conditions": "讨论非负整数乘法；点阵是有限个相同对象。",
     "routes": [
       {
         "name": "按行数与按列数",
