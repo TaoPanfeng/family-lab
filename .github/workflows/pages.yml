@@ -295,18 +295,20 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          branch='work/social-communication'
           gh auth setup-git
-          head="$(git ls-remote --heads origin "refs/heads/$branch" | cut -f1)"
-          if test -z "$head"; then
-            echo 'Work branch already removed; main is retained.' >> "$GITHUB_STEP_SUMMARY"
-            exit 0
-          fi
-          open_prs="$(gh api --method GET "repos/$GITHUB_REPOSITORY/pulls" -f state=open -f "head=${GITHUB_REPOSITORY_OWNER}:$branch" --jq 'length')"
-          test "$open_prs" = '0'
-          git fetch origin "refs/heads/$branch:refs/remotes/origin/$branch" "refs/heads/main:refs/remotes/origin/main"
-          test "$(git rev-parse "origin/$branch")" = "$head"
-          git merge-base --is-ancestor "$head" origin/main
-          test "$(git ls-remote --heads origin "refs/heads/$branch" | cut -f1)" = "$head"
-          git push origin --delete "$branch"
-          echo 'Merged work branch removed after successful live validation; history remains in main.' >> "$GITHUB_STEP_SUMMARY"
+          git fetch origin refs/heads/main:refs/remotes/origin/main
+          for branch in work/social-communication work/math-proofs; do
+            head="$(git ls-remote --heads origin "refs/heads/$branch" | cut -f1)"
+            if test -z "$head"; then
+              echo "$branch already removed; main is retained." >> "$GITHUB_STEP_SUMMARY"
+              continue
+            fi
+            open_prs="$(gh api --method GET "repos/$GITHUB_REPOSITORY/pulls" -f state=open -f "head=$GITHUB_REPOSITORY_OWNER:$branch" --jq 'length')"
+            test "$open_prs" = '0'
+            git fetch origin "refs/heads/$branch:refs/remotes/origin/$branch"
+            test "$(git rev-parse "origin/$branch")" = "$head"
+            git merge-base --is-ancestor "$head" origin/main
+            test "$(git ls-remote --heads origin "refs/heads/$branch" | cut -f1)" = "$head"
+            git push origin --delete "$branch"
+            echo "$branch was fully merged and removed after live validation; its history remains in main." >> "$GITHUB_STEP_SUMMARY"
+          done
