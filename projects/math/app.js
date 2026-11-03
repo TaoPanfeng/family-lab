@@ -25,14 +25,17 @@ if(id==='multiplication'){
  else{s='<rect x="100" y="55" width="310" height="170" fill="#c5e3eb" stroke="#286b83" stroke-width="3"/><polygon points="410,55 340,225 410,225" fill="#e7a66f" stroke="#945a35" stroke-width="2"/>';}
  s+=t(250,275,n>=3?'剪下的三角形平移到缺口':'平行四边形：底 b，高 h');
 }else if(id==='pythagoras'){
- const x=110,y=25,a=120,b=160,z=a+b;
+ const x=110,y=18,a=112,b=150,z=a+b,triangles=[
+ '<polygon points="'+x+','+y+' '+(x+a)+','+y+' '+x+','+(y+b)+'" fill="#e7b17e" stroke="#945a35" stroke-width="2"/>',
+ '<polygon points="'+(x+z)+','+y+' '+(x+z)+','+(y+a)+' '+(x+b)+','+y+'" fill="#e7b17e" stroke="#945a35" stroke-width="2"/>',
+ '<polygon points="'+(x+z)+','+(y+z)+' '+(x+z-a)+','+(y+z)+' '+(x+z)+','+(y+z-b)+'" fill="#e7b17e" stroke="#945a35" stroke-width="2"/>',
+ '<polygon points="'+x+','+(y+z)+' '+x+','+(y+z-b)+' '+(x+b)+','+(y+z)+'" fill="#e7b17e" stroke="#945a35" stroke-width="2"/>'
+ ];
  s='<rect x="'+x+'" y="'+y+'" width="'+z+'" height="'+z+'" fill="#f6fafb" stroke="#286b83" stroke-width="4"/>';
- s+='<polygon points="'+x+','+y+' '+(x+a)+','+y+' '+x+','+(y+b)+'" fill="#e7b17e" stroke="#945a35" stroke-width="2"/>';
- s+='<polygon points="'+(x+z)+','+y+' '+(x+z)+','+(y+a)+' '+(x+b)+','+y+'" fill="#e7b17e" stroke="#945a35" stroke-width="2"/>';
- s+='<polygon points="'+(x+z)+','+(y+z)+' '+(x+z-a)+','+(y+z)+' '+(x+z)+','+(y+z-b)+'" fill="#e7b17e" stroke="#945a35" stroke-width="2"/>';
- s+='<polygon points="'+x+','+(y+z)+' '+x+','+(y+z-b)+' '+(x+b)+','+(y+z)+'" fill="#e7b17e" stroke="#945a35" stroke-width="2"/>';
- s+='<polygon points="'+(x+a)+','+y+' '+(x+z)+','+(y+a)+' '+(x+b)+','+(y+z)+' '+x+','+(y+b)+'" fill="#9bcbd8" stroke="#286b83" stroke-width="3"/>';
- s+=t(x+z/2,y+z/2,'c²')+t(x+z/2,y+z+24,'外框边长 a+b');
+ triangles.slice(0,Math.min(4,n+1)).forEach(p=>s+=p);
+ if(n>=4)s+='<polygon points="'+(x+a)+','+y+' '+(x+z)+','+(y+a)+' '+(x+z-a)+','+(y+z)+' '+x+','+(y+z-b)+'" fill="#9bcbd8" stroke="#286b83" stroke-width="3"/>';
+ if(n>=4)s+=t(x+z/2,y+z/2,'c²');
+ s+=t(x+z/2,y+z+24,n>=4?'中间正方形边长 c':'拼入全等直角三角形');
 }else if(id==='identities'){
  s='<rect x="95" y="35" width="300" height="240" fill="#edf4f6" stroke="#286b83" stroke-width="3"/>';
  if(n>=1)s+='<path d="M245 35 V275" stroke="#286b83" stroke-width="3"/>';
