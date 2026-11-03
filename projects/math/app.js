@@ -56,7 +56,8 @@ if(id==='multiplication'){
  if(n>=2)s+=t(270,285,'首尾配对：1+5 = 2+4');
  if(n>=3)s+=t(270,315,'每一对的和相同');
 }else if(id==='geometric-sequence'){
- const vals=[1,2,4,8,16];vals.forEach((v,k)=>{const h=20+v*5;s+='<rect x="'+(55+k*94)+'" y="'+(245-h)+'" width="54" height="'+h+'" fill="#8bbdca" stroke="#286b83"/>';});
+ const vals=[1,2,4,8,16];vals.forEach((v,k)=>{const h=20+v*5,active=k<=Math.min(4,n+1);s+='<rect x="'+(55+k*94)+'" y="'+(245-h)+'" width="54" height="'+h+'" fill="'+(active?'#df9c68':'#8bbdca')+'" stroke="#286b83"/>';});
+ if(n>=1)s+='<path d="M82 215 H130 M176 195 H224 M270 155 H318 M364 75 H412" stroke="#b75c37" stroke-width="3" stroke-dasharray="5 4"/>';
  s+=t(270,290,n>=2?'每一项乘公比 r':'等比数列：相邻两项的比相同');
 }else if(id==='trig-identities'){
  s='<circle cx="185" cy="160" r="110" fill="none" stroke="#286b83" stroke-width="3"/><path d="M55 160 H315 M185 30 V290" stroke="#789da8" stroke-width="2"/>';
