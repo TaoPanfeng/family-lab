@@ -3,7 +3,7 @@
 Uses actual navigation, downloads and keyboard input; never injects application HTML.
 """
 from pathlib import Path
-from urllib.parse import urlsplit
+from urllib.parse import urlsplit, urlunsplit
 import argparse
 import json
 import shutil
@@ -63,7 +63,12 @@ def main():
                 p.on('request', lambda request: report['externalRequests'].append(request.url)
                      if urlsplit(request.url).scheme in ('http', 'https') and
                      (args.file or not request.url.startswith(base)) else None)
-                url = (ROOT / rel).as_uri() if args.file else base + rel
+                if args.file:
+                    target = urlsplit(rel)
+                    local = urlsplit((ROOT / target.path).as_uri())
+                    url = urlunsplit(local._replace(query=target.query, fragment=target.fragment))
+                else:
+                    url = base + rel
                 report['pages'].append(url)
                 p.goto(url, wait_until='load', timeout=60000)
                 p.wait_for_function(ready)
