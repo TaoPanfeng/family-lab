@@ -13,7 +13,7 @@ const suites = [
   ['成语歇后语年代、检索与本地记录','.', ['--test','tests/phrases.test.cjs']],
   ['教学语义、正式公式、化学守恒与显微光学','.', ['--test','tests/learning-models.test.cjs']],
   ['手机指针生命周期与手势隔离','.', ['--test','tests/mobile-touch.test.cjs']],
-  ['数学知识结构、证明与定量模型','.', ['--test','tests/math-models.test.cjs']],
+  ['数学知识结构、证明与定量模型','.', ['--test',...fs.readdirSync(path.join(root,'tests')).filter(f=>f.startsWith('math-')&&f.endsWith('.test.cjs')).map(f=>'tests/'+f)]],
   ['公共首页', '.', ['--test','tests/portal.test.cjs']],
   ['新增四馆模型与资料','.', ['--test','tests/expansion-models.test.cjs']],
   ['可视化整改与光学数值','.', ['--test','tests/refactor-models.test.cjs']],

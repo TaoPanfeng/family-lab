@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """All math cards and parameter events; injection is not real file/HTTP certification."""
 from pathlib import Path
-import argparse,functools,http.server,json,re,shutil,threading
+import argparse,functools,http.server,json,re,shutil,threading,subprocess,sys
 from playwright.sync_api import sync_playwright
 ROOT=Path(__file__).resolve().parents[1]
 p=argparse.ArgumentParser(description=__doc__)
@@ -81,6 +81,12 @@ try:
    page.set_viewport_size({'width':width,'height':1000});page.wait_for_timeout(80);check(f'{width}px no page overflow or clipped primary controls',page.evaluate('()=>document.documentElement.scrollWidth<=innerWidth+1&&["#content","#controls","#metrics"].every(s=>{let r=document.querySelector(s).getBoundingClientRect();return r.left>=0&&r.right<=innerWidth+1;})'))
    if width==390:shot(page,'math-mobile')
   check('no uncaught exceptions',not report['errors']);check('no third-party runtime requests',not report['requests']);browser.close()
+ if not a.inject:
+  command=[sys.executable,str(ROOT/'tests/math-proof-browser.py'),'--out',a.out+'/proofs']
+  if a.file:command.append('--file')
+  else:command+=['--base',base]
+  if a.browser:command+=['--browser',a.browser]
+  subprocess.run(command,check=True)
  report['status']='passed'
 except Exception as err:report['status']='failed';report['exception']=str(err);raise
 finally:

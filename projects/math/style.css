@@ -18,5 +18,16 @@
 .proof-visual svg{display:block;width:100%;max-height:330px;transition:opacity .18s ease}
 .proof-step-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:12px 0}
 #proofSteps li{margin:9px 0;line-height:1.75}
-#proofSteps li.proof-current{background:#eaf3f5;border-left:3px solid #287b96;padding:8px 10px;border-radius:5px}
+#proofSteps li.proof-current{color:#204b5a;background:#eaf3f5;border-left:3px solid #287b96;padding:8px 10px;border-radius:5px}
 @media(max-width:600px){.proof-visual{padding:6px}.proof-step-actions{gap:6px}}
+
+/* The selected step keeps its figure, formula and reason together. */
+.proof-why{color:#204b5a;padding:12px 16px;background:#eef5ee;border-left:3px solid #428665;border-radius:6px;line-height:1.8}
+.proof-timeline{display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:14px}
+.proof-timeline input{flex:1;min-width:160px;min-height:44px;touch-action:pan-y}
+#proofRoutes{flex-wrap:wrap}#proofRoutes button{white-space:normal;text-align:left;max-width:100%}
+#proofSteps{padding-left:26px}#proofSteps li>button{text-align:left;border:0;background:transparent;box-shadow:none;width:100%;padding:4px;line-height:1.75;color:inherit;font:inherit}
+#proofFormula{overflow-x:auto;max-width:100%}.proof-visual svg{max-height:none;min-width:0}
+@media(prefers-reduced-motion:reduce){.proof-visual *{animation:none!important;transition:none!important}}
+
+.proof-visual{overflow:auto;overscroll-behavior:contain;touch-action:pan-x pan-y}.proof-visual.enlarged svg{width:max(150%,600px);max-width:none}#proofZoom{margin:12px 0}

@@ -7,129 +7,32 @@ try{const raw=localStorage.getItem(key);if(raw)store=clean(JSON.parse(raw));}cat
 let current=byId.get(store.last)||D.topics[0],params={},seed=17,step=0,route=0,proofStep=0,favoritesOnly=false,activeView='learning',plotZoom=1;
 function save(){try{localStorage.setItem(key,JSON.stringify(store));persistent=true;return true;}catch(e){persistent=false;return false;}}
 function say(message){$('status').textContent=message;let el=document.getElementById('recordStatus');if(el)el.textContent=message;}
-function show(view){activeView=view;for(let name of ['learning','map','records'])$(name).hidden=name!==view;$('roadmap').setAttribute('aria-pressed',view==='map');$('notebook').setAttribute('aria-pressed',view==='records');}
+function show(view){if(view!=='learning')stopProof();activeView=view;for(let name of ['learning','map','records'])$(name).hidden=name!==view;$('roadmap').setAttribute('aria-pressed',view==='map');$('notebook').setAttribute('aria-pressed',view==='records');}
 function list(){const q=$('search').value.trim().toLowerCase(),stage=$('stage').value,group=$('group').value;const items=D.topics.filter(t=>(!stage||t.stage===stage)&&(!group||t.group===group)&&(!favoritesOnly||store.favorites.includes(t.id))&&(!q||[t.title,t.child,t.formal,...t.applications.map(a=>a.text)].join(' ').toLowerCase().includes(q)));$('resultCount').textContent=`找到 ${items.length} / ${D.topics.length} 个知识点`;$('topics').innerHTML=items.length?items.map(t=>`<button class="topic${t.id===current.id?' active':''}" data-topic="${E(t.id)}"${t.id===current.id?' aria-current="page"':''}><small>${E(t.stage)} · ${E(D.groups[t.group])}</small>${store.practiced.includes(t.id)?'✓ ':''}${E(t.title)}</button>`).join(''):'<p class="small">没有找到。换个关键词，或清除筛选。</p><button data-clear>清除筛选</button>';}
-function proofPicture(id,n){
-let s='',t=(x,y,v)=>'<text x="'+x+'" y="'+y+'" text-anchor="middle" font-size="18" fill="#204b5a">'+v+'</text>';
-if(id==='multiplication'){
- for(let r=0;r<3;r++)for(let k=0;k<4;k++)s+='<rect x="'+(150+k*48)+'" y="'+(35+r*48)+'" width="34" height="34" rx="5" fill="'+(n>=1&&r===Math.min(2,Math.floor((n-1)/2))?'#df945f':'#80b9ca')+'" stroke="#286b83"/>';
- if(n>=3)s+='<path d="M135 125 H355" stroke="#b75c37" stroke-width="3" stroke-dasharray="6 5"/>';
- s+=t(250,220,'3行 × 每行4个 = 12个');
-}else if(id==='area'){
- if(route===2){
-  s='<polygon points="110,80 270,80 330,220 50,220" fill="#cce5ed" stroke="#286b83" stroke-width="3"/>';
-  if(n>=1)s+='<polygon points="270,80 430,80 490,220 210,220" fill="#e9b27f" opacity=".8" stroke="#945a35" stroke-width="3"/>';
-  if(n>=2)s+='<path d="M110 80 L430 80 L490 220 L50 220 Z" fill="#9bcbd8" opacity=".45" stroke="#286b83" stroke-width="3"/>';
-  s+=t(270,275,n>=2?'拼成底 a+b、高 h 的平行四边形':'两个全等梯形');
- }else{
-  s='<rect x="95" y="45" width="300" height="190" fill="#cce5ed" stroke="#286b83" stroke-width="3"/>';
-  if(n>=1){s+='<path d="M245 45 V235" stroke="#c46e43" stroke-width="3" stroke-dasharray="7 5"/>';for(let x=110;x<390;x+=30)s+='<path d="M'+x+' 45 V235" stroke="#9dbbc5" stroke-width="1"/>';for(let y=65;y<230;y+=30)s+='<path d="M95 '+y+' H395" stroke="#9dbbc5" stroke-width="1"/>';}
-  if(n>=2)s+='<rect x="245" y="45" width="150" height="190" fill="#e9b27f" opacity=".65"/>';
-  s+=t(245,280,'长 a × 宽 b');
- }
-}else if(id==='triangle-area'){
- if(n<3){s='<polygon points="100,55 410,55 340,225 30,225" fill="#c5e3eb" stroke="#286b83" stroke-width="3"/>';if(n>=1)s+='<path d="M100 55 V225" stroke="#c46e43" stroke-width="3" stroke-dasharray="7 5"/>';if(n>=2)s+='<polygon points="100,55 30,225 100,225" fill="#e7a66f" stroke="#945a35" stroke-width="2"/>';}
- else{s='<rect x="100" y="55" width="310" height="170" fill="#c5e3eb" stroke="#286b83" stroke-width="3"/><polygon points="410,55 340,225 410,225" fill="#e7a66f" stroke="#945a35" stroke-width="2"/>';}
- s+=t(250,275,n>=3?'剪下的三角形平移到缺口':'平行四边形：底 b，高 h');
-}else if(id==='pythagoras'){
- const x=110,y=18,a=112,b=150,z=a+b,triangles=[
- '<polygon points="'+x+','+y+' '+(x+a)+','+y+' '+x+','+(y+b)+'" fill="#e7b17e" stroke="#945a35" stroke-width="2"/>',
- '<polygon points="'+(x+z)+','+y+' '+(x+z)+','+(y+a)+' '+(x+b)+','+y+'" fill="#e7b17e" stroke="#945a35" stroke-width="2"/>',
- '<polygon points="'+(x+z)+','+(y+z)+' '+(x+z-a)+','+(y+z)+' '+(x+z)+','+(y+z-b)+'" fill="#e7b17e" stroke="#945a35" stroke-width="2"/>',
- '<polygon points="'+x+','+(y+z)+' '+x+','+(y+z-b)+' '+(x+b)+','+(y+z)+'" fill="#e7b17e" stroke="#945a35" stroke-width="2"/>'
- ];
- s='<rect x="'+x+'" y="'+y+'" width="'+z+'" height="'+z+'" fill="#f6fafb" stroke="#286b83" stroke-width="4"/>';
- triangles.slice(0,Math.min(4,n+1)).forEach(p=>s+=p);
- if(n>=4)s+='<polygon points="'+(x+a)+','+y+' '+(x+z)+','+(y+a)+' '+(x+z-a)+','+(y+z)+' '+x+','+(y+z-b)+'" fill="#9bcbd8" stroke="#286b83" stroke-width="3"/>';
- if(n>=4)s+=t(x+z/2,y+z/2,'c²');
- s+=t(x+z/2,y+z+24,n>=4?'中间正方形边长 c':'拼入全等直角三角形');
-}else if(id==='fraction-ops'){
- s='<rect x="45" y="45" width="210" height="190" fill="#e8f2f5" stroke="#286b83" stroke-width="2"/>';
- if(n>=1){for(let k=1;k<4;k++)s+='<path d="M'+(45+k*52.5)+' 45 V235" stroke="#286b83" stroke-width="2"/>';for(let k=1;k<2;k++)s+='<path d="M45 '+(45+k*95)+' H255" stroke="#286b83" stroke-width="2"/>';}
- if(n>=2)s+='<rect x="45" y="45" width="52.5" height="95" fill="#df9c68" opacity=".8"/>';
- if(n>=3)s+='<rect x="97.5" y="45" width="52.5" height="95" fill="#df9c68" opacity=".8"/>';
- s+=t(360,105,n>=3?'3/6 + 2/6':'1/2 + 1/3')+t(360,155,n>=3?'= 5/6':'先把份额变成一样大')+t(360,210,'每个小格代表 1/6');
-}else if(id==='arithmetic-sequence'){
- const nums=Array.from({length:5},(_,k)=>k+1);
- nums.forEach((v,k)=>{const y=55+k*42;s+='<rect x="'+(75+k*82)+'" y="'+y+'" width="58" height="30" rx="5" fill="#c9e3eb" stroke="#286b83"/>'+t(104+k*82,y+21,String(v));});
- if(n>=1)s+='<path d="M100 35 H460" stroke="#c46e43" stroke-width="3"/>';
- if(n>=2)s+=t(270,285,'首尾配对：1+5 = 2+4');
- if(n>=3)s+=t(270,315,'每一对的和相同');
-}else if(id==='geometric-sequence'){
- const vals=[1,2,4,8,16];vals.forEach((v,k)=>{const h=20+v*5,active=k<=Math.min(4,n+1);s+='<rect x="'+(55+k*94)+'" y="'+(245-h)+'" width="54" height="'+h+'" fill="'+(active?'#df9c68':'#8bbdca')+'" stroke="#286b83"/>';});
- if(n>=1)s+='<path d="M82 215 H130 M176 195 H224 M270 155 H318 M364 75 H412" stroke="#b75c37" stroke-width="3" stroke-dasharray="5 4"/>';
- s+=t(270,290,n>=2?'每一项乘公比 r':'等比数列：相邻两项的比相同');
-}else if(id==='trig-identities'){
- s='<circle cx="185" cy="160" r="110" fill="none" stroke="#286b83" stroke-width="3"/><path d="M55 160 H315 M185 30 V290" stroke="#789da8" stroke-width="2"/>';
- const x=185+110*Math.cos(Math.PI/4),y=160-110*Math.sin(Math.PI/4);
- s+='<path d="M185 160 L'+x+' '+y+' L'+x+' 160 Z" fill="#e5aa75" stroke="#945a35" stroke-width="3"/>'+t(380,125,'cos θ = x/r')+t(380,165,'sin θ = y/r');
- if(n>=1)s+=t(380,215,'x²+y²=r²');
- if(n>=2)s+=t(380,250,'sin²θ+cos²θ=1');
-}else if(id==='identities'){
- s='<rect x="95" y="35" width="300" height="240" fill="#edf4f6" stroke="#286b83" stroke-width="3"/>';
- if(n>=1)s+='<path d="M245 35 V275" stroke="#286b83" stroke-width="3"/>';
- if(n>=2)s+='<path d="M95 155 H395" stroke="#286b83" stroke-width="3"/>';
- s+='<text x="170" y="100" text-anchor="middle" font-size="20" fill="#204b5a">a²</text><text x="320" y="100" text-anchor="middle" font-size="20" fill="#204b5a">ab</text><text x="170" y="220" text-anchor="middle" font-size="20" fill="#204b5a">ab</text><text x="320" y="220" text-anchor="middle" font-size="20" fill="#204b5a">b²</text>';
-}else if(id==='exponential'){
- s='<path d="M55 255 H490 M75 280 V30" stroke="#789da8" stroke-width="2"/>';
- const pts=[];for(let k=0;k<=5;k++){const xx=80+k*70,yy=250-Math.pow(1.55,k)*22;pts.push((k?'L':'M')+xx+' '+yy);}
- s+='<path d="'+pts.join(' ')+'" fill="none" stroke="#286b83" stroke-width="4"/>';
- if(n>=1)s+='<circle cx="150" cy="'+(250-1.55*22)+'" r="7" fill="#d27b45"/><circle cx="220" cy="'+(250-1.55*1.55*22)+'" r="7" fill="#d27b45"/>';
- s+=t(370,70,'每步乘以 a');
-}else if(id==='logarithms'){
- s='<path d="M55 255 H490 M75 280 V30" stroke="#789da8" stroke-width="2"/><path d="M90 250 Q140 160 220 115 T470 65" fill="none" stroke="#286b83" stroke-width="4"/>';
- if(n>=1)s+='<path d="M90 250 Q180 185 250 145 T470 110" fill="none" stroke="#d27b45" stroke-width="3" stroke-dasharray="6 4"/>';
- s+=t(350,55,'logₐb = x ⇔ aˣ=b');
-}else if(id==='conics'){
- s='<path d="M55 160 H490 M270 25 V295" stroke="#789da8" stroke-width="2"/>';
- if(n<2){
-  s+='<ellipse cx="270" cy="160" rx="170" ry="90" fill="none" stroke="#286b83" stroke-width="4"/><circle cx="170" cy="160" r="5" fill="#d27b45"/><circle cx="370" cy="160" r="5" fill="#d27b45"/>';
-  if(n>=1)s+='<path d="M95 160 H170 M170 160 H445" stroke="#d27b45" stroke-width="3" stroke-dasharray="6 4"/><circle cx="95" cy="160" r="5" fill="#286b83"/>';
- }else s+='<path d="M95 160 Q270 -70 445 160" fill="none" stroke="#286b83" stroke-width="4"/><circle cx="355" cy="160" r="6" fill="#d27b45"/><path d="M355 25 V285" stroke="#d27b45" stroke-dasharray="6 4"/>';
- s+=t(270,310,n<2?'椭圆：到两焦点距离和固定':'抛物线：到焦点与准线距离相等');
-}else if(id==='space-geometry'){
- s='<path d="M125 100 L300 55 L425 120 L250 165 Z M125 100 V235 L250 300 V165 M250 300 L425 255 V120" fill="#cce5ed" stroke="#286b83" stroke-width="3"/>';
- if(n>=1)s+='<path d="M125 235 L300 190 L425 255" fill="none" stroke="#d27b45" stroke-width="3" stroke-dasharray="6 4"/>';
- if(n>=2)s+=t(270,30,'底面积 × 高');
- s+=t(270,325,'三维：长、宽、高');
-}else if(id==='quadratic'){
- const lines=['ax²+bx+c=0','x²+(b/a)x=−c/a','x²+(b/a)x=−c/a','两边同时加 (b/2a)²','(x+b/2a)²=Δ/(4a²)','Δ=b²−4ac','x+b/(2a)=±√Δ/(2|a|)','x=(−b±√Δ)/(2a)'];
- s='<rect x="25" y="35" width="490" height="250" rx="12" fill="#edf4f6" stroke="#8baab4"/>';
- s+=t(270,105,lines[Math.min(n,lines.length-1)])+t(270,170,'配方：两边做相同运算')+t(270,235,'Δ=b²−4ac');
-}else if(id==='linear-function'){
- s='<path d="M70 255 H470 M95 280 V35" stroke="#789da8" stroke-width="2"/>';
- const y=v=>255-(v*35+65),x=v=>95+v*58;
- s+='<path d="M'+x(-1)+' '+y(-1)+' L'+x(5)+' '+y(5)+'" stroke="#286b83" stroke-width="4"/>';
- s+=t(395,60,'y=kx+b')+t(400,90,'斜率 k')+t(125,235,'截距 b');
- if(n>=1)s+='<circle cx="'+x(1)+'" cy="'+y(1)+'" r="6" fill="#d27b45"/>';
- if(n>=2)s+='<circle cx="'+x(3)+'" cy="'+y(3)+'" r="6" fill="#d27b45"/><path d="M'+x(1)+' '+y(1)+' L'+x(3)+' '+y(1)+' L'+x(3)+' '+y(3)+'" fill="none" stroke="#d27b45" stroke-width="3" stroke-dasharray="5 4"/>';
-}else if(id==='function-domain'){
- s='<rect x="45" y="55" width="170" height="210" rx="12" fill="#dceef3" stroke="#286b83" stroke-width="2"/><rect x="325" y="55" width="170" height="210" rx="12" fill="#f6e8d9" stroke="#945a35" stroke-width="2"/>';
- s+=t(130,85,'定义域 A')+t(410,85,'值域 B');
- for(let k=0;k<3;k++){let yy=125+k*48;s+='<circle cx="95" cy="'+yy+'" r="9" fill="#286b83"/><circle cx="'+(370+k*25)+'" cy="'+yy+'" r="9" fill="#d27b45"/>';if(n>=1)s+='<path d="M105 '+yy+' L'+(360+k*25)+' '+yy+'" stroke="#286b83" stroke-width="2"/>';}
- s+=t(270,305,n>=2?'实际输出集合才是值域':'每个输入必须唯一对应一个输出');
-}else if(id==='function-transform'){
- s='<path d="M60 255 H490 M80 280 V30" stroke="#789da8" stroke-width="2"/><path d="M100 235 Q180 35 260 235" fill="none" stroke="#286b83" stroke-width="4"/>';
- if(n>=1)s+='<path d="M180 235 Q260 35 340 235" fill="none" stroke="#d27b45" stroke-width="4" stroke-dasharray="7 4"/>';
- if(n>=2)s+='<path d="M180 195 Q260 -5 340 195" fill="none" stroke="#29916f" stroke-width="3"/>';
- s+=t(270,300,'原图像 → 右移 h → 上移 k');
-}else if(id==='trig-functions'||id==='right-trig'||id==='radians'||id==='sine-cosine-law'){
- s='<circle cx="190" cy="160" r="112" fill="none" stroke="#286b83" stroke-width="3"/><path d="M55 160 H325 M190 28 V292" stroke="#789da8" stroke-width="2"/>';
- const theta=Math.PI/4,x=190+112*Math.cos(theta),y=160-112*Math.sin(theta);
- s+='<path d="M190 160 L'+x+' '+y+' L'+x+' 160 Z" fill="#e5aa75" stroke="#945a35" stroke-width="3"/>';
- s+=t(405,105,'cos θ')+t(405,145,'sin θ');
- if(n>=1)s+=t(405,195,'sin²θ+cos²θ=1');
- if(n>=2)s+=t(405,240,'周期 2π');
-}else if(id==='circle'){
- s='<circle cx="180" cy="160" r="112" fill="#cce5ed" stroke="#286b83" stroke-width="3"/>';
- const count=4+n*3;
- for(let k=0;k<count;k++){let a=k*2*Math.PI/count;s+='<path d="M180 160 L'+(180+112*Math.cos(a))+' '+(160+112*Math.sin(a))+'" stroke="#c46e43" stroke-width="1.5"/>';}
- s+='<path d="M180 160 L292 160" stroke="#286b83" stroke-width="3"/>'+t(390,140,'半径 r')+t(390,185,'底边趋近 πr');
-}else{s=t(270,160,'证明步骤 '+(n+1));}
-s+=t(470,315,'步骤 '+(n+1));
-return '<svg viewBox="0 0 540 330" role="img" aria-label="当前证明步骤图示">'+s+'</svg>';
+let proofTimer=null;
+function stopProof(){if(proofTimer!==null)clearInterval(proofTimer);proofTimer=null;$('proofPlay').textContent='自动演示';$('proofPlay').setAttribute('aria-pressed','false');}
+function proof(){
+ const data=P[current.id];$('proofCard').hidden=!data;if(!data)return;
+ const selected=data.routes[route],steps=selected.steps;proofStep=Math.min(proofStep,steps.length-1);
+ const picture=MathProofVisuals.draw(current.id,route,proofStep);
+ $('proofTitle').innerHTML=F.legacy(data.title);$('conditions').innerHTML='成立条件：'+F.legacy(data.conditions);
+ $('proofRoutes').innerHTML=data.routes.map((r,i)=>`<button data-route="${i}" aria-pressed="${route===i}">${i+1} · ${E(r.name)}</button>`).join('');
+ $('proofSteps').innerHTML=steps.map((s,i)=>`<li class="${i===proofStep?'proof-current':''}"><button data-proof-index="${i}" aria-current="${i===proofStep?'step':'false'}">${s.includes('\\(')?F.rich(s):F.legacy(s)}</button></li>`).join('');
+ $('proofVisual').innerHTML=picture.svg;
+ if(matchMedia('(prefers-reduced-motion: reduce)').matches)$('proofVisual').querySelector('svg')?.pauseAnimations?.();
+ $('proofFormula').innerHTML=F.math(picture.formula,true);$('proofWhy').textContent=picture.note;
+ $('proofCurrent').textContent=selected.name+' · 第 '+(proofStep+1)+' 步';
+ $('proofStepCount').textContent='第 '+(proofStep+1)+' / '+steps.length+' 步';
+ $('proofProgress').max=steps.length-1;$('proofProgress').value=proofStep;
+ $('proofProgress').setAttribute('aria-valuetext','第 '+(proofStep+1)+' 步：'+steps[proofStep]);
+ $('proofStepBack').disabled=proofStep===0;$('proofStepNext').disabled=proofStep===steps.length-1;
+ if(proofStep===steps.length-1)stopProof();
 }
-function proof(){const data=P[current.id];$('proofCard').hidden=!data;if(!data)return;const steps=data.routes[route].steps;proofStep=Math.min(proofStep,steps.length-1);$('proofTitle').innerHTML=F.legacy(data.title);$('conditions').innerHTML='成立条件：'+F.legacy(data.conditions);$('proofRoutes').innerHTML=data.routes.map((r,i)=>`<button data-route="${i}" aria-pressed="${route===i}">${i+1} · ${E(r.name)}</button>`).join('');$('proofSteps').innerHTML=steps.map((s,i)=>`<li class="${i===proofStep?'proof-current':''}">${s.includes('\\(')?F.rich(s):F.legacy(s)}</li>`).join('');$('proofVisual').innerHTML=proofPicture(current.id,proofStep);$('proofStepCount').textContent='第 '+(proofStep+1)+' / '+steps.length+' 步';$('proofStepBack').disabled=proofStep===0;$('proofStepNext').disabled=proofStep===steps.length-1;}
+$('proofPlay').onclick=()=>{if(proofTimer!==null){stopProof();return;}if(proofStep===P[current.id].routes[route].steps.length-1){proofStep=0;proof();} $('proofPlay').textContent='暂停演示';$('proofPlay').setAttribute('aria-pressed','true');proofTimer=setInterval(()=>{proofStep++;proof();},3200);};
+$('proofZoom').onclick=()=>{const enlarged=$('proofVisual').classList.toggle('enlarged');$('proofZoom').setAttribute('aria-pressed',enlarged);$('proofZoom').textContent=enlarged?'还原证明图':'放大证明图';};
+$('proofRestart').onclick=()=>{stopProof();proofStep=0;proof();};
+$('proofProgress').oninput=e=>{stopProof();proofStep=Number(e.target.value);proof();};
+document.addEventListener('visibilitychange',()=>{if(document.hidden)stopProof();});
 function steps(){let shown=current.steps.slice(0,step+1);$('steps').innerHTML=shown.map((s,i)=>`<li class="${i===step?'current':''}">${s.includes('\\(')?F.rich(s):F.legacy(s)}</li>`).join('');$('stepBack').disabled=step===0;$('stepNext').disabled=step===current.steps.length-1;$('stepAll').disabled=step===current.steps.length-1;$('stepStatus').textContent=`第${step+1} / ${current.steps.length}步；看不懂就退回一步，再动手试。`;}
 function controlMax(c){if(current.lab==='fractions'&&c.key==='n')return params.d;if(current.lab==='sets'&&c.key==='overlap')return Math.min(params.a,params.b);if(current.lab==='combinations'&&c.key==='k')return params.n;if(current.lab==='optimization'&&c.key==='w')return params.p/2-.5;return c.max;}
 function controls(){if(!current.lab){$('controls').innerHTML='';return;}const spec=M.specs[current.lab];$('controls').innerHTML=spec.controls.map(c=>`<div class="control"><div class="control-title"><label for="control-${c.key}">${E(c.label)}</label><output id="output-${c.key}" for="control-${c.key}">${E(M.fmt(params[c.key],3))}</output></div><input type="range" id="control-${c.key}" data-param="${c.key}" min="${c.min}" max="${controlMax(c)}" step="${c.step}" value="${params[c.key]}" aria-label="${E(c.label)}"></div>`).join('');}
@@ -137,8 +40,8 @@ function renderLab(){$('zoomPlot').disabled=!current.lab;if(!current.lab){$('lab
 const spec=M.specs[current.lab],result=L.draw(current.lab,params,seed);params=result.result.v;$('reset').disabled=false;$('labTitle').textContent=spec.title;$('labNote').innerHTML=F.legacy(spec.note);$('visual').innerHTML=result.svg;$('visual').firstElementChild.style.width=(plotZoom*100)+'%';$('metrics').innerHTML=result.result.metrics.map(m=>`<div class="metric"><b>${F.legacy(m.value)}</b><span>${E(m.label)}</span></div>`).join('');for(const c of spec.controls){const el=$('control-'+c.key);if(el){el.max=controlMax(c);el.value=params[c.key];$('output-'+c.key).textContent=M.fmt(params[c.key],3);}}
 $('experimentActions').innerHTML=current.lab==='probability'?'<button data-experiment="resample">换一批随机样本 ↻</button>':current.lab==='fractions'?'<button data-experiment="empty">一份也不取</button><button data-experiment="half">试试一半（1/2）</button>':current.lab==='matrix'?'<button data-experiment="identity">不变换</button><button data-experiment="rotate">旋转90°</button><button data-experiment="singular">压成一条线</button>':current.lab==='integral'?'<button data-experiment="refine">把小格加倍</button>':current.lab==='gradient'?'<button data-experiment="walk">再走一步</button>':'';
 $('modelNote').textContent=`基础工具：请按本节例子的条件设置参数；工具没有覆盖整节课的全部推理。图形可缩放，读数按定义计算；一次样本或几张图不是一般证明。${current.lab==='probability'?' 当前随机种子：'+seed+'。':''}`;if(window.MathGuide&&MathGuide.state().topic===current.id)MathGuide.paint();}
-function select(id,hash=true){if(!byId.has(id))return;current=byId.get(id);params=current.lab?M.normalize(current.lab,MathGuide.presets[id]||{}):{};step=0;route=0;proofStep=0;seed=17;plotZoom=1;$('zoomPlot').textContent='放大图示';store.last=id;if(!store.seen.includes(id))store.seen.push(id);save();show('learning');$('breadcrumb').textContent=current.stage+' / '+D.groups[current.group];$('title').textContent=current.title;$('child').textContent=current.child;$('formal').innerHTML=F.legacy(current.formal);$('formal').hidden=!store.advanced;$('mode').textContent=store.advanced?'深入研究':'小小探索家';$('mode').setAttribute('aria-pressed',store.advanced);$('note').value=store.notes[id]||'';$('favorite').textContent=store.favorites.includes(id)?'★':'☆';$('favorite').setAttribute('aria-pressed',store.favorites.includes(id));$('favorite').setAttribute('aria-label',(store.favorites.includes(id)?'取消收藏':'收藏')+current.title);$('mark').textContent=store.practiced.includes(id)?'✓ 已练过（可取消）':'标记：我练过了';const i=D.topics.indexOf(current);$('position').textContent=`${i+1} / ${D.topics.length}`;$('previous').disabled=i===0;$('next').disabled=i===D.topics.length-1;$('applications').innerHTML=current.applications.map(a=>`<div class="app-example"><strong>${E(a.kind)}</strong><p>${E(a.text)}</p></div>`).join('');$('prerequisites').innerHTML=current.prerequisites.length?current.prerequisites.map(id=>`<button class="prereq" data-topic="${id}">${E(byId.get(id).title)} ↗</button>`).join(''):'<p class="small">从这里开始就行。先用具体的小东西试一试。</p>';const src=D.sources[current.source];$('source').innerHTML=`课程结构参考：<a href="${E(src[1])}" target="_blank" rel="noopener">${E(src[0])}</a>。不同教材安排会有差异。`;controls();renderLab();MathGuide.mount(current,()=>{step=0;steps();});steps();proof();list();const active=$('topics').querySelector('.active');if(active){const nav=$('topics');nav.scrollTop+=active.getBoundingClientRect().top-nav.getBoundingClientRect().top-nav.clientHeight/2+active.clientHeight/2;}say(persistent?'观察记录只保存在当前浏览器；可在“我的记录”导出备份。':'当前浏览器不能持久保存；仍可学习和导出本次记录。');if(hash){try{history.replaceState(null,'','#'+id);}catch(e){/* content-only test context may not allow URL changes */}}document.title=current.title+' · 数学探索馆';}
-function map(){show('map');$('map').innerHTML=`<p class="eyebrow">125个核心节点 · 可以慢慢走</p><h1>数学的路，不只通向考试。</h1><p class="lead">8岁从具体物体和图形出发。大学内容可以先听故事，不需要现在就学会所有证明。</p><div class="coverage">125个知识节点，44个可复用实验，23个重点结果的双路线论证。节点与实验不是一一对应。路线参考课程标准与公开大学课程，不冒称覆盖所有地区教材或全部专业数学。</div><p>已看过 ${store.seen.length} 个；自己标记练过 ${store.practiced.length} 个。这不是自动能力测评。</p>${D.stages.map(stage=>`<section class="map-group"><h2>${E(stage)}</h2><div class="map-grid">${D.topics.filter(t=>t.stage===stage).map(t=>`<button data-topic="${t.id}">${store.practiced.includes(t.id)?'✓ ':''}${E(t.title)}<small>${E(D.groups[t.group])} · ${t.lab?'相关交互实验':'概念阅读'}${P[t.id]?' · 双路线论证':''}</small></button>`).join('')}</div></section>`).join('')}`;}
+function select(id,hash=true){if(!byId.has(id))return;stopProof();$('proofVisual').classList.remove('enlarged');$('proofZoom').setAttribute('aria-pressed','false');$('proofZoom').textContent='放大证明图';current=byId.get(id);params=current.lab?M.normalize(current.lab,MathGuide.presets[id]||{}):{};step=0;route=0;proofStep=0;seed=17;plotZoom=1;$('zoomPlot').textContent='放大图示';store.last=id;if(!store.seen.includes(id))store.seen.push(id);save();show('learning');$('breadcrumb').textContent=current.stage+' / '+D.groups[current.group];$('title').textContent=current.title;$('child').textContent=current.child;$('formal').innerHTML=F.legacy(current.formal);$('formal').hidden=!store.advanced;$('mode').textContent=store.advanced?'深入研究':'小小探索家';$('mode').setAttribute('aria-pressed',store.advanced);$('note').value=store.notes[id]||'';$('favorite').textContent=store.favorites.includes(id)?'★':'☆';$('favorite').setAttribute('aria-pressed',store.favorites.includes(id));$('favorite').setAttribute('aria-label',(store.favorites.includes(id)?'取消收藏':'收藏')+current.title);$('mark').textContent=store.practiced.includes(id)?'✓ 已练过（可取消）':'标记：我练过了';const i=D.topics.indexOf(current);$('position').textContent=`${i+1} / ${D.topics.length}`;$('previous').disabled=i===0;$('next').disabled=i===D.topics.length-1;$('applications').innerHTML=current.applications.map(a=>`<div class="app-example"><strong>${E(a.kind)}</strong><p>${E(a.text)}</p></div>`).join('');$('prerequisites').innerHTML=current.prerequisites.length?current.prerequisites.map(id=>`<button class="prereq" data-topic="${id}">${E(byId.get(id).title)} ↗</button>`).join(''):'<p class="small">从这里开始就行。先用具体的小东西试一试。</p>';const src=D.sources[current.source];$('source').innerHTML=`课程结构参考：<a href="${E(src[1])}" target="_blank" rel="noopener">${E(src[0])}</a>。不同教材安排会有差异。`;controls();renderLab();MathGuide.mount(current,()=>{step=0;steps();});steps();proof();list();const active=$('topics').querySelector('.active');if(active){const nav=$('topics');nav.scrollTop+=active.getBoundingClientRect().top-nav.getBoundingClientRect().top-nav.clientHeight/2+active.clientHeight/2;}say(persistent?'观察记录只保存在当前浏览器；可在“我的记录”导出备份。':'当前浏览器不能持久保存；仍可学习和导出本次记录。');if(hash){try{history.replaceState(null,'','#'+id);}catch(e){/* content-only test context may not allow URL changes */}}document.title=current.title+' · 数学探索馆';}
+function map(){show('map');$('map').innerHTML=`<p class="eyebrow">125个核心节点 · 可以慢慢走</p><h1>数学的路，不只通向考试。</h1><p class="lead">8岁从具体物体和图形出发。大学内容可以先听故事，不需要现在就学会所有证明。</p><div class="coverage">125个知识节点，44个可复用实验，${new Set(Object.values(P).map(p=>p.title)).size}组重点结论的多路线推导。节点与实验不是一一对应。路线参考课程标准与公开大学课程，不冒称覆盖所有地区教材或全部专业数学。</div><p>已看过 ${store.seen.length} 个；自己标记练过 ${store.practiced.length} 个。这不是自动能力测评。</p>${D.stages.map(stage=>`<section class="map-group"><h2>${E(stage)}</h2><div class="map-grid">${D.topics.filter(t=>t.stage===stage).map(t=>`<button data-topic="${t.id}">${store.practiced.includes(t.id)?'✓ ':''}${E(t.title)}<small>${E(D.groups[t.group])} · ${t.lab?'相关交互实验':'概念阅读'}${P[t.id]?' · '+P[t.id].routes.length+'条推导路线':''}</small></button>`).join('')}</div></section>`).join('')}`;}
 function records(){show('records');let notes=Object.entries(store.notes).filter(([,v])=>v.trim());$('records').innerHTML=`<p class="eyebrow">我的发现，不是背诵清单</p><h1>观察记录</h1><div class="step-actions"><button data-record="export">导出备份</button><button data-record="import">导入并保留已有记录</button></div><p class="small" id="recordStatus" role="status">只保存在当前浏览器；换设备不会自动同步。不要记录隐私或密码。</p><h2>收藏（${store.favorites.length}）</h2><div class="map-grid">${store.favorites.map(id=>`<button data-topic="${id}">${E(byId.get(id).title)}</button>`).join('')||'<p class="small">点知识页右上角的星星即可收藏。</p>'}</div><h2 style="margin-top:24px">观察笔记（${notes.length}）</h2>${notes.map(([id,note])=>`<article class="record"><button data-topic="${id}">${E(byId.get(id).title)} ↗</button><p>${E(note)}</p><button data-delete="${id}">删除这条笔记</button></article>`).join('')||'<p class="small">先做一个小实验，再写下你看见的变化。</p>'}`;}
 function set(key,value){if(!current.lab||!M.specs[current.lab].controls.some(c=>c.key===key))throw new Error('当前实验没有这个参数');params=M.normalize(current.lab,{...params,[key]:value});renderLab();}
 function importText(text){if(text.length>1000000)throw new Error('备份过大，拒绝导入');const incoming=clean(JSON.parse(text));for(let f of ['favorites','practiced','seen'])store[f]=[...new Set([...store[f],...incoming[f]])];for(let[id,note]of Object.entries(incoming.notes))if(!store.notes[id])store.notes[id]=note;const ok=save();records();say(ok?'导入完成；已有笔记没有被覆盖。':'已导入内存；浏览器禁止持久保存，请导出备份。');}
@@ -152,10 +55,10 @@ $('stepBack').onclick=()=>{step=Math.max(0,step-1);steps();};$('stepNext').oncli
 $('zoomPlot').onclick=()=>{plotZoom=plotZoom===1?1.5:plotZoom===1.5?2:1;$('zoomPlot').textContent=plotZoom===1?'放大图示':`${plotZoom*100}% · 再点调整`;renderLab();};
 $('reset').onclick=()=>{plotZoom=1;$('zoomPlot').textContent='放大图示';params=M.normalize(current.lab,MathGuide.presets[current.id]||{});seed=17;controls();renderLab();};$('controls').addEventListener('input',e=>{if(e.target.dataset.param)set(e.target.dataset.param,e.target.value);});
 $('saveNote').onclick=()=>{store.notes[current.id]=$('note').value.slice(0,2000);say(save()?'观察已保存。':'只保存在本次内存；请导出备份。');};$('mark').onclick=()=>{let id=current.id;store.practiced=store.practiced.includes(id)?store.practiced.filter(x=>x!==id):[...store.practiced,id];save();$('mark').textContent=store.practiced.includes(id)?'✓ 已练过（可取消）':'标记：我练过了';list();say('这是你的练习标记，不是考试成绩。');};
-document.addEventListener('click',e=>{let b=e.target.closest('[data-topic],[data-clear],[data-route],[data-proof-step],[data-experiment],[data-record],[data-delete],[data-part],[data-bit]');if(!b)return;
+document.addEventListener('click',e=>{let b=e.target.closest('[data-topic],[data-clear],[data-route],[data-proof-step],[data-proof-index],[data-experiment],[data-record],[data-delete],[data-part],[data-bit]');if(!b)return;
 if(b.dataset.topic){select(b.dataset.topic);$('content').focus({preventScroll:true});if(matchMedia('(max-width:720px)').matches)$('content').scrollIntoView({block:'start'});else window.scrollTo(0,0);}
 if(b.hasAttribute('data-clear')){$('search').value='';$('stage').value='';$('group').value='';favoritesOnly=false;$('favorites').setAttribute('aria-pressed',false);list();}
-if(b.dataset.route!==undefined){route=Number(b.dataset.route);proofStep=0;proof();}if(b.dataset.proofStep){const n=P[current.id]?.routes[route]?.steps.length||1;proofStep=Math.max(0,Math.min(n-1,proofStep+(b.dataset.proofStep==='next'?1:-1)));proof();}
+if(b.dataset.proofIndex!==undefined){stopProof();proofStep=Number(b.dataset.proofIndex);proof();}if(b.dataset.route!==undefined){stopProof();route=Number(b.dataset.route);proofStep=0;proof();}if(b.dataset.proofStep){stopProof();const n=P[current.id]?.routes[route]?.steps.length||1;proofStep=Math.max(0,Math.min(n-1,proofStep+(b.dataset.proofStep==='next'?1:-1)));proof();}
 if(b.dataset.part)set('n',Number(b.dataset.part));if(b.dataset.bit!==undefined)set('n',params.n^(1<<(7-Number(b.dataset.bit))));
 if(b.dataset.experiment){let a=b.dataset.experiment;if(a==='resample')seed++;if(a==='empty')params.n=0;if(a==='half')params={d:2,n:1,k:2};if(a==='identity')params={a:1,b:0,c:0,d:1};if(a==='rotate')params={a:0,b:-1,c:1,d:0};if(a==='singular')params={a:1,b:0,c:0,d:0};if(a==='refine')params.n=Math.min(80,params.n*2);if(a==='walk')params.steps=Math.min(20,params.steps+1);controls();renderLab();}
 if(b.dataset.record==='import')$('importFile').click();if(b.dataset.record==='export'){let blob=new Blob([JSON.stringify(store,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='数学探索-观察备份.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
