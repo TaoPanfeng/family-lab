@@ -44,7 +44,7 @@ try:
   page.locator('#proofPlay').click();value=page.locator('#proofProgress').input_value();page.wait_for_timeout(150)
   check('play advances and pause preserves the step',page.locator('#proofPlay').get_attribute('aria-pressed')=='false' and page.locator('#proofProgress').input_value()==value)
   page.locator('#proofPlay').click();page.locator('#topics [data-topic="circle"]').click();check('changing lessons stops playback',page.locator('#proofPlay').get_attribute('aria-pressed')=='false')
-  page.locator('#proofProgress').evaluate('(e)=>{e.value=e.max;e.dispatchEvent(new Event("input",{bubbles:true}))');check('timeline seeks to end',page.locator('#proofStepNext').is_disabled())
+  page.locator('#proofProgress').press('End');check('timeline seeks to end',page.locator('#proofStepNext').is_disabled())
   page.locator('#proofZoom').click();check('proof zoom exposes a larger scrollable diagram',page.locator('#proofVisual').evaluate('(e)=>e.scrollWidth>e.clientWidth+1'));page.locator('#proofZoom').click()
   for width in [390,320]:
    page.set_viewport_size({'width':width,'height':1000})
