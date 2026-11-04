@@ -19,7 +19,8 @@ function proof(){
  $('proofRoutes').innerHTML=data.routes.map((r,i)=>`<button data-route="${i}" aria-pressed="${route===i}">${i+1} · ${E(r.name)}</button>`).join('');
  $('proofSteps').innerHTML=steps.map((s,i)=>`<li class="${i===proofStep?'proof-current':''}"><button data-proof-index="${i}" aria-current="${i===proofStep?'step':'false'}">${s.includes('\\(')?F.rich(s):F.legacy(s)}</button></li>`).join('');
  $('proofVisual').innerHTML=picture.svg;
- if(matchMedia('(prefers-reduced-motion: reduce)').matches)$('proofVisual').querySelector('svg')?.pauseAnimations?.();
+ // The underlying geometry is the completed construction; removing SMIL avoids freezing at its start.
+ if(matchMedia('(prefers-reduced-motion: reduce)').matches)$('proofVisual').querySelectorAll('animate,animateTransform,animateMotion').forEach(el=>el.remove());
  $('proofFormula').innerHTML=F.math(picture.formula,true);$('proofWhy').textContent=picture.note;
  $('proofCurrent').textContent=selected.name+' · 第 '+(proofStep+1)+' 步';
  $('proofStepCount').textContent='第 '+(proofStep+1)+' / '+steps.length+' 步';
@@ -58,7 +59,7 @@ $('saveNote').onclick=()=>{store.notes[current.id]=$('note').value.slice(0,2000)
 document.addEventListener('click',e=>{let b=e.target.closest('[data-topic],[data-clear],[data-route],[data-proof-step],[data-proof-index],[data-experiment],[data-record],[data-delete],[data-part],[data-bit]');if(!b)return;
 if(b.dataset.topic){select(b.dataset.topic);$('content').focus({preventScroll:true});if(matchMedia('(max-width:720px)').matches)$('content').scrollIntoView({block:'start'});else window.scrollTo(0,0);}
 if(b.hasAttribute('data-clear')){$('search').value='';$('stage').value='';$('group').value='';favoritesOnly=false;$('favorites').setAttribute('aria-pressed',false);list();}
-if(b.dataset.proofIndex!==undefined){stopProof();proofStep=Number(b.dataset.proofIndex);proof();}if(b.dataset.route!==undefined){stopProof();route=Number(b.dataset.route);proofStep=0;proof();}if(b.dataset.proofStep){stopProof();const n=P[current.id]?.routes[route]?.steps.length||1;proofStep=Math.max(0,Math.min(n-1,proofStep+(b.dataset.proofStep==='next'?1:-1)));proof();}
+if(b.dataset.proofIndex!==undefined){stopProof();proofStep=Number(b.dataset.proofIndex);proof();$('proofSteps').querySelector('[data-proof-index="'+proofStep+'"]').focus({preventScroll:true});}if(b.dataset.route!==undefined){stopProof();route=Number(b.dataset.route);proofStep=0;proof();$('proofRoutes').querySelector('[data-route="'+route+'"]').focus({preventScroll:true});}if(b.dataset.proofStep){stopProof();const n=P[current.id]?.routes[route]?.steps.length||1;proofStep=Math.max(0,Math.min(n-1,proofStep+(b.dataset.proofStep==='next'?1:-1)));proof();}
 if(b.dataset.part)set('n',Number(b.dataset.part));if(b.dataset.bit!==undefined)set('n',params.n^(1<<(7-Number(b.dataset.bit))));
 if(b.dataset.experiment){let a=b.dataset.experiment;if(a==='resample')seed++;if(a==='empty')params.n=0;if(a==='half')params={d:2,n:1,k:2};if(a==='identity')params={a:1,b:0,c:0,d:1};if(a==='rotate')params={a:0,b:-1,c:1,d:0};if(a==='singular')params={a:1,b:0,c:0,d:0};if(a==='refine')params.n=Math.min(80,params.n*2);if(a==='walk')params.steps=Math.min(20,params.steps+1);controls();renderLab();}
 if(b.dataset.record==='import')$('importFile').click();if(b.dataset.record==='export'){let blob=new Blob([JSON.stringify(store,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='数学探索-观察备份.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}

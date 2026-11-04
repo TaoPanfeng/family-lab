@@ -32,6 +32,7 @@ try:
     for step in range(r['steps']):
      expected=page.evaluate('([id,r,s])=>MathProofVisuals.draw(id,r,s)',[id,ri,step])
      check(f'{id}/{ri}/{step}: figure, reason, formula and highlighted reasoning agree',page.locator('#proofWhy').inner_text()==expected['note'] and page.locator('#proofFormula math').count()==1 and page.locator('#proofFormula annotation').text_content()==expected['formula'] and page.locator('#proofSteps li.proof-current').count()==1 and page.locator('#proofSteps li').nth(step).get_attribute('class')=='proof-current')
+     check(f'{id}/{ri}/{step}: reduced motion keeps the completed static construction',page.locator('#proofVisual animateTransform,#proofVisual animate,#proofVisual animateMotion').count()==0)
      check(f'{id}/{ri}/{step}: finite unclipped diagram',page.locator('#proofVisual svg').evaluate('(e)=>{const b=e.getBBox();return !/NaN|undefined|Infinity/.test(e.innerHTML)&&b.x>=-2&&b.y>=-2&&b.x+b.width<=602&&b.y+b.height<=362;}'))
      if step==r['steps']-1:check(f'{id}/{ri}: next ends here',page.locator('#proofStepNext').is_disabled())
      else:page.locator('#proofStepNext').click()
