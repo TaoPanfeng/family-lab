@@ -217,10 +217,17 @@ def main():
             page.wait_for_function('MicroscopeTest.getState().time>.02')
             check('microscope: an explicit movement choice still advances time',
                   page.evaluate('MicroscopeTest.getState().moving') and page.locator('#moving').is_checked())
-            page.emulate_media(reduced_motion='no-preference')
-            page.wait_for_function('!matchMedia("(prefers-reduced-motion: reduce)").matches')
-            page.wait_for_timeout(60)
+            page.close()
+            # A fresh preference gives one observable transition; rapid round trips may coalesce.
+            motion_context = browser.new_context(viewport={'width': 1200, 'height': 900}, locale='zh-CN', reduced_motion='no-preference')
+            page = load('projects/biology/microscope/index.html', 'window.MicroscopeTest', motion_context)
+            page.locator('#specimen').select_option('leaf')
+            page.wait_for_function('MicroscopeTest.getState().time>.02')
+            check('microscope: the ordinary-motion page starts with movement enabled',
+                  page.evaluate('MicroscopeTest.getState().moving') and page.locator('#moving').is_checked())
+            page.evaluate('''()=>{const query=matchMedia("(prefers-reduced-motion: reduce)");window.__auditMotion={query,changes:[]};query.addEventListener('change',e=>window.__auditMotion.changes.push(e.matches));}''')
             page.emulate_media(reduced_motion='reduce')
+            page.wait_for_function('window.__auditMotion.changes.includes(true)')
             page.wait_for_function('!MicroscopeTest.getState().moving')
             stopped = page.evaluate('MicroscopeTest.getState().time')
             page.wait_for_timeout(100)
@@ -230,6 +237,7 @@ def main():
             check('all sampled pages have no uncaught JavaScript errors', not report['errors'])
             check('all sampled pages use local runtime resources', not report['externalRequests'])
             reduced_context.close()
+            motion_context.close()
             context.close()
             browser.close()
         report['status'] = 'passed'
