@@ -1679,6 +1679,7 @@ Og|鿫是原子序数 118 的元素。|位于第 18 族；常温宏观状态未�
     const kids = ctx.mode === 'kids';
     const ui = { guide: kids, shelf: Object.keys(state.gear).length ? 'materials' : 'gear', allGear: false, amounts: {}, from: '', to: '', freeMaterial: 'water', freeTarget: '', freeAmount: '1' };
     let alive = true, frame = null, lastFrame = null, lastDraw = 0, drag = null, suppressClick = false;
+    const owner = container.ownerDocument;
     const requestFrame = typeof global.requestAnimationFrame === 'function' ? fn => global.requestAnimationFrame(fn) : fn => global.setTimeout(() => fn(Date.now()), 40);
     const cancelFrame = typeof global.cancelAnimationFrame === 'function' ? id => global.cancelAnimationFrame(id) : id => global.clearTimeout(id);
     function remember() { rememberedState = clone(state); }
@@ -1692,6 +1693,11 @@ Og|鿫是原子序数 118 的元素。|位于第 18 族；常温宏观状态未�
       render();
       return state;
     }
+    function pauseForLeave() {
+      if (state.phase === 'running' && !state.paused) dispatch({ type: 'PAUSE' });
+      lastFrame = null;
+    }
+    function pauseWhenHidden() { if (owner.hidden) pauseForLeave(); }
     function shelfHTML() {
       const e = expFor(state), guide = getGuide(state), locked = state.phase !== 'setup';
       const gearIds = ui.allGear && !kids ? Object.keys(apparatus) : e.gear;
@@ -1871,12 +1877,15 @@ Og|鿫是原子序数 118 的元素。|位于第 18 族；常温宏观状态未�
     container.addEventListener('pointermove', pointerMove, { passive: false });
     container.addEventListener('pointerup', pointerUp);
     container.addEventListener('pointercancel', pointerUp);
+    owner.addEventListener('visibilitychange', pauseWhenHidden);
+    global.addEventListener('pagehide', pauseForLeave);
     container.chemLabInstance = { getState: () => clone(state), dispatch, getResult: () => calculateResult(state) };
     render(); frame = requestFrame(animate);
     return function cleanup() {
-      if (!alive) return; alive = false; remember(); if (frame != null) cancelFrame(frame);
+      if (!alive) return; pauseForLeave(); alive = false; remember(); if (frame != null) cancelFrame(frame);
       container.removeEventListener('click', click); container.removeEventListener('input', input); container.removeEventListener('change', change); container.removeEventListener('keydown', keydown);
       container.removeEventListener('pointerdown', pointerDown); container.removeEventListener('pointermove', pointerMove); container.removeEventListener('pointerup', pointerUp); container.removeEventListener('pointercancel', pointerUp);
+      owner.removeEventListener('visibilitychange', pauseWhenHidden); global.removeEventListener('pagehide', pauseForLeave);
       delete container.chemLabInstance;
     };
   }
@@ -2065,7 +2074,11 @@ Og|鿫是原子序数 118 的元素。|位于第 18 族；常温宏观状态未�
     let isotope=isotopes.find(i=>i.id===(ctx.params&&ctx.params.isotope))||isotopes.find(i=>i.id==='C-14')||isotopes[0];
     let time=0,total=128,seed=12345,lifetimes=sampleLifetimes(total,seed),timer=null,ray='alpha',shield='paper',transformed=false;
     root.innerHTML=`<div class="cx cx-decay"><div class="cx-intro"><span class="eyebrow">看不见的变化，也有规律</span><h2>${modeText(ctx,'原子也会“变身”吗？','放射性衰变与射线')}</h2><p>${modeText(ctx,'单个原子什么时候变身，我们猜不准。一大群原子，却有可以发现的规律。','把随机的单次事件与可预测的统计规律放在一起观察。')}</p></div><div class="cx-work-grid"><section class="panel"><div class="cx-panel-top"><h3>一群原子的计时器</h3><span class="chip">绿色：未衰变 · 灰色：已衰变</span></div><div id="cx-decay-dots" class="cx-decay-dots"></div><div id="cx-decay-stats" aria-live="polite"></div><div id="cx-decay-chart" class="cx-chart"></div><div class="cx-chart-legend"><span><i style="background:#087f6a"></i>理论期望</span><span><i style="background:#e1a36e"></i>这一次的随机结果</span></div></section><section class="panel"><span class="eyebrow">时间实验</span>${select('cx-decay-isotope','选择核素',isotopes.map(i=>[i.id,`${i.name} · ${i.halfLifeLabel}`]),isotope.id)}${select('cx-decay-count','初始母核数量',[[32,'32 个'],[64,'64 个'],[128,'128 个'],[256,'256 个']],total)}${range('cx-decay-time','经过几个半衰期',0,6,.05,time,' 个')}<p id="cx-decay-clock" class="cx-time-value"></p><div class="cx-inline-actions"><button class="btn primary" data-decay-play>▶ 播放时间</button><button class="btn secondary" data-decay-reset>回到开始</button></div><button class="btn secondary cx-full" data-decay-new>换一群原子，再试一次</button><div id="cx-decay-formula" class="cx-equation-block"></div><p id="cx-decay-note" class="cx-tiny"></p>${note('点代表原子核，灰点仍然存在，只是已经变成别的核素。本模型统计母核，不展开子核的后续衰变链。')}</section></div><section class="panel"><div class="cx-panel-top"><div><span class="eyebrow">α / β / γ / X</span><h3>它们来自哪里，又是什么？</h3></div><span class="chip">γ 是希腊字母，不是 y</span></div><div class="cx-ray-selector">${Object.entries(RADIATION).map(([id,r])=>`<button data-ray="${id}" class="cx-ray-card ${id===ray?'is-active':''}" aria-pressed="${id===ray}"><strong style="color:${r.color}">${r.symbol}</strong><span>${r.name}</span><small>${id==='alpha'||id==='beta'?'粒子':'光子'}</small></button>`).join('')}</div><div class="cx-radiation-grid"><div id="cx-radiation-detail"></div><div><label class="cx-select-label" for="cx-shield">换一道屏障<select class="select" id="cx-shield"><option value="none">没有屏障</option><option value="paper" selected>纸张</option><option value="aluminium">铝板（概念示意）</option><option value="dense">厚实的致密材料（概念示意）</option></select></label><div id="cx-shield-scene" class="cx-scene"></div><p id="cx-shield-note" class="cx-tiny"></p></div></div>${note('穿透示意不是剂量计算，也不是防护设计。实际穿透取决于射线能量、材料、厚度和几何条件；光子通常是逐步衰减，不是跨过一堵墙就全部消失。放射性材料只在虚拟展区演示。')}</section>${checkpoint('decay-probability','半衰期的真正意思','经过一个半衰期，哪句话更准确？',['每个原子都变成了半个','大量母核的剩余期望约为一半','所有母核必须恰好剩一半'],1,'单个原子不是被切成两半；有限样本会波动，理论期望按指数规律减少。')}${sources([['EPA 放射性基础','https://www.epa.gov/radiation/radiation-basics'],['EPA 衰变与半衰期','https://www.epa.gov/radiation/radioactive-decay']])}</div>`;
-    function stop(){if(timer){clearInterval(timer);timer=null;}const button=$(root,'[data-decay-play]');if(button)button.textContent='▶ 播放时间';}
+    function stop(){if(timer){clearInterval(timer);timer=null;}const button=$(root,'[data-decay-play]');if(button){button.textContent='▶ 播放时间';button.setAttribute('aria-pressed','false');}}
+    const owner=root.ownerDocument;
+    const pauseWhenHidden=()=>{if(owner.hidden)stop();};
+    owner.addEventListener('visibilitychange',pauseWhenHidden);
+    global.addEventListener('pagehide',stop);
     function update(){
       const left=sampleRemaining(lifetimes,time),expected=global.ChemCore.decayRemaining(total,time,1);
       $(root,'#cx-decay-dots').innerHTML=lifetimes.map(t=>`<i class="${t>time?'':'has-decayed'}"></i>`).join('');
@@ -2103,13 +2116,13 @@ Og|鿫是原子序数 118 的元素。|位于第 18 族；常温宏观状态未�
     });
     const removeClick=bind(root,'click',event=>{
       if(checkpointHandler(root,ctx,event))return;
-      if(event.target.closest('[data-decay-play]')){if(timer){stop();return;}if(time>=6)time=0;$(root,'[data-decay-play]').textContent='Ⅱ 暂停';timer=setInterval(()=>{time=Math.min(6,Math.round((time+.05)*100)/100);update();if(time>=6)stop();},150);}
+      if(event.target.closest('[data-decay-play]')){if(timer){stop();return;}if(time>=6)time=0;$(root,'[data-decay-play]').textContent='Ⅱ 暂停';$(root,'[data-decay-play]').setAttribute('aria-pressed','true');timer=setInterval(()=>{time=Math.min(6,Math.round((time+.05)*100)/100);update();if(time>=6)stop();},150);}
       if(event.target.closest('[data-decay-reset]')){stop();time=0;update();}
       if(event.target.closest('[data-decay-new]')){lifetimes=sampleLifetimes(total,++seed);update();ctx.toast('换了一群原子：规律不变，单次结果会不同');}
       const rayButton=event.target.closest('[data-ray]');if(rayButton){ray=rayButton.dataset.ray;transformed=false;$$ (root,'[data-ray]').forEach(b=>{const active=b===rayButton;b.classList.toggle('is-active',active);b.setAttribute('aria-pressed',String(active));});updateRadiation();}
       if(event.target.closest('[data-ray-transform]')){transformed=!transformed;updateRadiation();}
     });
-    update();updateRadiation();return()=>{stop();removeInput();removeClick();};
+    stop();update();updateRadiation();return()=>{stop();removeInput();removeClick();owner.removeEventListener('visibilitychange',pauseWhenHidden);global.removeEventListener('pagehide',stop);};
   }
 
   function distillationDrawing(temperature,pressure,cooling,collected) {
@@ -2467,23 +2480,51 @@ Og|鿫是原子序数 118 的元素。|位于第 18 族；常温宏观状态未�
   ];
   const STORAGE = 'wanwu-chemistry-v1';
   let storageAvailable = true;
+  let storageProtected = false;
   let saved = {};
-  try { saved = JSON.parse(localStorage.getItem(STORAGE) || '{}') || {}; } catch (_) { storageAvailable = false; }
+  try { const raw=localStorage.getItem(STORAGE);saved=raw?JSON.parse(raw):{};if(!saved||typeof saved!=='object'||Array.isArray(saved)||(saved.version!==undefined&&saved.version!==1))throw Error('无法读取本机记录版本'); } catch (_) { saved={};storageAvailable=false;storageProtected=true; }
   const state = { mode:saved.mode==='advanced'?'advanced':'kids', completed:Array.isArray(saved.completed)?saved.completed.filter(x=>x&&typeof x.id==='string').slice(0,200):[], notes:Array.isArray(saved.notes)?saved.notes.filter(x=>x&&typeof x.body==='string').slice(0,300):[], quiz:{}, route:'home', params:{} };
   let cleanup = null;
   let toastTimer;
-  function persist() { try { localStorage.setItem(STORAGE, JSON.stringify({mode:state.mode,completed:state.completed,notes:state.notes})); } catch (_) { storageAvailable=false; } }
+  function persist() { if(storageProtected)return;try { localStorage.setItem(STORAGE, JSON.stringify({mode:state.mode,completed:state.completed,notes:state.notes}));storageAvailable=true; } catch (_) { storageAvailable=false; } }
   function toast(message) { const el=$('#toast'); el.textContent=String(message); el.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(()=>el.classList.remove('show'),4200); }
   function complete(id,title,details) {
     if(!state.completed.some(x=>x.id===id)) { state.completed.push({id,title:title||id,at:new Date().toISOString()}); persist(); updateProgress(); toast(`新发现已点亮：${title||'探索完成'}`); }
     if(details) saveNote({title:title||'实验发现',body:typeof details==='string'?details:JSON.stringify(details,null,2),silent:true});
   }
-  function saveNote(entry) { const body=String(entry.body||entry.details||''); if(!body.trim())return; state.notes.unshift({id:`${Date.now()}-${Math.random().toString(36).slice(2,7)}`,title:String(entry.title||'我的发现').slice(0,100),body:body.slice(0,12000),at:new Date().toISOString(),kind:entry.kind||'discovery'}); state.notes=state.notes.slice(0,300);persist();if(!entry.silent)toast('已放进你的实验记录'); }
+  function saveNote(entry) { const body=String(entry.body||entry.details||''); if(!body.trim())return; state.notes.unshift({id:`${Date.now()}-${Math.random().toString(36).slice(2,7)}`,title:String(entry.title||'我的发现').slice(0,100),body:body.slice(0,12000),at:new Date().toISOString(),kind:entry.kind||'discovery'}); state.notes=state.notes.slice(0,300);persist();if(!entry.silent)toast(storageAvailable?'已放进你的实验记录':'已暂存这次发现，请导出备份；原有数据未被自动覆盖。'); }
   function updateProgress(){ const labs=state.completed.filter(x=>x.id.startsWith('lab-')).length; const total=(window.ChemLab&&ChemLab.experiments&&ChemLab.experiments.length)||12; const n=$('#progress-label');if(n)n.textContent=`${Math.min(labs,total)} / ${total}`;const bar=$('#progress-bar');if(bar)bar.style.width=`${Math.min(labs/total,1)*100}%`;const discoveries=$('#discovery-count');if(discoveries)discoveries.textContent=state.completed.length; }
   function navigate(route, params={}) { if(!routes.some(r=>r[0]===route))route='home';const q=new URLSearchParams(params).toString();const hash=`#${route}${q?'?'+q:''}`;if(location.hash===hash)render();else location.hash=hash;closeMenu(); }
   function closeMenu() { $('.sidebar')?.classList.remove('open');$('.mobile-overlay')?.classList.remove('open');$('.menu-toggle')?.setAttribute('aria-expanded','false'); }
   function heading(en,title,desc,tag){return `<div class="page-heading"><div><span class="eyebrow">${en}</span><h1>${title}</h1><p>${desc}</p></div>${tag?`<span class="chip green">${icon('spark',13)}${tag}</span>`:''}</div>`;}
   function download(name,text,type='text/plain;charset=utf-8') { const url=URL.createObjectURL(new Blob([text],{type}));const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),5000); }
+  // Validate the complete file before merging, so a bad entry cannot partially replace local work.
+  function validateBackup(raw) {
+    if(!raw || raw.app!=='wanwu-chemistry' || raw.version!==1 || !Array.isArray(raw.notes) || !Array.isArray(raw.completed) || raw.notes.length>300 || raw.completed.length>200)throw Error('备份格式、版本或记录数量无效');
+    function text(value,max,label){if(typeof value!=='string'||value.length>max)throw Error(label+'无效或过长');return value;}
+    function entries(items,notes){const ids=new Set();return items.map(item=>{
+      if(!item||typeof item!=='object')throw Error('记录格式无效');
+      const id=text(item.id,120,'记录编号');if(!id||ids.has(id))throw Error('记录编号为空或重复');ids.add(id);
+      const title=text(item.title,notes?100:200,'标题'),at=text(item.at,60,'日期');if(!Number.isFinite(Date.parse(at)))throw Error('记录日期无效');
+      return notes?{id,title,at,body:text(item.body,12000,'笔记内容'),kind:item.kind===undefined?'discovery':text(item.kind,40,'笔记类型')}:{id,title,at};
+    });}
+    return {notes:entries(raw.notes,true),completed:entries(raw.completed,false)};
+  }
+  function mergeBackup(existing,incoming) {
+    function merge(current,added,max){const entries=new Map(current.map(item=>[item.id,item]));for(const item of added)if(!entries.has(item.id))entries.set(item.id,item);if(entries.size>max)throw Error('合并后记录过多，请先导出并整理');return [...entries.values()];}
+    return {notes:merge(existing.notes,incoming.notes,300).sort((a,b)=>Date.parse(b.at)-Date.parse(a.at)),completed:merge(existing.completed,incoming.completed,200)};
+  }
+  async function importBackup(file) {
+    if(!file)return;
+    try {
+      if(file.size>16*1024*1024)throw Error('文件超过16 MB');
+      const incoming=validateBackup(JSON.parse(await file.text())),merged=mergeBackup(state,incoming);
+      const added=merged.notes.length-state.notes.length,completed=merged.completed.length-state.completed.length;
+      state.notes=merged.notes;state.completed=merged.completed;persist();updateProgress();
+      if(state.route==='notebook'){renderNotebook($('#main-content'));bindNav($('#main-content'));}
+      toast(`已合并备份：新增${added}条笔记、${completed}项足迹；相同编号保留本机记录。${storageAvailable?'':'本次仅暂存，请导出备份。'}`);
+    } catch(error){toast('未导入：'+error.message+'。原记录没有改变。');}
+  }
   function sub(formula){return escape(formula).replace(/(\d+)/g,'<sub>$1</sub>');}
   function num(n,d=3){return Number.isFinite(n)?Number(n.toPrecision(d)).toLocaleString('zh-CN',{maximumFractionDigits:7}):'—';}
   function bindNav(root=document){$$('[data-go]',root).forEach(el=>el.addEventListener('click',()=>navigate(el.dataset.go,el.dataset.experiment?{experiment:el.dataset.experiment}:{})));}
@@ -2606,10 +2647,13 @@ Og|鿫是原子序数 118 的元素。|位于第 18 族；常温宏观状态未�
   }
   function renderNotebook(main){
     const labs=state.completed.filter(x=>x.id.startsWith('lab-')).length,quiz=state.completed.filter(x=>x.id.startsWith('quiz-')).length;
-    main.innerHTML=heading('MY DISCOVERY JOURNAL','我的实验记录','把“我看到了什么”和“我怎么解释”写下来。下次回来，沿着自己的发现继续走。','本机保存')+`<div class="grid-3" style="margin-bottom:22px"><div class="stat"><strong>${labs}</strong><span>已完成的虚拟实验</span></div><div class="stat"><strong>${quiz} / ${quizQuestions.length}</strong><span>已掌握的小课堂问题</span></div><div class="stat"><strong>${state.notes.length}</strong><span>记下的发现与计算</span></div></div>${!storageAvailable?'<div class="note warning" style="margin-bottom:20px">浏览器当前不允许保存本地数据。请及时导出记录；关闭页面后，本次记录可能丢失。</div>':''}<div class="grid-2"><section class="panel"><div class="panel-head"><h3>记下一个小发现</h3>${icon('book',22)}</div><form class="note-entry" id="note-form"><label for="note-title">标题</label><input id="note-title" placeholder="例如：原来气泡并不都是氧气" maxlength="100"><label for="note-body">我的观察和解释</label><textarea id="note-body" required maxlength="12000" placeholder="我改变了……\n我看见了……\n我猜是因为……\n下次我还想试试……"></textarea><button class="btn primary" type="submit">${icon('check',17)}保存这次发现</button></form><hr><div class="row"><button class="btn small" id="export-notes">${icon('download',15)}导出实验记录</button><button class="btn small ghost danger" id="clear-notes">清空本机记录</button></div><div id="reset-confirm" hidden class="note warning" style="margin-top:15px">清空后，当前浏览器的实验足迹、题目进度和笔记都会删除。<div class="row" style="margin-top:10px"><button class="btn small danger" id="confirm-clear">确认清空</button><button class="btn small" id="cancel-clear">保留记录</button></div></div><p class="muted tiny" style="margin-top:14px">记录保存在当前浏览器；换设备、清除浏览数据或使用隐私浏览不会自动同步。</p></section><section><div class="section-title" style="margin-top:0"><h2>发现档案</h2><small>最近的记录在前面</small></div>${state.notes.length?state.notes.map(n=>`<article class="notebook-card"><time>${escape(new Date(n.at).toLocaleString('zh-CN',{hour12:false}))}</time><h3>${escape(n.title)}</h3><p>${escape(n.body)}</p></article>`).join(''):`<div class="empty-state">${icon('book',37)}<h3>这里等着你的第一个发现</h3><p>完成实验后保存观察，或现在写下一句话。</p><button class="btn small" data-go="lab">去实验室${icon('arrow',15)}</button></div>`}</section></div>`;
+    main.innerHTML=heading('MY DISCOVERY JOURNAL','我的实验记录','把“我看到了什么”和“我怎么解释”写下来。下次回来，沿着自己的发现继续走。','本机保存')+`<div class="grid-3" style="margin-bottom:22px"><div class="stat"><strong>${labs}</strong><span>已完成的虚拟实验</span></div><div class="stat"><strong>${quiz} / ${quizQuestions.length}</strong><span>已掌握的小课堂问题</span></div><div class="stat"><strong>${state.notes.length}</strong><span>记下的发现与计算</span></div></div>${!storageAvailable?'<div class="note warning" style="margin-bottom:20px">本机数据暂时无法读取或保存，原有数据不会被自动覆盖。请及时导出本次记录；关闭页面后，本次记录可能丢失。</div>':''}<div class="grid-2"><section class="panel"><div class="panel-head"><h3>记下一个小发现</h3>${icon('book',22)}</div><form class="note-entry" id="note-form"><label for="note-title">标题</label><input id="note-title" placeholder="例如：原来气泡并不都是氧气" maxlength="100"><label for="note-body">我的观察和解释</label><textarea id="note-body" required maxlength="12000" placeholder="我改变了……\n我看见了……\n我猜是因为……\n下次我还想试试……"></textarea><button class="btn primary" type="submit">${icon('check',17)}保存这次发现</button></form><hr><div class="row"><button class="btn small" id="export-notes">${icon('download',15)}导出实验记录</button><button class="btn small" id="export-backup">导出JSON备份</button><button class="btn small" id="import-backup">导入JSON备份</button><input id="import-file" type="file" accept=".json,application/json" hidden><button class="btn small ghost danger" id="clear-notes">清空本机记录</button></div><div id="reset-confirm" hidden class="note warning" style="margin-top:15px">清空后，当前浏览器的实验足迹、题目进度和笔记都会删除。<div class="row" style="margin-top:10px"><button class="btn small danger" id="confirm-clear">确认清空</button><button class="btn small" id="cancel-clear">保留记录</button></div></div><p class="muted tiny" style="margin-top:14px">记录保存在当前浏览器；换设备、清除浏览数据或使用隐私浏览不会自动同步。Markdown供阅读，JSON备份可恢复足迹与笔记；导入时合并，相同编号保留本机记录。</p></section><section><div class="section-title" style="margin-top:0"><h2>发现档案</h2><small>最近的记录在前面</small></div>${state.notes.length?state.notes.map(n=>`<article class="notebook-card"><time>${escape(new Date(n.at).toLocaleString('zh-CN',{hour12:false}))}</time><h3>${escape(n.title)}</h3><p>${escape(n.body)}</p></article>`).join(''):`<div class="empty-state">${icon('book',37)}<h3>这里等着你的第一个发现</h3><p>完成实验后保存观察，或现在写下一句话。</p><button class="btn small" data-go="lab">去实验室${icon('arrow',15)}</button></div>`}</section></div>`;
     $('#note-form').addEventListener('submit',e=>{e.preventDefault();if(!$('#note-body').value.trim()){toast('先写下你的观察，再保存吧。');return;}saveNote({title:$('#note-title').value.trim()||'我的发现',body:$('#note-body').value.trim()});renderNotebook(main);bindNav(main);});
     $('#export-notes').addEventListener('click',()=>{const text=`# 万物化学 · 我的实验记录\n\n导出时间：${new Date().toLocaleString('zh-CN',{hour12:false})}\n\n## 探索足迹\n\n${state.completed.map(x=>'- '+x.title).join('\n')||'暂未完成探索'}\n\n## 观察笔记\n\n${state.notes.map(n=>`### ${n.title}\n\n${new Date(n.at).toLocaleString('zh-CN',{hour12:false})}\n\n${n.body}`).join('\n\n')||'暂无笔记'}\n`;download('chemistry-discoveries.md',text,'text/markdown;charset=utf-8');toast('实验记录已导出为 Markdown 文件。');});
-    $('#clear-notes').addEventListener('click',()=>$('#reset-confirm').hidden=false);$('#cancel-clear').addEventListener('click',()=>$('#reset-confirm').hidden=true);$('#confirm-clear').addEventListener('click',()=>{state.completed=[];state.notes=[];persist();updateProgress();renderNotebook(main);bindNav(main);toast('本机记录已清空，可以重新开始探索。');});
+    $('#export-backup').addEventListener('click',()=>{download('chemistry-backup.json',JSON.stringify({app:'wanwu-chemistry',version:1,exported:new Date().toISOString(),mode:state.mode,notes:state.notes,completed:state.completed},null,2),'application/json');toast('已请求下载JSON备份，请确认文件已保存。');});
+    $('#import-backup').addEventListener('click',()=>$('#import-file').click());
+    $('#import-file').addEventListener('change',async e=>{const input=e.target;await importBackup(input.files[0]);input.value='';});
+    $('#clear-notes').addEventListener('click',()=>$('#reset-confirm').hidden=false);$('#cancel-clear').addEventListener('click',()=>$('#reset-confirm').hidden=true);$('#confirm-clear').addEventListener('click',()=>{state.completed=[];state.notes=[];storageProtected=false;persist();updateProgress();renderNotebook(main);bindNav(main);toast(storageAvailable?'本机记录已清空，可以重新开始探索。':'本次记录已清空；浏览器仍无法保存，请勿依赖本机存储。');});
   }
   function renderSources(main){
     const fixed=[{title:'IUPAC · 元素周期表',url:'https://iupac.org/what-we-do/periodic-table-of-elements/',scope:'元素名称、原子序数与原子量的资料入口。'},{title:'RSC · 元素周期表',url:'https://www.rsc.org/periodic-table',scope:'元素性质、用途与背景知识。'},{title:'OpenStax · Chemistry 2e',url:'https://openstax.org/details/books/chemistry-2e',scope:'化学计量、原子结构、酸碱与化学平衡。'},{title:'PhET · Reactants, Products and Leftovers',url:'https://phet.colorado.edu/en/simulations/reactants-products-and-leftovers',scope:'以生活配料理解限量反应物的交互教学参考。'},{title:'PhET · Build an Atom',url:'https://phet.colorado.edu/en/simulations/build-an-atom',scope:'粒子搭建与元素身份、净电荷、质量数的教学参考。'},{title:'Toca Boca · Toca Boca Jr',url:'https://www.tocaboca.com/toca-boca-jr',scope:'选材料、用工具、观察反馈的儿童操作参考。未复制其代码或美术。'}];
@@ -2617,7 +2661,7 @@ Og|鿫是原子序数 118 的元素。|位于第 18 族；常温宏观状态未�
     main.innerHTML=heading('SCIENCE, WITH CONTEXT','资料、来源与模型边界','让好奇心大胆一点，让结论严谨一点。这里说明知识从哪里来，也说明模型省略了什么。','来源可追溯')+`<div class="panel" style="margin-bottom:23px"><h3>这座探索馆，能帮助你理解什么？</h3><p class="muted">它把入门化学中的关键关系变成可操作模型，适合亲子启蒙和知识巩固。实验结果来自已建模的反应与条件，不是任意材料组合的真实化学预测器。</p><div class="model-list"><div><b>01 · 实验有边界</b>12 项虚拟场景分别校验材料、器材、连接和操作。未收录的混合物不推断成“不反应”；动画速度、颜色深浅和粒子数量通常为教学示意。</div><div><b>02 · 原子图是模型</b>电子环不是电子真实的固定轨迹；原子核与电子尺寸不按比例。质量数是某个核素的质子数加中子数，不等于周期表中的相对原子质量。</div><div><b>03 · 计算有前提</b>反应计算台按明确方程式、纯溶质投料、完全反应和理想气体模型计算。回收率表示反应之后收集到的比例；真实反应可能受平衡、副反应和传质影响。</div><div><b>04 · 衰变有随机性</b>半衰期公式给出大量原子核未衰变数量的期望值，不能确定单颗原子何时衰变。屏蔽射线的显示为定性比较，不能当作现实防护设计。</div><div><b>05 · 危险内容留在虚拟场景</b>白磷、放射性、电解和受热装置供屏幕内学习。白磷页面只展示封闭观察模型，不提供现实制取、剂量与点火操作。</div><div><b>06 · 离线与隐私</b>核心功能不依赖外部网络、CDN、登录或后台。进度只存在当前浏览器，参考来源链接需要联网。不同浏览器和设备之间不会自动同步。</div></div></div><div class="section-title"><h2>科学资料与交互参考</h2><small>整理与核验：2026-10-19</small></div><div class="source-list">${[...map.values()].map(s=>`<article class="source-card"><h3>${escape(s.title)}</h3><p>${escape(s.scope)}</p><a href="${escape(s.url)}" target="_blank" rel="noopener noreferrer">查看原始资料 ${icon('arrow',13)}</a></article>`).join('')}</div>`;
   }
   // Export deterministic learning helpers for the included Node test suite.
-  window.ChemAppTesting={pizzaCounts,quizQuestions,routes,escape};
+  window.ChemAppTesting={pizzaCounts,quizQuestions,routes,escape,validateBackup,mergeBackup};
   shell();window.addEventListener('hashchange',render);render();
 })();
 
