@@ -154,8 +154,29 @@ try:
                 select(page, 'landforms')
                 setp(page, 'ranking', 'height')
                 check('mountains: all 20 sourced peak heights listed without point clicking', page.locator('[data-place]').count() == 20 and '8,848.86' in page.locator('[data-place]').first.inner_text())
-                page.locator('[data-place]').nth(3).hover()
-                check('mountains: hovering updates visible information', '华山' in page.locator('#place-detail').inner_text())
+                place = page.locator('[data-place="elevation3"]')
+                place.scroll_into_view_if_needed()
+                info_before = page.locator('#place-detail').inner_text()
+                box_before = place.bounding_box()
+                place.hover()
+                box_after = place.bounding_box()
+                check('mountains: list hover keeps details and click target stable',
+                      page.locator('#place-detail').inner_text() == info_before and
+                      all(abs(box_after[k] - box_before[k]) < 1 for k in ['x','y','width','height']))
+                place.click()
+                expected = page.evaluate('GeoData.heights[3]')
+                located = page.evaluate('LabTest.getState().viewState')
+                check('mountains: click selects and locates the named peak',
+                      '华山' in page.locator('#place-detail').inner_text() and place.get_attribute('aria-pressed') == 'true' and
+                      abs(located['lon'] - expected['lon']) < 1e-9 and abs(located['lat'] - expected['lat']) < 1e-9)
+                page.locator('#canvas').scroll_into_view_if_needed()
+                point = page.evaluate('''()=>{const r=document.querySelector('#canvas').getBoundingClientRect(),s=LabTest.getState().viewState,p=GeoData.heights[0];return {x:r.left+(480+LabMap.wrap(p.lon-s.lon)*912/360*s.zoom)*r.width/960,y:r.top+(300-(p.lat-s.lat)*456/180*s.zoom)*r.height/600};}''')
+                page.mouse.move(point['x'], point['y'])
+                check('mountains: map hover previews another peak without changing selection',
+                      '珠穆朗玛峰' in page.locator('#place-detail').inner_text() and place.get_attribute('aria-pressed') == 'true' and
+                      page.evaluate('LabTest.getState().viewState') == located)
+                page.locator('#camera-fit').hover()
+                check('mountains: leaving the map restores the selected peak detail', '华山' in page.locator('#place-detail').inner_text())
                 checkboxes = page.locator('.compare-choice input')
                 checkboxes.nth(0).check(); checkboxes.nth(1).check(); checkboxes.nth(3).check()
                 check('mountains: three simultaneous comparisons remain visible', page.locator('.compare-bar').count() == 3)
