@@ -6,15 +6,16 @@
   const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const link=(url,text)=>`<a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(text)}</a>`;
   const key='family-lab.chinese.v1';
-  let saved={favorites:[],notes:{}}, storageOK=true;
+  let saved={favorites:[],notes:{}}, storageOK=true, storageReadBlocked=false;
   try { const raw=localStorage.getItem(key); if(raw)saved=M.validateBackup(JSON.parse(raw),entries); }
-  catch(e){storageOK=false;}
+  catch(e){storageOK=false;storageReadBlocked=true;}
   let current=byId.get('睡-shui4'), visible=entries, letter='', favoritesOnly=false;
   let writer=null, epoch=0, playing=false, paused=false, split=false, stroke=0, quoteIndex=0;
   let practice=false, practiceStroke=0;
   let noticeTimer;
   function notice(text) { $('notice').textContent=text;clearTimeout(noticeTimer);noticeTimer=setTimeout(()=>$('notice').textContent='',5000); }
   function persist() {
+    if(storageReadBlocked){notice('旧记录未能读取，已停止覆盖；本页新记录请导出备份。');return false;}
     try { localStorage.setItem(key,JSON.stringify({app:'family-lab-chinese',version:1,...saved}));storageOK=true;return true; }
     catch(e){storageOK=false;notice('浏览器无法保存，请先导出记录。');return false;}
   }
@@ -36,6 +37,7 @@
   function applyFilters() {
     visible=M.filter(entries,{query:$('search').value,letter,family:$('family').value,favoritesOnly,favorites:saved.favorites});
     $('lesson').hidden=!visible.length;
+    if(!visible.length){resetCharacter();if('speechSynthesis' in window)speechSynthesis.cancel();}
     if(visible.length&&!visible.some(e=>e.id===current.id))select(visible[0].id,false,false);
     else renderList();
   }
@@ -163,7 +165,7 @@
     if(current&&draft!== (saved.notes[current.id]||'')) {if(draft.trim())saved.notes[current.id]=draft;else delete saved.notes[current.id];persist();}
     if(clear&&!visible.some(x=>x.id===id))clearFilters();
     current=e;quoteIndex=0;$('lesson').hidden=false;render();
-    history.replaceState(null,'','#'+encodeURIComponent(e.id));
+    try{history.replaceState(null,'','#'+encodeURIComponent(e.id));}catch(_){/* Some local-file hosts restrict history; the selected card still works. */}
     if(scroll&&innerWidth<=800){$('catalog-panel').classList.remove('open');$('open-catalog').setAttribute('aria-expanded','false');$('lesson').scrollIntoView({block:'start'});$('lesson').focus({preventScroll:true});}
   }
   let composing=false;
@@ -200,6 +202,13 @@
   function updateVoice() {const voice=localVoice();$('speak').disabled=!voice;$('voice-status').textContent=voice?'朗读使用本地设备语音；多音字仍以本页拼音为准。':'此设备未提供本地中文语音，朗读暂不可用；拼音、文字与笔顺不受影响。';}
   if('speechSynthesis' in window)speechSynthesis.addEventListener('voiceschanged',updateVoice);
   $('speak').onclick=()=>{const voice=localVoice();if(!voice)return;speechSynthesis.cancel();const utterance=new SpeechSynthesisUtterance(current.sentence);utterance.voice=voice;utterance.lang=voice.lang;utterance.rate=.8;utterance.onerror=()=>notice('设备语音未能播放，仍可按拼音读句。');speechSynthesis.speak(utterance);};
+  // Leaving the page stops speech; a hidden page pauses an in-progress stroke lesson.
+  document.addEventListener('visibilitychange',()=>{
+    if(!document.hidden)return;
+    if('speechSynthesis' in window)speechSynthesis.cancel();
+    if(writer&&playing&&!paused){writer.pauseAnimation();paused=true;$('pause').textContent='继续';$('stroke-status').textContent='页面已转到后台，笔顺已暂停；回来后点“继续”。';}
+  });
+  addEventListener('pagehide',()=>{if('speechSynthesis' in window)speechSynthesis.cancel();resetCharacter();});
   const questions=[
     ['雨停了，太阳出来了，天气放□了。',['清','晴','情','请'],'晴','日字旁提示天气；清常说清水，情常说感情，请用于请求。'],
     ['小河的水很□，能看见水底的石子。',['晴','情','清','睛'],'清','三点水提示水；清水的清写氵。'],
@@ -222,6 +231,6 @@
   addEventListener('hashchange',()=>{let id;try{id=decodeURIComponent(location.hash.slice(1));}catch(e){return;}if(byId.has(id)&&id!==current.id)select(id,false);else if(entries.some(e=>e.char===id))select(entries.find(e=>e.char===id).id,false);});
   options();let initial;try{initial=decodeURIComponent(location.hash.slice(1));}catch(e){initial='';}
   current=byId.get(initial)||entries.find(e=>e.char===initial)||current;render();
-  if(!storageOK)notice('原有记录未能读取；请检查浏览器存储设置，并及时导出本页记录。');
+  if(!storageOK)notice('原有记录未能读取，已停止自动覆盖；本页新记录请及时导出。');
   window.ChineseTest={ids:()=>entries.map(e=>e.id),state:()=>({id:current.id,visible:visible.map(e=>e.id),split,stroke,playing,paused,practice,practiceStroke,favorites:saved.favorites.slice(),notes:{...saved.notes}})};
 })();

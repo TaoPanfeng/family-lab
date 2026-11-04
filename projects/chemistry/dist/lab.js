@@ -608,6 +608,7 @@
     const kids = ctx.mode === 'kids';
     const ui = { guide: kids, shelf: Object.keys(state.gear).length ? 'materials' : 'gear', allGear: false, amounts: {}, from: '', to: '', freeMaterial: 'water', freeTarget: '', freeAmount: '1' };
     let alive = true, frame = null, lastFrame = null, lastDraw = 0, drag = null, suppressClick = false;
+    const owner = container.ownerDocument;
     const requestFrame = typeof global.requestAnimationFrame === 'function' ? fn => global.requestAnimationFrame(fn) : fn => global.setTimeout(() => fn(Date.now()), 40);
     const cancelFrame = typeof global.cancelAnimationFrame === 'function' ? id => global.cancelAnimationFrame(id) : id => global.clearTimeout(id);
     function remember() { rememberedState = clone(state); }
@@ -621,6 +622,11 @@
       render();
       return state;
     }
+    function pauseForLeave() {
+      if (state.phase === 'running' && !state.paused) dispatch({ type: 'PAUSE' });
+      lastFrame = null;
+    }
+    function pauseWhenHidden() { if (owner.hidden) pauseForLeave(); }
     function shelfHTML() {
       const e = expFor(state), guide = getGuide(state), locked = state.phase !== 'setup';
       const gearIds = ui.allGear && !kids ? Object.keys(apparatus) : e.gear;
@@ -800,12 +806,15 @@
     container.addEventListener('pointermove', pointerMove, { passive: false });
     container.addEventListener('pointerup', pointerUp);
     container.addEventListener('pointercancel', pointerUp);
+    owner.addEventListener('visibilitychange', pauseWhenHidden);
+    global.addEventListener('pagehide', pauseForLeave);
     container.chemLabInstance = { getState: () => clone(state), dispatch, getResult: () => calculateResult(state) };
     render(); frame = requestFrame(animate);
     return function cleanup() {
-      if (!alive) return; alive = false; remember(); if (frame != null) cancelFrame(frame);
+      if (!alive) return; pauseForLeave(); alive = false; remember(); if (frame != null) cancelFrame(frame);
       container.removeEventListener('click', click); container.removeEventListener('input', input); container.removeEventListener('change', change); container.removeEventListener('keydown', keydown);
       container.removeEventListener('pointerdown', pointerDown); container.removeEventListener('pointermove', pointerMove); container.removeEventListener('pointerup', pointerUp); container.removeEventListener('pointercancel', pointerUp);
+      owner.removeEventListener('visibilitychange', pauseWhenHidden); global.removeEventListener('pagehide', pauseForLeave);
       delete container.chemLabInstance;
     };
   }

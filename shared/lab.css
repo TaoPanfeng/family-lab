@@ -28,3 +28,6 @@ html{overflow-x:clip}body{min-width:320px}.top{min-width:0}.brand{white-space:no
 @media(max-width:430px){.controls{grid-template-columns:minmax(0,1fr)}.top .tools{gap:4px}.visual{aspect-ratio:1.25}.focus-scene .visual{aspect-ratio:1.1;max-height:65svh}.controls .control>span{font-size:14px}.scene-tools>span{flex-basis:100%}}
 
 .biology-tool-entry{display:block;border:1px solid #4b9f8c;border-radius:10px;padding:12px;margin:12px 0;color:#afe8da;background:#1b3b3d;font-size:14px;text-decoration:none;min-height:44px}
+
+/* A tap alternative leaves the drawing unobstructed until explicitly opened. */
+.camera-directions{position:absolute;right:8px;top:8px;z-index:3;max-width:calc(100% - 16px);padding:6px;border:1px solid #49667c;border-radius:10px;background:#142234ed;color:#edf3fa;font-size:13px}.camera-directions summary{cursor:pointer;min-height:44px;display:list-item;padding:6px}.camera-direction-grid{display:grid;grid-template-columns:repeat(2,minmax(44px,1fr));gap:6px;padding-top:6px}.camera-direction-grid button{min-width:44px;min-height:44px}.camera-directions[open]{max-width:180px}#empty button{margin-top:8px;max-width:100%;white-space:normal}

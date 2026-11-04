@@ -176,7 +176,11 @@
     let isotope=isotopes.find(i=>i.id===(ctx.params&&ctx.params.isotope))||isotopes.find(i=>i.id==='C-14')||isotopes[0];
     let time=0,total=128,seed=12345,lifetimes=sampleLifetimes(total,seed),timer=null,ray='alpha',shield='paper',transformed=false;
     root.innerHTML=`<div class="cx cx-decay"><div class="cx-intro"><span class="eyebrow">看不见的变化，也有规律</span><h2>${modeText(ctx,'原子也会“变身”吗？','放射性衰变与射线')}</h2><p>${modeText(ctx,'单个原子什么时候变身，我们猜不准。一大群原子，却有可以发现的规律。','把随机的单次事件与可预测的统计规律放在一起观察。')}</p></div><div class="cx-work-grid"><section class="panel"><div class="cx-panel-top"><h3>一群原子的计时器</h3><span class="chip">绿色：未衰变 · 灰色：已衰变</span></div><div id="cx-decay-dots" class="cx-decay-dots"></div><div id="cx-decay-stats" aria-live="polite"></div><div id="cx-decay-chart" class="cx-chart"></div><div class="cx-chart-legend"><span><i style="background:#087f6a"></i>理论期望</span><span><i style="background:#e1a36e"></i>这一次的随机结果</span></div></section><section class="panel"><span class="eyebrow">时间实验</span>${select('cx-decay-isotope','选择核素',isotopes.map(i=>[i.id,`${i.name} · ${i.halfLifeLabel}`]),isotope.id)}${select('cx-decay-count','初始母核数量',[[32,'32 个'],[64,'64 个'],[128,'128 个'],[256,'256 个']],total)}${range('cx-decay-time','经过几个半衰期',0,6,.05,time,' 个')}<p id="cx-decay-clock" class="cx-time-value"></p><div class="cx-inline-actions"><button class="btn primary" data-decay-play>▶ 播放时间</button><button class="btn secondary" data-decay-reset>回到开始</button></div><button class="btn secondary cx-full" data-decay-new>换一群原子，再试一次</button><div id="cx-decay-formula" class="cx-equation-block"></div><p id="cx-decay-note" class="cx-tiny"></p>${note('点代表原子核，灰点仍然存在，只是已经变成别的核素。本模型统计母核，不展开子核的后续衰变链。')}</section></div><section class="panel"><div class="cx-panel-top"><div><span class="eyebrow">α / β / γ / X</span><h3>它们来自哪里，又是什么？</h3></div><span class="chip">γ 是希腊字母，不是 y</span></div><div class="cx-ray-selector">${Object.entries(RADIATION).map(([id,r])=>`<button data-ray="${id}" class="cx-ray-card ${id===ray?'is-active':''}" aria-pressed="${id===ray}"><strong style="color:${r.color}">${r.symbol}</strong><span>${r.name}</span><small>${id==='alpha'||id==='beta'?'粒子':'光子'}</small></button>`).join('')}</div><div class="cx-radiation-grid"><div id="cx-radiation-detail"></div><div><label class="cx-select-label" for="cx-shield">换一道屏障<select class="select" id="cx-shield"><option value="none">没有屏障</option><option value="paper" selected>纸张</option><option value="aluminium">铝板（概念示意）</option><option value="dense">厚实的致密材料（概念示意）</option></select></label><div id="cx-shield-scene" class="cx-scene"></div><p id="cx-shield-note" class="cx-tiny"></p></div></div>${note('穿透示意不是剂量计算，也不是防护设计。实际穿透取决于射线能量、材料、厚度和几何条件；光子通常是逐步衰减，不是跨过一堵墙就全部消失。放射性材料只在虚拟展区演示。')}</section>${checkpoint('decay-probability','半衰期的真正意思','经过一个半衰期，哪句话更准确？',['每个原子都变成了半个','大量母核的剩余期望约为一半','所有母核必须恰好剩一半'],1,'单个原子不是被切成两半；有限样本会波动，理论期望按指数规律减少。')}${sources([['EPA 放射性基础','https://www.epa.gov/radiation/radiation-basics'],['EPA 衰变与半衰期','https://www.epa.gov/radiation/radioactive-decay']])}</div>`;
-    function stop(){if(timer){clearInterval(timer);timer=null;}const button=$(root,'[data-decay-play]');if(button)button.textContent='▶ 播放时间';}
+    function stop(){if(timer){clearInterval(timer);timer=null;}const button=$(root,'[data-decay-play]');if(button){button.textContent='▶ 播放时间';button.setAttribute('aria-pressed','false');}}
+    const owner=root.ownerDocument;
+    const pauseWhenHidden=()=>{if(owner.hidden)stop();};
+    owner.addEventListener('visibilitychange',pauseWhenHidden);
+    global.addEventListener('pagehide',stop);
     function update(){
       const left=sampleRemaining(lifetimes,time),expected=global.ChemCore.decayRemaining(total,time,1);
       $(root,'#cx-decay-dots').innerHTML=lifetimes.map(t=>`<i class="${t>time?'':'has-decayed'}"></i>`).join('');
@@ -214,13 +218,13 @@
     });
     const removeClick=bind(root,'click',event=>{
       if(checkpointHandler(root,ctx,event))return;
-      if(event.target.closest('[data-decay-play]')){if(timer){stop();return;}if(time>=6)time=0;$(root,'[data-decay-play]').textContent='Ⅱ 暂停';timer=setInterval(()=>{time=Math.min(6,Math.round((time+.05)*100)/100);update();if(time>=6)stop();},150);}
+      if(event.target.closest('[data-decay-play]')){if(timer){stop();return;}if(time>=6)time=0;$(root,'[data-decay-play]').textContent='Ⅱ 暂停';$(root,'[data-decay-play]').setAttribute('aria-pressed','true');timer=setInterval(()=>{time=Math.min(6,Math.round((time+.05)*100)/100);update();if(time>=6)stop();},150);}
       if(event.target.closest('[data-decay-reset]')){stop();time=0;update();}
       if(event.target.closest('[data-decay-new]')){lifetimes=sampleLifetimes(total,++seed);update();ctx.toast('换了一群原子：规律不变，单次结果会不同');}
       const rayButton=event.target.closest('[data-ray]');if(rayButton){ray=rayButton.dataset.ray;transformed=false;$$ (root,'[data-ray]').forEach(b=>{const active=b===rayButton;b.classList.toggle('is-active',active);b.setAttribute('aria-pressed',String(active));});updateRadiation();}
       if(event.target.closest('[data-ray-transform]')){transformed=!transformed;updateRadiation();}
     });
-    update();updateRadiation();return()=>{stop();removeInput();removeClick();};
+    stop();update();updateRadiation();return()=>{stop();removeInput();removeClick();owner.removeEventListener('visibilitychange',pauseWhenHidden);global.removeEventListener('pagehide',stop);};
   }
 
   function distillationDrawing(temperature,pressure,cooling,collected) {

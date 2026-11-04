@@ -19,12 +19,12 @@
       choices:['太阳高一些，影子可能短一些。','杆子高一些，影子可能长一些。','我想分别改一改，验证猜想。'],observe:'先只改杆高，再只改日期。看看哪个条件改变了影长，别一下子全改掉。',explain:'太阳越高，同一根杆的影子越短；太阳高度相同时，杆子越高，影子越长。这里比较的是每天的正午，不是钟表上的每个时刻。',task:'向前 7 天',family:'孩子提一个猜想，爸爸只帮忙保持其他条件不变。一次改一个条件，再交换角色。'}
   };
   let storage;try{storage=root.localStorage;}catch{storage=null;}
-  const store=new L.Store(storage),storedPreferences=store.get('preferences',{})||{};
+  const store=new L.Store(storage),storedPreferences=store.get('preferences',{},p=>{if(!p||typeof p!=='object'||Array.isArray(p)||p.version!==undefined||p.audience!==undefined&&!L.AUDIENCES.includes(p.audience)||p.quality!==undefined&&!['auto','high','eco'].includes(p.quality)||p.welcomed!==undefined&&typeof p.welcomed!=='boolean')throw new Error('探索偏好格式不兼容。');return p;});
   const v={audience:L.AUDIENCES.includes(storedPreferences.audience)?storedPreferences.audience:'research',topic:'moon',eclipseKind:'solar',split:true,tilt:0,height:1,mobileRight:false,quality:['auto','high','eco'].includes(storedPreferences.quality)?storedPreferences.quality:'auto',autoEco:false};
   let secondary=null,secondaryKey='',dirty=true,lastUpdate=0,lastRender=0,lastFrame=0,perfCount=0,perfSum=0,history=[],windowRange=null,lastSelectedKey='',lastTab=app.getLive().state.tab,lastTimeKey='',sessionTimer=null,autosaveAt=0,book=[],deletedNote=null,dialogKind='',mission={step:0,guess:'',observed:false,initialTime:app.getLive().state.time,initialTilt:0,initialHeight:1},restoreBusy=false;
-  let savedSession=store.get('session',null),lastSessionValid=false;
-  try{if(savedSession){app.validateSnapshot(savedSession.scene);L.validateContext(savedSession.context);lastSessionValid=true;}}catch{savedSession=null;}
-  try{const b=store.get('book',null);if(b)book=L.validateBook(b,app.validateSnapshot);}catch(e){app.toast('本地手记未通过校验，请导入备份；没有覆盖原数据。');}
+  let savedSession=store.get('session',null,s=>{if(!s||typeof s!=='object'||Array.isArray(s)||s.version!==undefined)throw new Error('探索现场格式不兼容。');app.validateSnapshot(s.scene);L.validateContext(s.context);return s;}),lastSessionValid=!!savedSession;
+  book=store.get('book',[],b=>L.validateBook(b,app.validateSnapshot));
+  if(store.readFailure)app.toast(store.error);
   let sessionArmed=false;
   const originalSession=savedSession?JSON.parse(JSON.stringify(savedSession)):null;
   const hadSession=lastSessionValid;
@@ -276,7 +276,7 @@
     dirty=false;
   }
   function storageStatus(){
-    const warning=!!store.error;set('v2-note-count',book.length);set('v2-storage',warning?'⚠ 记得导出备份':store.persistent?'仅本机保存 · 可导出备份':'临时模式 · 请导出备份');$('v2-storage').classList.toggle('warning',warning||!store.persistent);$('v2-storage').title=store.error||(location.protocol==='file:'?'直接打开文件时，浏览器存储行为因环境而异。换文件路径或浏览器可能无法读取原记录，重要发现请导出 JSON。':'记录存放在此浏览器，不会自动上传。');
+    const warning=!!store.error;set('v2-note-count',book.length);set('v2-storage',store.readFailure?'⚠ 原记录保留 · 本次请导出':warning?'⚠ 记得导出备份':store.persistent?'仅本机保存 · 可导出备份':'临时模式 · 请导出备份');$('v2-storage').classList.toggle('warning',warning||!store.persistent);$('v2-storage').title=store.error||(location.protocol==='file:'?'直接打开文件时，浏览器存储行为因环境而异。换文件路径或浏览器可能无法读取原记录，重要发现请导出 JSON。':'记录存放在此浏览器，不会自动上传。');
   }
   function saveSession(){
     if(!root.LabV2||!sessionArmed)return;const session={scene:app.getState(),context:context(),mission:{...mission},savedAt:Date.now()};store.put('session',session);savedSession=session;lastSessionValid=true;storageStatus();
@@ -311,7 +311,7 @@
   async function importBook(file){
     if(file.size>8*1024*1024)throw new Error('备份不能超过 8 MB。');const payload=JSON.parse(await file.text());
     if(payload.version===1&&!payload.format){app.validateSnapshot(payload);remember();app.restoreSnapshot(payload);v.topic=payload.tab==='events'?'eclipse':payload.tab==='seasons'?'seasons':'moon';v.eclipseKind=A.lunar(live().physics).type!=='无月食'?'lunar':'solar';setTopic(v.topic,{prepare:false,remember:false});$('v2-dialog').close();notice('V1 场景已导入，仍使用原时间、地点和镜头；V2 增强功能可继续使用。');return;}
-    const notes=L.validateBook(payload,app.validateSnapshot),merged=L.mergeNotes(book,notes),added=merged.length-book.length;book=merged;persistBook();notebook();set('v2-book-error',`已合并 ${added} 条新记录。相同标识不重复导入，也不覆盖已有文字。`);
+    const notes=L.validateBook(payload,app.validateSnapshot),merged=L.mergeNotes(book,notes),added=merged.length-book.length;book=merged;const ok=persistBook();notebook();set('v2-book-error',`已合并 ${added} 条新记录。相同标识不重复导入，也不覆盖已有文字。${ok?'':' 本次仅暂存，请导出备份；原有本地记录保留。'}`);
   }
   function wrapText(x,text,maxWidth){
     const lines=[];for(const paragraph of String(text).split('\n')){let line='';for(const ch of paragraph){if(x.measureText(line+ch).width>maxWidth&&line){lines.push(line);line=ch;}else line+=ch;}lines.push(line);}return lines;
@@ -361,10 +361,10 @@
     for(const id of ['date-input','now-btn','event-catalog','season-buttons','import-file'])$(id).addEventListener(id==='date-input'?'change':'click',()=>remember(),true);
     $('timezone').addEventListener('change',()=>{resetWindow();dirty=true;});
     root.addEventListener('resize',()=>{dirty=true;});root.addEventListener('pagehide',saveSession);document.addEventListener('visibilitychange',()=>{if(document.hidden)saveSession();});
-    document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('sidebar').classList.contains('open')){$('sidebar').classList.remove('open');$('mobile-shade').hidden=true;}if(document.querySelector('dialog[open]')||['INPUT','TEXTAREA','SELECT','BUTTON'].includes(document.activeElement?.tagName))return;if(e.key==='n'||e.key==='N'){e.preventDefault();writeNote();}});
+    document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('sidebar').classList.contains('open')){$('sidebar').classList.remove('open');$('mobile-shade').hidden=true;}if(e.defaultPrevented||document.querySelector('dialog[open]')||['INPUT','TEXTAREA','SELECT','BUTTON','SUMMARY'].includes(document.activeElement?.tagName))return;if(e.key==='n'||e.key==='N'){e.preventDefault();writeNote();}});
   }
   makeLayout();bind();setAudience(v.audience,false);setTopic('moon',{prepare:!hadSession,remember:false});applyQuality();
-  root.LabV2={frame,shouldRender,markDirty:()=>dirty=true,getState:()=>({...context(),quality:v.quality,autoEco:v.autoEco,mobileRight:v.mobileRight,mission:{...mission},window:{...windowRange},notes:book.length,history:history.length,storage:store.persistent}),setAudience,setTopic,setSplit,saveSession,getSecondary:()=>secondary,getComparison:currentPair,getNotes:()=>JSON.parse(JSON.stringify(book)),getSession:()=>store.get('session'),restoreEntry,back,welcome,notebook,writeNote,importBook,captureBoth,exportBook};
+  root.LabV2={frame,shouldRender,markDirty:()=>dirty=true,getState:()=>({...context(),quality:v.quality,autoEco:v.autoEco,mobileRight:v.mobileRight,mission:{...mission},window:{...windowRange},notes:book.length,history:history.length,storage:store.persistent&&!store.readFailure,readFailure:store.readFailure}),setAudience,setTopic,setSplit,saveSession,getSecondary:()=>secondary,getComparison:currentPair,getNotes:()=>JSON.parse(JSON.stringify(book)),getSession:()=>store.get('session'),restoreEntry,back,welcome,notebook,writeNote,importBook,captureBoth,exportBook};
   frame(performance.now());
   if(!storedPreferences.welcomed||hadSession)setTimeout(()=>{if(!document.querySelector('dialog[open]'))welcome();},500);
   else {sessionArmed=true;saveSession();}

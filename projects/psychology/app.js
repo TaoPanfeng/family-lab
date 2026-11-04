@@ -1,9 +1,9 @@
 (function(){'use strict';
  const D=PsychologyData,C=KnowledgeCore,$=id=>document.getElementById(id),ids=D.entries.map(e=>e.id),byId=new Map(D.entries.map(e=>[e.id,e]));
- const APP='family-lab-psychology',KEY=APP+'.v1';let records=C.empty(),selected=byId.get(location.hash.slice(1))||D.entries[0],shown=[],font=18;
+ const APP='family-lab-psychology',KEY=APP+'.v1';let records=C.empty(),selected=byId.get(location.hash.slice(1))||D.entries[0],shown=[],font=18,storageReadBlocked=false;
  function announce(s){$('notice').textContent=s;clearTimeout(announce.timer);announce.timer=setTimeout(()=>$('notice').textContent='',4200);}
- function save(){try{localStorage.setItem(KEY,JSON.stringify({app:APP,version:1,...records}));$('storage-status').textContent='记录已保存在本浏览器。';return true;}catch(_){$('storage-status').textContent='未能保存到浏览器，仅本页暂存；请导出记录。';announce('保存受阻，请导出记录；没有上传任何信息。');return false;}}
- try{const v=localStorage.getItem(KEY);if(v)records=C.validate(JSON.parse(v),APP,ids);}catch(_){$('storage-status').textContent='本机旧记录未能读取，仍可正常学习；原记录未被主动清除。';}
+ function save(){if(storageReadBlocked){$('storage-status').textContent='旧记录未能读取，已停止覆盖；本页新记录请导出。';return false;}try{localStorage.setItem(KEY,JSON.stringify({app:APP,version:1,...records}));$('storage-status').textContent='记录已保存在本浏览器。';return true;}catch(_){$('storage-status').textContent='未能保存到浏览器，仅本页暂存；请导出记录。';announce('保存受阻，请导出记录；没有上传任何信息。');return false;}}
+ try{const v=localStorage.getItem(KEY);if(v)records=C.validate(JSON.parse(v),APP,ids);}catch(_){storageReadBlocked=true;$('storage-status').textContent='本机旧记录未能读取，已停止自动覆盖；本页新记录请导出。';}
  const node=(tag,text,cls)=>{const el=document.createElement(tag);if(text!==undefined)el.textContent=text;if(cls)el.className=cls;return el;};
  for(const cat of D.categories){const o=node('option',cat);o.value=cat;$('category').append(o);}
  for(const e of D.entries){const o=node('option',e.title);o.value=e.id;$('compare-select').append(o);}
@@ -31,7 +31,7 @@
  $('entries').onclick=e=>{const b=e.target.closest('[data-id]');if(b)pick(b.dataset.id,true);};
  $('related').onclick=e=>{const b=e.target.closest('[data-related]');if(b){clear();pick(b.dataset.related,true);announce('已打开相关词条，并清除目录筛选。');}};
  for(const id of ['search','category','favorites-only','unread-only'])$(id).addEventListener(id==='search'?'input':'change',render);
- $('clear-filters').onclick=clear;$('empty-clear').onclick=clear;
+ $('clear-filters').onclick=clear;$('empty-clear').onclick=()=>{clear();$('directory').open=true;$('search').focus({preventScroll:true});};
  for(const [button,delta] of [['previous',-1],['next',1]])$(button).onclick=()=>{const i=shown.findIndex(x=>x.id===selected.id)+delta;if(shown[i])pick(shown[i].id,true);};
  $('random').onclick=()=>{const pool=shown.filter(e=>e.id!==selected.id);if(pool.length)pick(pool[Math.floor(Math.random()*pool.length)].id,true);else if(shown.length)pick(shown[0].id,true);};
  for(const [button,key] of [['favorite','favorites'],['mark-read','read']])$(button).onclick=()=>{records[key]=C.toggle(records[key],selected.id);save();render();};
@@ -40,7 +40,7 @@
  $('font-size').onclick=()=>{font=font===22?18:font+2;document.documentElement.style.setProperty('--text-size',font+'px');$('font-size').textContent='字号 '+font;};
  $('export').onclick=()=>{const blob=new Blob([JSON.stringify({app:APP,version:1,...records},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=node('a');a.href=url;a.download='心理学-收藏与已读.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
  $('import').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{if(f.size>100000)throw Error('文件过大');const incoming=C.validate(JSON.parse(await f.text()),APP,ids);records=C.merge(records,incoming);const ok=save();render();$('storage-status').textContent=ok?'导入成功，已与原记录合并。':'已合并到本页但未能写入浏览器，请导出。';}catch(error){$('storage-status').textContent='未导入：'+error.message;}finally{e.target.value='';}};
- $('reset-records').onclick=()=>{$('reset-confirm').hidden=false;};$('cancel-reset').onclick=()=>{$('reset-confirm').hidden=true;};$('confirm-reset').onclick=()=>{records=C.empty();save();$('reset-confirm').hidden=true;render();};
+ $('reset-records').onclick=()=>{$('reset-confirm').hidden=false;$('cancel-reset').focus({preventScroll:true});};$('cancel-reset').onclick=()=>{$('reset-confirm').hidden=true;$('reset-records').focus({preventScroll:true});};$('confirm-reset').onclick=()=>{try{localStorage.removeItem(KEY);storageReadBlocked=false;records=C.empty();$('storage-status').textContent='已清空本馆记录，其他馆未更改。';$('reset-confirm').hidden=true;render();$('reset-records').focus({preventScroll:true});}catch(_){$('storage-status').textContent='清空失败，原记录未主动更改。';}};
  window.addEventListener('hashchange',()=>{const e=byId.get(location.hash.slice(1));if(e){clear();pick(e.id,true);}});
  render();window.PsychologyTest={ids:()=>ids.slice(),state:()=>({selected:selected.id,shown:shown.map(e=>e.id),records:JSON.parse(JSON.stringify(records))})};
 })();

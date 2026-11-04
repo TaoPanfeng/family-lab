@@ -4,20 +4,26 @@
   const C = root.WorldCore || (typeof require === 'function' ? require('../../shared/core.js') : null);
   function handState(name, t, side, mirror=false) {
     if (!['l','r'].includes(side)) throw Error('Invalid hand side');
-    C.clamp(t,0,1);
-    let normal=[0,0,1],curl=.12,wrist=0,description='自然掌';
+    t=C.clamp(t,0,1);
+    let normal=[0,0,1],curl=.12,wrist=0,description='自然掌',fingerDirection=null;
     if(['straight','fist','bow'].includes(name)){curl=1;normal=[side==='l'?-1:1,0,0];description='握拳 · 拇指在拳外';}
     else if(name==='tan'&&side==='l'){normal=[0,1,0];curl=.04;description='摊手 · 掌心向上';}
     else if(name==='fook'&&side==='l'){normal=[0,-1,0];curl=.55;wrist=.36;description='伏手 · 掌心向下，腕略屈';}
     else if(name==='bong'&&side==='l'){normal=[0,-.85,.35];curl=.16;description='膀手 · 肘抬高，掌面斜下';}
-    else if(['raise','separate'].includes(name)){normal=[0,1,.12];curl=.05;description='托掌 · 掌面朝上';}
+    else if(name==='separate'){
+      // Opposing palms at the two single-raise anchors; interpolate by angle to avoid a zero normal.
+      const angles=side==='l'?[-Math.PI/2,0,0,0,-Math.PI,-Math.PI/2]:[Math.PI/2,0,Math.PI,0,0,Math.PI/2],p=t*(angles.length-1),i=Math.min(angles.length-2,Math.floor(p)),a=C.mix(angles[i],angles[i+1],C.smooth(p-i));
+      const forward=t<.2?C.smooth(t/.2):t>.8?C.smooth((1-t)/.2):1;fingerDirection=[0,forward-1,forward];
+      normal=[Math.sin(a),Math.cos(a),0];curl=.05;description='单举分掌 · '+(normal[1]>.7?'掌心向上':normal[1]<-.7?'掌心向下':'掌面转向中');
+    }
+    else if(name==='raise'){normal=[0,1,.12];curl=.05;description='托掌 · 掌面朝上';}
     else if(name==='cloud'){normal=side==='l'?[0,.2,1]:[0,.2,1];curl=.12;description='云手 · 松展掌';}
-    else if(name==='push'){normal=[0,0,1];curl=.06;wrist=-.6;description='推掌 · 指尖向上';}
+    else if(name==='push'){normal=[0,0,1];curl=.06;description='推掌 · 指尖向上';}
     else if(name==='opening'){normal=[0,-1,0];curl=.08;description='起势 · 掌心向下';}
     else{normal=[side==='l'?-1:1,0,.2];description='自然下垂';}
     if(mirror)normal[0]*=-1;
     const n=Math.hypot(...normal);normal=normal.map(v=>v/n);
-    return{normal,curl,wrist,description,thumbSign:(side==='l'?1:-1)*(mirror?-1:1)};
+    return{normal,curl,wrist,description,fingerDirection:name==='push'?[0,1,0]:fingerDirection,thumbSign:(side==='l'?1:-1)*(mirror?-1:1)};
   }
   function createHand(side) {
     const T=root.THREE,group=new T.Group();group.name='anatomical-hand-'+side;
@@ -49,8 +55,10 @@
     }
     function update(joints,state,mirror){
       const w=new T.Vector3(...joints[side+'Wrist']),elbow=new T.Vector3(...joints[side+'Elbow']);
-      let y=w.clone().sub(elbow).normalize(),z=new T.Vector3(...state.normal);z.addScaledVector(y,-z.dot(y));
-      if(z.length()<.05){z.set(0,0,1);z.addScaledVector(y,-z.dot(y));if(z.length()<.05){z.set(1,0,0);z.addScaledVector(y,-z.dot(y));}}z.normalize();
+      let y=state.fingerDirection?new T.Vector3(...state.fingerDirection):w.clone().sub(elbow).normalize(),z=new T.Vector3(...state.normal).normalize();
+      // Keep the declared palm normal; the wrist bends when palm and forearm would be parallel.
+      y.addScaledVector(z,-y.dot(z));
+      if(y.length()<.05){y.set(0,1,0);y.addScaledVector(z,-y.dot(z));if(y.length()<.05){y.set(0,0,1);y.addScaledVector(z,-y.dot(z));}}y.normalize();
       const x=y.clone().cross(z).normalize();z=x.clone().cross(y).normalize();
       const rotation=new T.Matrix4().makeBasis(x,y,z);group.quaternion.setFromRotationMatrix(rotation);
       group.rotateX(state.wrist);group.position.copy(w);

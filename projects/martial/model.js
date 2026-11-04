@@ -23,6 +23,25 @@ const frames={
  bong:[f([.1,.35,.4],[-.22,.15,.05]),f([.03,.42,.5],[-.22,.15,.05]),f([.1,.35,.4],[-.22,.15,.05])],
  straight:[f([.17,.36,.22],[-.17,.36,.22]),f([.08,.48,.70],[-.17,.36,.22],{turn:-.14}),f([.17,.36,.22],[-.17,.36,.22]),f([.17,.36,.22],[-.08,.48,.70],{turn:.14}),f([.17,.36,.22],[-.17,.36,.22])]
 };
+// Labels describe this model's anchors, not a complete traditional routine.
+const teaching={
+ stand:{labels:['直立参考','轻微下移','回到起点'],observe:'看骨盆上下移动时膝、髋怎样配合。骨盆的位置不能当作全身重心。'},
+ raise:{labels:['自然垂手','双手向前','向上托举','向侧展开','回到起点'],observe:'先比较身前、头上、身体两侧三个位置。本简图未还原十指交叉和完整翻掌。'},
+ bow:{labels:['垂手参考','双手胸前','左侧展开','回到胸前','右侧展开','回到起点'],observe:'左右按人物自己的方向读，正面看时与屏幕相反。这里只比较左右展开，未还原八字掌和拉弓爪。'},
+ separate:{labels:['垂手参考','双手胸前','左上右下','回到胸前','右上左下','回到起点'],observe:'一只手往上托，另一只往下按。对照手心箭头：上托掌向上，下按掌向下；两边交换后再比较。'},
+ look:{labels:['面向前方','转头一侧','回到正中','转头另一侧','回到起点'],observe:'先从正面找鼻尖，再看侧面。只看转头方向，不照模型追求转动幅度。'},
+ sway:{labels:['直立参考','移向一侧','移向另一侧','回到起点'],observe:'对照骨盆与肩的位置变化。本图省略完整头尾环绕，不能当作摇头摆尾的规范示范。'},
+ bend:{labels:['垂手参考','双手抬起','俯身方向','逐渐回起','回到起点'],observe:'切到侧面比较躯干倾斜；此处保守幅度不到脚面，不追求摸到脚或强拉伸。'},
+ fist:{labels:['垂手参考','双手收拢','左拳向前','收回胸旁','右拳向前','回到起点'],observe:'先看伸出，再看收回，比较两次左右交换。模型没有发力和传统握固细节。'},
+ heel:{labels:['直立参考','骨盆上移示意','回到原位','再次上移','回到起点'],observe:'这里仅示意躯干轻微上下，脚跟未独立转动，不能作为提踵或落跟震动的跟练教程。'},
+ opening:{labels:['自然垂手','双手前举','向下回落','回到起点'],observe:'从侧面看双手先向前上方，再向下回落；对照掌面箭头，不把手路当成发力路线。'},
+ cloud:{labels:['双手一高一低','横向交换','高低换边','反向交换','回到循环起点'],observe:'这是一段循环，没有单独演示预备式。沿青、金两条手路看高低交换，左右始终按人物本身辨认。'},
+ push:{labels:['双手收在身前','双手前推','收回原位'],observe:'切到侧面，比较肩、肘、腕的相对位置。前推距离和肘夹角都只是模型值，不表示力量大小。'},
+ tan:{labels:['左手收在身前','左手向前摊出','收回原位'],observe:'选择左手近景，先找暖色手心和指甲，再比较摊出时掌面朝上。右手保留参考位置。'},
+ fook:{labels:['左手在身前','左腕略屈','回到原位'],observe:'看左手近景的腕部变化，再换侧面。这里没有接触对手，不能由画面判断承压或内劲。'},
+ bong:{labels:['左手在身前','左肘抬起','回到原位'],observe:'先看左肘相对手腕的位置，再看斜下掌面。本图只表达粗略方向，不给肩肘规定真人角度。'},
+ straight:{labels:['双手收在身前','左拳伸出','左拳收回','右拳伸出','右拳收回'],observe:'在伸出与收回之间来回拖动，确认两拳交替。只在屏幕观察，不对人或物体打击。'}
+};
 function interpolate(name,t){const a=frames[name];if(!a)throw Error('Unknown motion');const f=C.clamp(t,0,1)*(a.length-1),i=Math.min(a.length-2,Math.floor(f)),u=C.smooth(f-i),out={};for(const k of Object.keys(neutral))out[k]=Array.isArray(a[i][k])?a[i][k].map((v,j)=>C.mix(v,a[i+1][k][j],u)):C.mix(a[i][k],a[i+1][k],u);return out;}
 function pose(name,t,options={}){let p=interpolate(name,t);const amp=C.clamp((options.amplitude===undefined?100:options.amplitude)/100,.3,1),stance=C.clamp(options.stance===undefined?.22:options.stance,.16,.38),mirror=options.mirror?-1:1;
  for(const k of Object.keys(p))p[k]=Array.isArray(p[k])?p[k].map((x,i)=>C.mix(neutral[k][i],x,amp)):p[k]*amp;
@@ -33,5 +52,5 @@ function pose(name,t,options={}){let p=interpolate(name,t);const amp=C.clamp((op
  for(const key in j)j[key][0]*=mirror;
  return{joints:j,head:p.head,stage:Math.min(frames[name].length-1,Math.floor(C.clamp(t,0,1)*(frames[name].length-1))),count:frames[name].length};}
 function angle(a,b,c){const x=sub(a,b),y=sub(c,b);return Math.acos(C.clamp(dot(x,y)/(norm(x)*norm(y)),-1,1))*180/Math.PI;}
-const api={frames,pose,angle,solve};root.MartialModel=api;if(typeof module!=='undefined')module.exports=api;
+const api={frames,teaching,pose,angle,solve};root.MartialModel=api;if(typeof module!=='undefined')module.exports=api;
 })(typeof globalThis!=='undefined'?globalThis:this);

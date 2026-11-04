@@ -13,7 +13,19 @@
       "亲子共玩"
     ],
     "license": "AGPL-3.0-or-later",
-    "importedVersion": "2.0.0"
+    "importedVersion": "2.0.0",
+    "keywords": [
+      "月相",
+      "日食",
+      "月食",
+      "四季",
+      "太阳",
+      "月亮",
+      "地轴",
+      "日影",
+      "正午",
+      "观测"
+    ]
   },
   {
     "id": "physics",
@@ -29,7 +41,19 @@
       "齿轮测光速"
     ],
     "license": "MIT",
-    "importedVersion": "1.0.0"
+    "importedVersion": "1.0.0",
+    "keywords": [
+      "运动",
+      "加速度",
+      "牛顿",
+      "自由落体",
+      "托里拆利",
+      "压强",
+      "沸点",
+      "滑轮",
+      "双缝干涉",
+      "菲索测光速"
+    ]
   },
   {
     "id": "chemistry",
@@ -45,7 +69,19 @@
       "原子与同位素"
     ],
     "license": "MIT",
-    "importedVersion": "1.0.0"
+    "importedVersion": "1.0.0",
+    "keywords": [
+      "元素周期表",
+      "原子",
+      "同位素",
+      "配平",
+      "限量反应物",
+      "酸碱",
+      "半衰期",
+      "分离提纯",
+      "氧气",
+      "二氧化碳"
+    ]
   },
   {
     "id": "history",
@@ -61,7 +97,19 @@
       "地图演变"
     ],
     "license": "MIT",
-    "importedVersion": "1.0.0"
+    "importedVersion": "1.0.0",
+    "keywords": [
+      "帝王",
+      "朝代",
+      "唐太宗",
+      "时间轴",
+      "地图",
+      "战争",
+      "同期世界",
+      "史料",
+      "在位",
+      "手记"
+    ]
   },
   {
     "id": "posture",
@@ -77,7 +125,19 @@
       "场景调节"
     ],
     "license": "MIT",
-    "importedVersion": "1.0.0"
+    "importedVersion": "1.0.0",
+    "keywords": [
+      "电脑工位",
+      "双脚落地",
+      "椅高",
+      "屏距",
+      "吉祥卧",
+      "跪坐",
+      "盘坐",
+      "枕高",
+      "步态",
+      "方案备份"
+    ]
   },
   {
     "id": "biology",
@@ -93,7 +153,20 @@
       "生命与成长"
     ],
     "license": "MIT",
-    "importedVersion": "current"
+    "importedVersion": "current",
+    "keywords": [
+      "细胞核",
+      "线粒体",
+      "减数分裂",
+      "遗传棋盘",
+      "肺泡",
+      "咖啡",
+      "咖啡因",
+      "半衰期",
+      "花粉",
+      "显微镜",
+      "叶绿体"
+    ]
   },
   {
     "id": "geography",
@@ -109,7 +182,19 @@
       "路线实验"
     ],
     "license": "MIT",
-    "importedVersion": "current"
+    "importedVersion": "current",
+    "keywords": [
+      "山脉",
+      "山峰",
+      "海拔",
+      "湖泊",
+      "峡谷",
+      "河流",
+      "经纬度",
+      "麦哲伦",
+      "郑和",
+      "港口"
+    ]
   },
   {
     "id": "cosmos",
@@ -125,7 +210,19 @@
       "模型边界"
     ],
     "license": "MIT",
-    "importedVersion": "current"
+    "importedVersion": "current",
+    "keywords": [
+      "宇宙",
+      "太阳系",
+      "行星",
+      "恒星",
+      "银河系",
+      "光年",
+      "光速",
+      "卫星",
+      "黄道",
+      "拉尼亚凯亚"
+    ]
   },
   {
     "id": "martial",
@@ -141,7 +238,19 @@
       "轨迹与角度"
     ],
     "license": "MIT",
-    "importedVersion": "current"
+    "importedVersion": "current",
+    "keywords": [
+      "八段锦",
+      "小念头",
+      "摊手",
+      "伏手",
+      "膀手",
+      "云手",
+      "直拳",
+      "手心",
+      "手背",
+      "镜像"
+    ]
   },
   {
     "id": "math",
@@ -157,7 +266,19 @@
       "不同证明"
     ],
     "license": "MIT",
-    "importedVersion": "current"
+    "importedVersion": "current",
+    "keywords": [
+      "乘法",
+      "竖式",
+      "格子乘法",
+      "勾股",
+      "求根公式",
+      "分数",
+      "几何",
+      "圆锥曲线",
+      "证明",
+      "矩阵"
+    ]
   },
   {
     "id": "chinese",
@@ -173,7 +294,19 @@
       "词语与名句"
     ],
     "license": "MIT；笔顺数据另遵Arphic许可",
-    "importedVersion": "current"
+    "importedVersion": "current",
+    "keywords": [
+      "汉字",
+      "识字",
+      "拼音",
+      "笔顺",
+      "多音字",
+      "成语",
+      "歇后语",
+      "完整故事",
+      "造句",
+      "字源"
+    ]
   },
   {
     "id": "english",
@@ -189,7 +322,18 @@
       "单复数"
     ],
     "license": "MIT",
-    "importedVersion": "current"
+    "importedVersion": "current",
+    "keywords": [
+      "英语",
+      "方位",
+      "单复数",
+      "句子积木",
+      "词序",
+      "单词",
+      "介词",
+      "语法",
+      "名词"
+    ]
   },
   {
     "id": "computing",
@@ -205,7 +349,19 @@
       "查找实验"
     ],
     "license": "MIT",
-    "importedVersion": "current"
+    "importedVersion": "current",
+    "keywords": [
+      "编程",
+      "机器人",
+      "指令",
+      "像素",
+      "编码",
+      "查找",
+      "二分查找",
+      "算法",
+      "调试",
+      "有限重复"
+    ]
   },
   {
     "id": "music",
@@ -221,7 +377,19 @@
       "旋律创作"
     ],
     "license": "MIT",
-    "importedVersion": "current"
+    "importedVersion": "current",
+    "keywords": [
+      "音乐",
+      "音高",
+      "频率",
+      "节奏",
+      "旋律",
+      "音符",
+      "节拍",
+      "八拍",
+      "乐谱",
+      "创作"
+    ]
   },
   {
     "id": "psychology",
@@ -237,7 +405,19 @@
       "来源与边界"
     ],
     "license": "MIT",
-    "importedVersion": "current"
+    "importedVersion": "current",
+    "keywords": [
+      "知识诅咒",
+      "负强化",
+      "认知偏差",
+      "注意",
+      "记忆",
+      "情绪",
+      "动机",
+      "归因",
+      "沉没成本",
+      "概念对照"
+    ]
   },
   {
     "id": "social",
@@ -253,6 +433,18 @@
       "语言与行动"
     ],
     "license": "MIT",
-    "importedVersion": "current"
+    "importedVersion": "current",
+    "keywords": [
+      "沟通",
+      "拒绝",
+      "道歉",
+      "亲子",
+      "代码评审",
+      "边界",
+      "隐私",
+      "安慰",
+      "欺凌",
+      "承诺"
+    ]
   }
 ]

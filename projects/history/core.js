@@ -62,5 +62,32 @@
       journey: Number.isInteger(input.journey) && input.journey >= 0 ? Math.min(input.journey, 5) : 0
     };
   }
-  return {MIN_YEAR,MAX_YEAR,validYear,ordinal,fromOrdinal,yearLabel,rangeLabel,distance,reignYears,reignLabel,aliveIn,activeDynasties,nearestSnapshot,escapeHTML,parseYear,matches,sanitizeSaved};
+  // Backups are a separate, strict format; legacy local storage remains unchanged.
+  function validateBackup(raw, ids) {
+    if (!raw || typeof raw !== 'object' || Array.isArray(raw) || raw.app !== 'guanshi-history' || raw.version !== 1) throw Error('不是本馆支持的备份格式。');
+    const output = {};
+    for (const field of ['bookmarks','visited','answered']) {
+      const values = raw[field], allowed = new Set(ids[field]);
+      if (!Array.isArray(values) || values.length > allowed.size || values.some(id => typeof id !== 'string' || !allowed.has(id))) throw Error('备份含未知或无效的记录。');
+      output[field] = [...new Set(values)];
+    }
+    if (typeof raw.notes !== 'string' || raw.notes.length > 20000) throw Error('备份手记无效或超过20000字。');
+    if (!Number.isInteger(raw.journey) || raw.journey < 0 || raw.journey >= ids.journeys) throw Error('探索路线编号无效。');
+    output.notes = raw.notes; output.journey = raw.journey;
+    return output;
+  }
+  function mergeBackup(current, incoming, ids) {
+    const clean = validateBackup(incoming, ids);
+    let notes = current.notes;
+    if (clean.notes && !notes.includes(clean.notes)) notes = notes ? notes + '\n\n—— 导入手记（保留原文）——\n\n' + clean.notes : clean.notes;
+    // Reject the whole merge rather than silently truncate either learner's text.
+    if (notes.length > 20000) throw Error('两份手记合并后超过20000字，未导入；请先分别导出保存。');
+    return {
+      bookmarks:[...new Set([...current.bookmarks,...clean.bookmarks])],
+      visited:[...new Set([...current.visited,...clean.visited])],
+      answered:[...new Set([...current.answered,...clean.answered])],
+      notes, journey:Math.max(current.journey,clean.journey)
+    };
+  }
+  return {MIN_YEAR,MAX_YEAR,validYear,ordinal,fromOrdinal,yearLabel,rangeLabel,distance,reignYears,reignLabel,aliveIn,activeDynasties,nearestSnapshot,escapeHTML,parseYear,matches,sanitizeSaved,validateBackup,mergeBackup};
 });

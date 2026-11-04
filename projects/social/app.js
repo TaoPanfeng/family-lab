@@ -3,11 +3,11 @@
 const D=SocialData,C=KnowledgeCore,M=SocialModel,$=id=>document.getElementById(id);
 const APP='family-lab-social',KEY=APP+'.v1',ids=D.entries.map(e=>e.id),byId=new Map(D.entries.map(e=>[e.id,e]));
 const categories=new Map(D.categories.map(c=>[c.id,c]));
-let records=C.empty(),selected=byId.get(location.hash.slice(1))||D.entries[0],shown=[],choice=null,revealed=false,mode='quiz',variant='full',font=18;
+let records=C.empty(),selected=byId.get(location.hash.slice(1))||D.entries[0],shown=[],choice=null,revealed=false,mode='quiz',variant='full',font=18,storageReadBlocked=false;
 const node=(tag,text,cls)=>{const el=document.createElement(tag);if(text!==undefined)el.textContent=text;if(cls)el.className=cls;return el;};
 function announce(text){$('notice').textContent=text;clearTimeout(announce.timer);announce.timer=setTimeout(()=>$('notice').textContent='',4000);}
-function save(){try{localStorage.setItem(KEY,JSON.stringify({app:APP,version:1,...records}));$('storage-status').textContent='已保存本馆收藏与看过记录。';return true;}catch(_){$('storage-status').textContent='未能保存到浏览器；本页暂存，请导出记录。';announce('保存受阻；请导出记录。没有上传任何信息。');return false;}}
-try{const raw=localStorage.getItem(KEY);if(raw)records=C.validate(JSON.parse(raw),APP,ids);}catch(_){$('storage-status').textContent='旧记录无法读取；仍可学习，原存储未被主动删除。';}
+function save(){if(storageReadBlocked){$('storage-status').textContent='旧记录未能读取，已停止覆盖；本页新记录请导出。';return false;}try{localStorage.setItem(KEY,JSON.stringify({app:APP,version:1,...records}));$('storage-status').textContent='已保存本馆收藏与看过记录。';return true;}catch(_){$('storage-status').textContent='未能保存到浏览器；本页暂存，请导出记录。';announce('保存受阻；请导出记录。没有上传任何信息。');return false;}}
+try{const raw=localStorage.getItem(KEY);if(raw)records=C.validate(JSON.parse(raw),APP,ids);}catch(_){storageReadBlocked=true;$('storage-status').textContent='旧记录无法读取，已停止自动覆盖；本页新记录请导出。';}
 function clearExercise(){choice=null;revealed=false;variant='full';$('own-words').value='';$('copy-status').textContent='';$('copy-fallback').value='';$('copy-fallback').hidden=true;}
 function hash(){try{history.replaceState(null,'','#'+selected.id);}catch(_){/* A local-file policy may disallow history updates; content still works. */}}
 function query(){return {query:$('search').value,category:$('category').value,audience:$('audience').value,favorites:$('favorites-only').checked?records.favorites:null,unread:$('unread-only').checked?records.read:null};}
@@ -69,7 +69,7 @@ $('entries').onclick=e=>{const b=e.target.closest('[data-id]');if(b)pick(b.datas
 $('options').onclick=e=>{const b=e.target.closest('[data-option]');if(!b)return;choice=Number(b.dataset.option);revealed=false;renderOptions();renderAnswer();$('options').querySelector('[data-option="'+choice+'"]').focus({preventScroll:true});};
 for(const id of ['category','audience','favorites-only','unread-only'])$(id).onchange=()=>{clearExercise();render();};
 $('search').oninput=()=>{clearExercise();render();};
-for(const id of ['clear-filters','empty-clear'])$(id).onclick=()=>{clearFilters();clearExercise();render();};
+for(const id of ['clear-filters','empty-clear'])$(id).onclick=()=>{clearFilters();clearExercise();render();if(id==='empty-clear'){$('directory').open=true;$('search').focus({preventScroll:true});}};
 $('search').onkeydown=e=>{if(e.key==='Escape'){e.preventDefault();clearFilters();clearExercise();render();}};
 $('previous').onclick=()=>{const i=shown.findIndex(e=>e.id===selected.id);if(i>0)pick(shown[i-1].id,true);};
 $('next').onclick=()=>{const i=shown.findIndex(e=>e.id===selected.id);if(i>=0&&i<shown.length-1)pick(shown[i+1].id,true);};
@@ -85,8 +85,8 @@ for(const [id,key] of [['favorite','favorites'],['mark-read','read']])$(id).oncl
 $('copy').onclick=async()=>{const text=M.response(selected,variant),scene=selected.id,view=variant;try{if(!navigator.clipboard?.writeText)throw Error('unsupported');await navigator.clipboard.writeText(text);if(scene===selected.id&&view===variant&&revealed)$('copy-status').textContent='已复制当前表达。';}catch(_){if(scene!==selected.id||view!==variant||!revealed)return;$('copy-fallback').value=text;$('copy-fallback').hidden=false;$('copy-status').textContent='浏览器未允许自动复制，请在下框长按或选择文字复制。';$('copy-fallback').focus();$('copy-fallback').select();}};
 $('export').onclick=()=>{const blob=new Blob([JSON.stringify({app:APP,version:1,...records},null,2)],{type:'application/json'}),u=URL.createObjectURL(blob),a=node('a');a.href=u;a.download='人情世故-收藏与阅读记录.json';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000);};
 $('import').onchange=async e=>{const file=e.target.files[0];if(!file)return;try{if(file.size>100000)throw Error('文件过大');const incoming=C.validate(JSON.parse(await file.text()),APP,ids);records=C.merge(records,incoming);const ok=save();$('storage-status').textContent=ok?'导入成功，只合并收藏与看过编号。':'合并到本页，但未能保存到浏览器，请导出记录。';render();}catch(error){$('storage-status').textContent='未导入：'+error.message;}finally{e.target.value='';}};
-$('reset-records').onclick=()=>{$('reset-confirm').hidden=false;};$('cancel-reset').onclick=()=>{$('reset-confirm').hidden=true;};
-$('confirm-reset').onclick=()=>{try{localStorage.removeItem(KEY);records=C.empty();$('reset-confirm').hidden=true;$('storage-status').textContent='已清空本馆记录，其他馆未更改。';clearExercise();render();}catch(_){$('storage-status').textContent='清空失败，原记录未主动更改。';}};
+$('reset-records').onclick=()=>{$('reset-confirm').hidden=false;$('cancel-reset').focus({preventScroll:true});};$('cancel-reset').onclick=()=>{$('reset-confirm').hidden=true;$('reset-records').focus({preventScroll:true});};
+$('confirm-reset').onclick=()=>{try{localStorage.removeItem(KEY);storageReadBlocked=false;records=C.empty();$('reset-confirm').hidden=true;$('storage-status').textContent='已清空本馆记录，其他馆未更改。';clearExercise();render();$('reset-records').focus({preventScroll:true});}catch(_){$('storage-status').textContent='清空失败，原记录未主动更改。';}};
 window.addEventListener('hashchange',()=>{const id=location.hash.slice(1);if(byId.has(id)){clearFilters();pick(id,true);}});
 window.SocialTest={state:()=>({selected:selected.id,shown:shown.map(e=>e.id),choice,revealed,mode,variant,records}),ids:()=>ids.slice()};
 render();

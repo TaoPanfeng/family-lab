@@ -3,7 +3,9 @@
  const distances={moon:{from:'地球',to:'月球',km:384400},sun:{from:'太阳',to:'地球',km:149597870.7},proxima:{from:'太阳',to:'比邻星',km:4.24*9460730472580.8}};
  function light(destination,t){if(!distances[destination])throw Error('Unknown light destination');if(!Number.isFinite(t))throw Error('Invalid time');const p=C.clamp(t,0,1),d=distances[destination],total=d.km/299792.458;return{...d,total,elapsed:total*p,remaining:total*(1-p),travelled:d.km*p,arrived:p===1};}
  function format(seconds){if(seconds>=31557600)return(seconds/31557600).toFixed(3)+' 年';if(seconds>=86400)return(seconds/86400).toFixed(2)+' 天';if(seconds>=3600)return(seconds/3600).toFixed(2)+' 小时';if(seconds>=60)return Math.floor(seconds/60)+'分 '+(seconds%60).toFixed(1).padStart(4,'0')+'秒';return seconds.toFixed(2)+' 秒';}
- const widths=[12742/9460730472580.8,384400/9460730472580.8,60*149597870.7/9460730472580.8,12,1e5,1e7,1.1e8,5.2e8,9.3e10];
+ // Match the labelled characteristic length of each layer, not its screen width.
+ // These mix diameters, orbital radii and neighbour distances; no seamless scale.
+ const widths=[12742/9460730472580.8,384400/9460730472580.8,30*149597870.7/9460730472580.8,4.24,1e5,1e7,1.1e8,5.2e8,9.3e10];
  function morphology(level){const random=C.rng(8301+level*7919),points=[],lines=[],markers=[];const add=(p,warm=false)=>points.push({p,color:warm?[1,.76,.44]:[.52+random()*.3,.7+random()*.2,1]});
   if(level===7){
    const attractor=[.8,-.08,0];for(let branch=0;branch<30;branch++){

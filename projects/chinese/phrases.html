@@ -19,6 +19,7 @@
     <div class="entry-list" id="entry-list" role="navigation" aria-label="词语列表"></div>
     <details class="backup"><summary>我的造句与记录</summary><p>仅保存在当前浏览器，清理网站数据前请导出。不要填写姓名、地址等隐私。</p><button id="export" type="button">导出学习记录</button><label for="import" class="file-button">导入记录<input id="import" type="file" accept=".json,application/json"></label><p id="backup-info" role="status"></p></details>
   </aside>
+  <section id="empty" class="paper" hidden aria-labelledby="empty-title"><h2 id="empty-title">没有匹配的词语</h2><p>换个关键词，或取消收藏筛选，再读一个故事。</p><button id="empty-clear" type="button">显示此类全部词语</button></section>
   <main id="study" tabindex="-1">
     <div class="intro"><p class="cap" id="kind-title">① 成语 · 读典故</p><h2 id="term">守株待兔</h2><p id="intro-tip">一个故事，怎么变成一句话？</p></div>
     <div class="pager"><button id="previous" type="button">← 上一个</button><span id="position">1 / 30</span><button id="following" type="button">下一个 →</button><button id="favorite" type="button" aria-pressed="false">☆ 收藏</button></div>
@@ -34,7 +35,7 @@
     </section>
     <section class="paper" id="meaning-practice">
       <div class="section-label">02 · 读后想一想 · 说说它的意思</div>
-      <div class="question"><h3 id="prompt"></h3><button id="reveal" class="primary" type="button" aria-expanded="false">看意思，对照一下</button></div>
+      <div class="question"><h3 id="prompt"></h3><button id="reveal" class="primary" type="button" aria-expanded="false" aria-controls="answer">看意思，对照一下</button></div>
       <div id="answer" class="answer" hidden><p class="large" id="answer-text"></p><p id="meaning"></p></div>
     </section>
     <section id="story-section" class="paper">
@@ -46,7 +47,7 @@
       <div class="section-label">03 · 放到生活里</div>
       <div class="daily"><p id="daily-example"></p></div><p id="pitfall" class="hint"></p>
       <label for="my-sentence">你来造一句（最多200字）</label><textarea id="my-sentence" maxlength="200" rows="2" placeholder="谁遇到了什么事？为什么适合用这句话？"></textarea>
-      <div class="actions"><button id="save" type="button">保存我的例句</button><button id="practice" type="button">换一个，继续挑战</button></div><p id="saved-msg" role="status"></p>
+      <div class="actions"><button id="save" type="button">保存我的例句</button><button id="practice" type="button" aria-describedby="practice-status">换一个，继续挑战</button></div><p id="practice-status" class="hint" role="status"></p><p id="saved-msg" role="status"></p>
     </section>
     <section id="phrase-source" class="paper source-card" tabindex="-1">
       <div class="section-label">04 · 时间、出处与查证</div>

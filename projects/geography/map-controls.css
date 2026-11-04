@@ -1,0 +1,4 @@
+.map-direction-controls{position:absolute;top:8px;right:8px;z-index:3;max-width:112px;border:1px solid #47687b;border-radius:8px;background:#102334ed;color:#d1e1e8}
+.map-direction-controls summary{cursor:pointer;min-height:44px;padding:11px 8px;box-sizing:border-box;font-size:12px}
+.map-direction-controls>div{display:grid;grid-template-columns:44px 44px;gap:4px;padding:4px 6px 7px}
+.map-direction-controls button{min-width:44px;min-height:44px;padding:0;font-size:20px}

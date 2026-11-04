@@ -47,10 +47,14 @@ def main():
                 check('homepage HTTP 200',response.status==200)
                 check('sixteen independent museum entries',page.locator('[data-project]').count()==16)
                 page.locator('#museum-search').fill('氧气')
-                check('homepage search filters actual cards',page.locator('[data-project]:visible').count()==1)
+                check('homepage topic search finds oxygen in biology and chemistry',sorted(page.locator('[data-project]:visible').evaluate_all('(items)=>items.map(e=>e.dataset.project)'))==['biology','chemistry'])
+                for query,expected in [('麦哲伦',['geography']),('勾股',['math']),('汉字',['chinese']),('牛顿 加速度',['physics'])]:
+                    page.locator('#museum-search').fill(query)
+                    check('homepage topic keywords '+query,sorted(page.locator('[data-project]:visible').evaluate_all('(items)=>items.map(e=>e.dataset.project)'))==expected)
                 page.locator('#museum-search').fill('000missing')
                 check('homepage empty search state',page.locator('#home-empty').is_visible())
-                page.locator('#museum-search').press('Escape')
+                page.locator('#search-clear').click()
+                check('clear search returns keyboard focus',page.locator('#museum-search').evaluate('(e)=>document.activeElement===e'))
                 check('Escape restores all cards',page.locator('[data-project]:visible').count()==16)
                 entries=page.locator('[data-project]').evaluate_all('(ls)=>ls.map(a=>({id:a.dataset.project,href:a.getAttribute("href")}))')
                 ready={'social':'!!window.SocialTest','psychology':'!!window.PsychologyTest','english':'!!window.WorkshopTest','computing':'!!window.WorkshopTest','music':'!!window.WorkshopTest','chinese':'!!window.ChineseTest','math':'!!window.MathTest','astronomy':'!!window.LabV2','physics':'!!window.GuanWu','chemistry':'!!window.ChemAppTesting','history':'!!document.querySelector("#navigation [data-view]")','posture':'!!window.PostureLab'}

@@ -61,7 +61,11 @@ function mount(id,host){if(!['sets','shapes','commutative','direction','coordina
   }else if(id==='conditional'){
    picture.innerHTML=svg(['♥ 红桃13','♦ 方块13','♠ 黑桃13','♣ 梅花13'].map((t,i)=>`<rect x="${40+i*140}" y="72" width="125" height="160" rx="12" fill="${i<2?'#f5d5cb':'#d2dfe4'}" opacity="${st.step&&i>=2?.2:1}"/>`+text(102+i*140,156,t)).join(''));formula(st.step?'P(\\text{红桃}\\mid\\text{红牌})=\\frac{13}{26}=\\frac12':'P(\\text{红桃})=\\frac{13}{52}=\\frac14');note.textContent='忽略大小王，共52张。得到“是红牌”的信息后，可能范围从52张缩为26张；红桃仍13张，改变的是分母。';
   }else if(id==='sine-cosine-law'){
-   const a=st.n*Math.PI/180,c=Math.sqrt(8-8*Math.cos(a));picture.innerHTML=svg(`<polygon points="240,250 400,250 ${240+160*Math.cos(a)},${250-160*Math.sin(a)}" fill="#bfdbd8" stroke="#287986" stroke-width="3"/>`+text(240,282,'2')+text(130,144,'2')+text(390,120,st.n+'°'));formula(`c^2=2^2+2^2-2\\cdot2\\cdot2\\cos(${st.n}^\\circ),\\quad c\\approx${c.toFixed(3)}`);note.textContent='两边都固定为2，改变夹角，第三边会变。90°时余弦项为0，余弦定理回到勾股定理。';
+   const a=st.n*Math.PI/180,c=Math.sqrt(8-8*Math.cos(a)),cx=250+200*Math.cos(a),cy=250-200*Math.sin(a);
+   // Attach side labels and the angle arc to the actual construction, including obtuse triangles.
+   const label=(edge,x,y,value)=>text(x,y,value).replace('<text ',`<text data-edge="${edge}" `),arc=`<path data-angle="${st.n}" d="M282 250A32 32 0 0 0 ${250+32*Math.cos(a)},${250-32*Math.sin(a)}" fill="none" stroke="#b36b32" stroke-width="2"/>`;
+   picture.innerHTML=svg(`<polygon points="250,250 450,250 ${cx},${cy}" fill="#bfdbd8" stroke="#287986" stroke-width="3"/>`+arc+label('a',350,278,'2')+label('b',(250+cx)/2-22*Math.sin(a),(250+cy)/2-22*Math.cos(a),'2')+label('c',(450+cx)/2+22*Math.cos(a/2),(250+cy)/2-22*Math.sin(a/2),'c')+text(250+70*Math.cos(a/2),250-70*Math.sin(a/2),st.n+'°'));
+   formula(`c^2=2^2+2^2-2\\cdot2\\cdot2\\cos(${st.n}^\\circ),\\quad c\\approx${c.toFixed(3)}`);note.textContent='两边都固定为2，弧线标出它们的夹角；c是夹角对面的第三边。改变夹角，第三边会变。90°时余弦项为0，余弦定理回到勾股定理。';
   }else if(id==='logarithms'){
    const value=st.a**st.n;picture.innerHTML=svg(text(300,90,'从1出发，每次乘 '+st.a)+Array.from({length:st.n+1},(_,i)=>text(50+i*80,170,st.a**i)).join('')+text(300,250,'反过来问：乘了多少次？'));formula(`${st.a}^{${st.n}}=${value}\\quad\\Longleftrightarrow\\quad\\log_{${st.a}}${value}=${st.n}`);note.textContent='这里先观察整数次重复相乘。一般对数也允许非整数答案；底数须大于0且不为1，真数大于0。';
   }else if(id==='spread'){

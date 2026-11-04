@@ -40,3 +40,5 @@
 html{scroll-padding-top:82px}
 /* The page padding already reserves the sticky toolbar; avoid reserving it twice. */
 #full-story,#phrase-source,#phrase-directory,#study{scroll-margin-top:10px}
+/* Transparent native file input stays focusable; its label supplies the visible focus ring. */
+.file-button{position:relative}.file-button input{display:block;position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}.file-button:focus-within{outline:3px solid var(--gold);outline-offset:3px}

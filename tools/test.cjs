@@ -25,8 +25,12 @@ const suites = [
   ['历史数据','projects/history',['--test','tests/core-data.test.cjs']],
   ['历史文件完整性','projects/history',['tests/verify-package.cjs']]
 ];
-if (!offline) suites.push(['历史 DOM 交互','projects/history',['--test','tests/ui-flow.test.cjs']]);
-else console.log('范围说明：--offline 不包含依赖 jsdom 的历史 DOM 测试；浏览器测试另行执行。');
+const auditFiles=fs.readdirSync(path.join(root,'tests')).filter(f=>f.endsWith('-audit.test.cjs')).sort().map(f=>'tests/'+f);
+if (!offline){
+ suites.push(['历史 DOM 交互','projects/history',['--test','tests/ui-flow.test.cjs','tests/humanities-ui.test.cjs']]);
+ suites.push(['全站审查的焦点、生命周期、备份与数值回归','.', ['--test',...auditFiles,'projects/physics/tests/audit.test.cjs','projects/biology/tests/audit-microscope.test.cjs','projects/martial/tests/audit-directions.test.cjs','projects/posture/tests/audit-motion.test.cjs']]);
+}
+else console.log('范围说明：--offline 不包含历史与本轮审查的 DOM 测试；浏览器测试另行执行。');
 for (const [name,dir,args] of suites) {
   console.log('\n=== '+name+' ===');
   const result=spawnSync(process.execPath,args,{cwd:path.join(root,dir),stdio:'inherit'});

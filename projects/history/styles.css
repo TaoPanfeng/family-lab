@@ -28,3 +28,6 @@ body[data-mode=child] .dynasty-summary,body[data-mode=child] .ruler-card p,body[
  button,select,summary{touch-action:manipulation}
  dialog{max-height:90dvh;overscroll-behavior:contain}
 }
+
+/* Keep the native file input keyboard reachable as well as its visible label. */
+.record-backup{margin-top:18px;border-top:1px solid var(--line);padding-top:12px}.record-backup summary{cursor:pointer;font-weight:600}.record-backup p{margin:10px 0}.record-backup .controls{flex-wrap:wrap}.backup-file{max-width:100%;font-size:12px}.record-backup #backup-status:empty{display:none}#quiz-question:focus,.quiz-feedback:focus{outline:3px solid #cba669;outline-offset:4px}

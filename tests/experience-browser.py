@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Audit shared controls per lesson and the redesigned martial model, recording actual coverage."""
 from pathlib import Path
-import argparse,functools,http.server,json,re,shutil,threading
+import argparse,functools,http.server,json,re,shutil,threading,subprocess,sys
 from playwright.sync_api import sync_playwright
 ROOT=Path(__file__).resolve().parents[1];p=argparse.ArgumentParser(description=__doc__)
 for flag in ['inject','file','site','require-webgl']:p.add_argument('--'+flag,action='store_true')
@@ -56,6 +56,13 @@ try:
    page.locator('#favorite').click();page.locator('#favorites-only').click();check(mod+': favorite-only navigation',page.locator('[data-lesson]').count()==1);page.locator('#favorites-only').click();page.locator('#search').fill('xyz-does-not-exist');check(mod+': empty search',page.locator('[data-lesson]').count()==0);page.locator('#search').fill('')
    page.locator('#notes-open').click();check(mod+': notebook button opens and focuses notes',page.locator('#notebook').get_attribute('open') is not None);page.close()
   check('no uncaught errors across audited controls',not report['errors']);b.close()
+ # Keep the parent HTTP server alive while the focused audit uses the same origin.
+ if not a.inject:
+  command=[sys.executable,str(ROOT/'tests/site-audit-browser.py'),'--out',str(OUT/'audit')]
+  if a.file:command.append('--file')
+  else:command.extend(['--base',base])
+  if a.browser:command.extend(['--browser',a.browser])
+  subprocess.run(command,check=True)
  report['status']='passed'
 except Exception as e:report['status']='failed';report['exception']=str(e);raise
 finally:

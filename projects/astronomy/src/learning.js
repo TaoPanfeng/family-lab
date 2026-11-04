@@ -81,16 +81,16 @@
   }
   class Store{
     constructor(storage,key='sem-lab-v2'){
-      this.storage=storage;this.key=key;this.persistent=false;this.error='';this.memory={};
+      this.storage=storage;this.key=key;this.persistent=false;this.readFailure=false;this.error='';this.memory={};
       try{storage.setItem(key+':probe','1');storage.removeItem(key+':probe');this.persistent=true;}catch(e){this.error='浏览器不允许本地保存，请导出 JSON 备份。';}
     }
-    get(name,fallback=null){
-      try{const raw=Object.prototype.hasOwnProperty.call(this.memory,name)?this.memory[name]:this.persistent?this.storage.getItem(this.key+':'+name):null;return raw?JSON.parse(raw):fallback;}
-      catch(e){this.error='有一份本地记录无法读取。导入已保存的备份可以恢复。';return fallback;}
+    get(name,fallback=null,validate=null){
+      try{const raw=Object.prototype.hasOwnProperty.call(this.memory,name)?this.memory[name]:this.persistent?this.storage.getItem(this.key+':'+name):null;if(raw===null||raw===undefined)return fallback;const value=JSON.parse(raw);return validate?validate(value):value;}
+      catch(e){this.readFailure=true;this.error='原有本地记录无法读取或版本不兼容，已保留原数据；本次仅暂存，请导出 JSON 备份。';return fallback;}
     }
     put(name,value){
       const raw=JSON.stringify(value);this.memory[name]=raw;
-      if(this.persistent){try{this.storage.setItem(this.key+':'+name,raw);return true;}catch(e){this.error='浏览器存储空间不足或被禁用；本次只暂存，请立即导出备份。';return false;}}
+      if(this.persistent&&!this.readFailure){try{this.storage.setItem(this.key+':'+name,raw);return true;}catch(e){this.error='浏览器存储空间不足或被禁用；本次只暂存，请立即导出备份。';return false;}}
       return false;
     }
   }

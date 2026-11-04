@@ -21,5 +21,17 @@ function solarDeclination(longitude,tilt){finite(longitude);finite(tilt);const d
 function lightSeconds(km){finite(km);if(km<0)throw Error('Negative distance');return km/299792.458;}
 function sexCross(){return['XX','XY','XX','XY'];}
 function validateNotes(x){if(!x||x.version!==1||!Array.isArray(x.notes)||x.notes.length>100)throw Error('备份格式不正确');return x.notes.map(n=>{if(!n||typeof n.topic!=='string'||n.topic.length>100||typeof n.text!=='string'||n.text.length>2000||typeof n.date!=='string'||n.date.length>50)throw Error('笔记字段不正确');return{topic:n.topic,text:n.text,date:n.date};});}
-const api={finite,clamp,mix,smooth,rng,caffeine,cross,offspring,chromosome,photosynthesis,geoPoint,distance,interpolateRoute,atmosphere,period,orbitPeriod,solarRadius,solarDeclination,lightSeconds,sexCross,validateNotes};if(typeof module!=='undefined')module.exports=api;root.WorldCore=api;
+// Notes-only version 1 backups remain readable; new exports include the whole lesson record.
+function validateLearningBackup(raw,subject,ids){
+ const notes=validateNotes(raw),legacy=raw.app===undefined&&raw.subject===undefined&&raw.favorites===undefined&&raw.solved===undefined;
+ if(legacy)return {mode:'child',favorites:[],solved:[],notes};
+ if(raw.app!=='family-lab-learning'||raw.subject!==subject||!['child','adult'].includes(raw.mode))throw Error('不是本馆的学习记录');
+ const out={mode:raw.mode,notes};for(const k of ['favorites','solved']){if(!Array.isArray(raw[k])||raw[k].length>ids.length||raw[k].some(id=>typeof id!=='string'||!ids.includes(id)))throw Error('包含未知或过多的主题');out[k]=[...new Set(raw[k])];}return out;
+}
+function mergeLearningBackup(current,incoming){
+ const notes=[];for(const n of [...current.notes,...incoming.notes])if(!notes.some(v=>v.topic===n.topic&&v.text===n.text&&v.date===n.date))notes.push({...n});
+ if(notes.length>100)throw Error('合并后超过100条，请先分批整理');
+ return {mode:current.mode,favorites:[...new Set([...current.favorites,...incoming.favorites])],solved:[...new Set([...current.solved,...incoming.solved])],notes};
+}
+const api={finite,clamp,mix,smooth,rng,caffeine,cross,offspring,chromosome,photosynthesis,geoPoint,distance,interpolateRoute,atmosphere,period,orbitPeriod,solarRadius,solarDeclination,lightSeconds,sexCross,validateNotes,validateLearningBackup,mergeLearningBackup};if(typeof module!=='undefined')module.exports=api;root.WorldCore=api;
 })(typeof globalThis!=='undefined'?globalThis:this);

@@ -17,7 +17,7 @@
   function mesh(geometry,color){return new THREE.Mesh(geometry,new THREE.MeshStandardMaterial({color,roughness:.82,metalness:0}));}
   function label(text,color){const canvas=document.createElement('canvas');canvas.width=256;canvas.height=80;const c=canvas.getContext('2d');c.fillStyle='#0b1626df';c.roundRect(0,0,256,80,14);c.fill();c.fillStyle=color;c.font='600 26px system-ui,"Microsoft YaHei"';c.textAlign='center';c.textBaseline='middle';c.fillText(text,128,40);const texture=new THREE.CanvasTexture(canvas),sprite=new THREE.Sprite(new THREE.SpriteMaterial({map:texture,depthTest:false,transparent:true}));sprite.scale.set(.26,.081,1);return sprite;}
   M.mount=({lesson:l,values:v,container,custom})=>{
-    frameKey='';custom.innerHTML='<section class="card"><h2>先看身形，再看掌向与动作</h2><div class="legend"><span class="legend-chip"><i style="--chip:#f0c7a5"></i>暖色面＝手心（可见掌纹）</span><span class="legend-chip"><i style="--chip:#9eb6cb"></i>蓝灰面＝手背（可见指甲）</span><span>青环＝人物左腕；金环＝人物右腕</span></div><p id="hand-state" class="details-text"></p><div class="phase-strip" id="pose-frames"></div><p class="tiny">模型展示关节位置与掌面，不推算发力或内劲；不同传承动作存在差异，不能代替教练纠正。</p></section>';
+    frameKey='';custom.innerHTML='<section class="card"><h2>先看身形，再看掌向与动作</h2><div class="legend"><span class="legend-chip"><i style="--chip:#f0c7a5"></i>暖色面＝手心（可见掌纹）</span><span class="legend-chip"><i style="--chip:#9eb6cb"></i>蓝灰面＝手背（可见指甲）</span><span>青环＝人物左腕；金环＝人物右腕</span></div><p id="hand-state" class="details-text"></p><div class="phase-strip" id="pose-frames"></div><p id="motion-step" class="details-text" aria-live="off"></p><p class="tiny">模型展示关节位置与掌面，不推算发力或内劲；不同传承动作存在差异，不能代替教练纠正。</p></section>';
     const s=Lab3D.make(container,{distance:3.25,target:[0,.99,0],yaw:0,pitch:.12,min:.3,max:10,allowSoftware:true});if(!s)return null;
     const human=window.MartialHuman?.make(s.scene);
     const bones=links.map(([a],i)=>{const upper=i%2===0,leg=i>=4;const top=leg?(upper?.09:.064):(upper?.067:.045),bottom=leg?(upper?.062:.037):(upper?.047:.027);const obj=mesh(new THREE.CylinderGeometry(bottom,top,1,20),leg?0x223747:0xe5ded0);s.scene.add(obj);return obj;});
@@ -68,7 +68,7 @@
 
       for(const key in joints){joints[key].position.set(...j[key]);joints[key].visible=v.skeleton||skeleton;}
       torso.position.set(...j.pelvis);torso.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),new THREE.Vector3(...j.neck).sub(new THREE.Vector3(...j.pelvis)).normalize());
-      hips.position.set(...j.pelvis);belt.position.set(j.pelvis[0],j.pelvis[1]+.13,j.pelvis[2]);neck.position.set(...j.neck);head.position.set(...j.head);head.rotation.y=p.head;
+      hips.position.set(...j.pelvis);belt.position.set(j.pelvis[0],j.pelvis[1]+.13,j.pelvis[2]);neck.position.set(...j.neck);head.position.set(...j.head);head.rotation.y=v.mirror?-p.head:p.head;
       for(const side of ['l','r']){
         const state=H.handState(name,t,side,v.mirror);hands[side].update(j,state,v.mirror);
         feet[side].visible=!skeleton&&!human;feet[side].position.set(j[side+'Ankle'][0],.045,j[side+'Ankle'][2]+.06);
@@ -89,8 +89,9 @@
   M.render=({ctx:c,lesson:l,values:v,time:t,view})=>{
     const name=v.motion||l.motion,p=B.pose(name,t,fields(v)),j=p.joints;
     if(!view||!view.three)fallback(c,p,v);
-    if(frameKey!==name){frameKey=name;const box=document.querySelector('#pose-frames');box.innerHTML='';for(let i=0;i<p.count;i++){const b=document.createElement('button');b.textContent=i===0?'预备':i===p.count-1?'收式':'分解 '+i;b.onclick=()=>LabTest.seek(i/(p.count-1));box.append(b);}}
+    if(frameKey!==name){frameKey=name;const box=document.querySelector('#pose-frames');box.innerHTML='';for(let i=0;i<p.count;i++){const b=document.createElement('button');b.textContent=B.teaching[name].labels[i];b.setAttribute('aria-label','定位到：'+b.textContent);b.onclick=()=>LabTest.seek(i/(p.count-1));box.append(b);}}
     document.querySelectorAll('#pose-frames button').forEach((b,i)=>b.setAttribute('aria-pressed',p.stage===i));
+    const teaching=B.teaching[name];document.querySelector('#motion-step').textContent='现在看：'+teaching.labels[p.stage]+(p.stage<p.count-1?' → '+teaching.labels[p.stage+1]:'（本段终点）')+'。'+teaching.observe+(v.mirror?' 镜像打开：侧别沿用原人物标记，画面左右反射。':'');
     const a=H.handState(name,t,'l',v.mirror),b=H.handState(name,t,'r',v.mirror);document.querySelector('#hand-state').textContent='人物左手：'+a.description+'；人物右手：'+b.description+'。掌纹、指甲和箭头一起判断朝向，不靠一个圆球猜手型。';
     return {metrics:[['人物左肘内夹角',B.angle(j.lShoulder,j.lElbow,j.lWrist).toFixed(1)+'°'],['人物右肘内夹角',B.angle(j.rShoulder,j.rElbow,j.rWrist).toFixed(1)+'°'],['人物左手',a.description]],
       hint:view&&view.three?(view.renderer==='canvas3d'?'软件三维（非 WebGL） · ':'')+'CC0 人体连续网格，原创教学动作（非动捕）。拖动旋转、滚轮缩放；“观察范围”可放大单手。箭头垂直于掌面，暖色手心、蓝灰手背。':'三维未启动；此处仅显示二维备用骨架。',clock:'动作进度 '+Math.round(t*100)+'%'};

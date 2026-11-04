@@ -46,7 +46,7 @@ function paint(){if(!topic)return;
   if(topic.id==='division')steps=[`${v.n}个物体，平均分给${v.d}组；此处不切开物体`,`每组${Math.floor(v.n/v.d)}个，剩下${v.n%v.d}个`,`验算：${v.d}×${Math.floor(v.n/v.d)}+${v.n%v.d}=${v.n}；余数小于除数`];
   if(steps&&JSON.stringify(topic.steps)!==JSON.stringify(steps)){topic.steps=steps;refresh?.();}
  }
- const zone=$('teaching-board');if(topic.id==='logic'&&which===0){paintLogic();return;}if(which===0&&MathLessonVisuals.mount(topic.id,zone)){$('teaching-formula').innerHTML=math(exampleFormula());return;}zone.innerHTML=basic();if(topic.id==='counting'){zone.querySelectorAll('[data-count]').forEach(el=>{el.onclick=()=>{const n=Number(el.dataset.count);counted.has(n)?counted.delete(n):counted.add(n);paint();};el.onkeydown=e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();el.onclick();}};});} $('teaching-formula').innerHTML=math(exampleFormula());}
+ const zone=$('teaching-board');if(topic.id==='logic'&&which===0){paintLogic();return;}if(which===0&&MathLessonVisuals.mount(topic.id,zone)){$('teaching-formula').innerHTML=math(exampleFormula());return;}zone.innerHTML=basic();if(topic.id==='counting'){zone.querySelectorAll('[data-count]').forEach(el=>{el.onclick=()=>{const n=Number(el.dataset.count);const focused=document.activeElement===el;counted.has(n)?counted.delete(n):counted.add(n);paint();if(focused)zone.querySelector('[data-count="'+n+'"]').focus({preventScroll:true});};el.onkeydown=e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();el.onclick();}};});} $('teaching-formula').innerHTML=math(exampleFormula());}
 function paintLogic(){
  const p=logic.w===logic.h,result=!logic.reverse||p;
  $('teaching-formula').innerHTML=math(logic.reverse?'q\\Rightarrow p':'p\\Rightarrow q');

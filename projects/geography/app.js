@@ -1,14 +1,16 @@
 /* Data layers, linked selection, keyboard-accessible comparison and route inspection. */
 (function(){'use strict';
-const M=Museum,G=GeoData,C=WorldCore,D=LabDraw,P=D.colors;let currentMap=null,active=null,hovered=null,records=[],repaint=()=>{},values=null,lesson=null,search='',compared=new Set(),recordKey='',countryKey='',regionKey='',projectionKey='',lastTime=0;
+const M=Museum,G=GeoData,C=WorldCore,D=LabDraw,P=D.colors;let currentMap=null,active=null,hovered=null,records=[],repaint=()=>{},values=null,lesson=null,search='',compared=new Set(),recordKey='',countryKey='',regionKey='',projectionKey='',lastTime=0,flatZoom=1;
 const $=s=>document.querySelector(s),esc=s=>String(s).replace(/[&<>"']/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[x]));
 const coordinate=p=>`${Math.abs(p.lon).toFixed(2)}°${p.lon<0?'W':'E'} · ${Math.abs(p.lat).toFixed(2)}°${p.lat<0?'S':'N'}`;
 for(const l of M.lessons){
  l.controls.push({id:'projection',label:'地图视图',type:'select',value:['globe','coordinates'].includes(l.id)?'globe':'flat',options:[['flat','平面地图 · 平移'],['globe','球体 · 旋转']]},
  {id:'borders',label:'国家／地区简化边界',type:'checkbox',value:true},{id:'names',label:'国家／地区名称',type:'checkbox',value:!['landforms','rivers'].includes(l.id)},{id:'oceans',label:'大洋名称',type:'checkbox',value:true},
  {id:'country',label:'定位国家／地区',type:'select',value:'',options:[['','不单独定位'],...GeoCountries.filter(c=>c.name!=='南极洲').sort((a,b)=>a.name.localeCompare(b.name,'zh')).map(c=>[c.id,c.name])]});
- l.limits+=' 国家／地区边界来自本地 Natural Earth 低分辨率快照，原始发布日期未确认，不代表当前权威边界。航路叠加的是现代简化边界，不是1519年的国界。';
+ l.limits=l.limits.replace('不绘制政治边界。','');
+ l.limits+=' 国家／地区边界来自本地 Natural Earth 低分辨率快照，原始发布日期未确认，不代表当前权威边界。航路叠加的是现代简化边界，不是1519年的国界。等经纬图在高纬夸大面积；正射球体的边缘压缩，不用屏幕长度或面积测量真实地理量。';
  l.sources.push(['Natural Earth 国家边界与数据约定','https://www.naturalearthdata.com/downloads/110m-cultural-vectors/110m-admin-0-countries/']);
+ l.sources.push(['USGS：地图投影与形状、面积和距离的取舍','https://www.usgs.gov/faqs/how-are-different-map-projections-used']);
  l.try='画面内单指旋转／平移，双指捏合缩放；也可用上方 + / −。画面外滑动可滚动页面；点“滑动页面”可从画面中滚页。';
 }
 const coordinateLesson=M.lessons.find(l=>l.id==='coordinates');
@@ -16,16 +18,19 @@ coordinateLesson.sources.push(['美国国务院历史档案：朝鲜停战线与
 coordinateLesson.controls.push({id:'reference',label:'参考纬线',type:'select',value:'38',options:[['none','不显示'],['0','赤道 0°'],['17','北纬17°'],['38','北纬38°']]});
 coordinateLesson.adult+=' 北纬38°常见于朝鲜半岛历史；越南历史中的临时军事分界在北纬17°附近，实际分界沿边海河，并不等于整条纬线。这里是纬线参照，不画作现代国界。';
 const land=M.lessons.find(l=>l.id==='landforms');land.controls.push({id:'labels',label:'显示山名／地点名',type:'checkbox',value:true},{id:'ranges',label:'山脉概略走向带',type:'checkbox',value:true},{id:'ranking',label:'地点与海拔比较',type:'select',value:'places',options:[['places','原精选山岳／湖峡'],['height','20个已引用山峰 · 海拔降序']]});
-land.sources.push(G.heightSource,G.everestSource);land.intro='山脉有走向，山峰有海拔。悬停读名字，勾选后并排比较；山脉和单峰不要混为一谈。';land.adult='山脉用人工概化轴线和半透明带表达大致走向，带宽为图形强调，不是实测边界。海拔排行榜只比较所列20个有出处的山峰，不冒充全国最高峰榜。';
+land.sources.push(G.heightSource,G.everestSource);land.intro='山脉有走向，山峰有海拔。地图标点悬停读名字，地点列表点击定位；勾选后并排比较，山脉和单峰不要混为一谈。';land.adult='山脉用人工概化轴线和半透明带表达大致走向，带宽为图形强调，不是实测边界。海拔排行榜只比较所列20个有出处的山峰，不冒充全国最高峰榜。';
 land.limits+=' 山脉走向为人工教学概化；未载入高程栅格，不输出虚假的三维地形。20个峰高样本按海拔比较，2007年的景区高程与2020年的珠峰雪面高程注明年份。';
 M.lessons.find(l=>l.id==='voyages').controls.push({id:'stops',label:'显示关键节点与编号',type:'checkbox',value:true});
 function pickRecords(v){return lesson.id==='landforms'?(v.kind==='mountain'&&v.ranking==='height'?G.heights:({mountain:G.mountains,lake:G.lakes,canyon:G.canyons}[v.kind])):lesson.id==='ports'?G.ports:lesson.id==='scenic'?G.scenic:[];}
 function detail(p){if(!p)return;$('#place-detail').textContent=p.name+' · '+coordinate(p)+(p.height?' · 海拔 '+p.height.toLocaleString()+' m':'')+' — '+p.note;}
+function selectRecord(p,locate=false){active=p;hovered=null;detail(p);if(locate)currentMap.focus(p.lon,p.lat);document.querySelectorAll('[data-place]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.place===p.id));repaint();}
 function list(){const box=$('#place-list');if(!box)return;box.innerHTML='';const found=records.filter(p=>(p.name+p.note).includes(search));
  for(const [i,p]of found.entries()){
   const row=document.createElement('div');row.className='place-row';
   const b=document.createElement('button');b.dataset.place=p.id;b.textContent=(i+1)+'. '+p.name+(p.height?'　'+p.height.toLocaleString()+' m':'');b.setAttribute('aria-pressed',active?.id===p.id);
-  b.onmouseenter=()=>{hovered=p;detail(p);repaint();};b.onmouseleave=()=>{hovered=null;detail(active);repaint();};b.onfocus=()=>{hovered=p;detail(p);repaint();};b.onblur=()=>{hovered=null;repaint();};b.onclick=()=>{active=p;detail(p);list();repaint();};row.append(b);
+  // Keep the list still before a click: changing the detail above it on hover
+  // can move the intended button away from the pointer before mouseup.
+  b.onclick=()=>selectRecord(p,true);row.append(b);
   if(lesson.id==='landforms'){const label=document.createElement('label');label.className='compare-choice';const input=document.createElement('input');input.type='checkbox';input.checked=compared.has(p.id);input.setAttribute('aria-label','比较'+p.name);input.onchange=()=>{if(input.checked)compared.add(p.id);else compared.delete(p.id);comparison();repaint();};label.append(input,document.createTextNode('比较'));row.append(label);}box.append(row);
  }
  if(!found.length)box.textContent='没有匹配的地点。清空搜索可恢复全部。';detail(active);comparison();
@@ -39,16 +44,16 @@ M.mount=({lesson:l,values:v,custom,redraw})=>{
  lesson=l;values=v;repaint=redraw;active=hovered=null;search='';compared=new Set();recordKey=countryKey=regionKey=projectionKey='';lastTime=0;
  custom.innerHTML=['landforms','ports','scenic'].includes(l.id)?'<section class="card"><div class="map-list-grid"><div><h2>所有地点，一眼对照</h2><label for="place-search">筛选本图地点</label><input id="place-search" type="search" placeholder="输入山名、湖泊或港口"><p id="place-detail" class="details-text" role="status"></p><div id="place-list" class="place-list"></div></div><div><h2>所选地点比较</h2><p class="tiny">高度栏只列有出处的单峰；山脉的走向长度不是海拔。</p><div id="height-compare" class="compare-bars"></div></div></div></section>':l.id==='voyages'?'<section class="card"><h2>沿节点读航程</h2><p id="voyage-location" role="status"></p><p class="tiny">点击节点可跳转并定位；拖动地图不改变航程。节点之间是历史概略重建，并非原始航海定位。</p><div id="voyage-nodes" class="phase-strip"></div></section>':l.id==='coordinates'?'<section class="card"><h2>纬线不等于国界</h2><p>北纬38°常用于理解朝鲜半岛历史；越南历史中的临时分界在北纬17°附近，沿边海河，并不是沿整条纬线。小空心十字只标位置，不盖住纬线。</p></section>':'';
  let initial=l.id==='landforms'||l.id==='rivers'||l.id==='scenic'?{lon:105,lat:35,zoom:4}:l.id==='ports'?{lon:60,lat:20,zoom:1.7}:l.id==='migration'?{lon:110,lat:12,zoom:6}:{lon:0,lat:8,zoom:1};
- currentMap=LabMap.create($('#canvas'),redraw,{...initial,projection:v.projection});
- currentMap.onHover=p=>{hovered=p;if(p)detail(p);else detail(active);};currentMap.onSelect=p=>{active=p;detail(p);list();redraw();};
+ flatZoom=initial.zoom;currentMap=LabMap.create($('#canvas'),redraw,{...initial,zoom:v.projection==='globe'?1:flatZoom,projection:v.projection});projectionKey=v.projection;
+ currentMap.onHover=p=>{hovered=p;if(p)detail(p);else detail(active);};currentMap.onSelect=p=>selectRecord(p);
  if($('#place-search'))$('#place-search').oninput=e=>{search=e.target.value.trim();list();redraw();};
  if(l.id==='voyages')renderStops();
- const view={three:false,renderer:'geographic-projection',state:()=>({...currentMap.state}),zoom:currentMap.zoom,resetCamera:()=>{Object.assign(currentMap.state,initial);regionKey='';redraw();},dispose:currentMap.dispose};
+ const view={three:false,renderer:'geographic-projection',state:()=>({...currentMap.state}),zoom:currentMap.zoom,resetCamera:()=>{Object.assign(currentMap.state,initial,{zoom:values.projection==='globe'?1:flatZoom});regionKey='';redraw();},dispose:currentMap.dispose};
  return view;
 };
 M.render=({ctx:c,values:v,time:t,lesson:l})=>{
  values=v;const map=currentMap;if(!map)return;map.state.projection=v.projection;
- if(projectionKey!==v.projection){projectionKey=v.projection;map.state.zoom=v.projection==='globe'?1:l.id==='landforms'?4:1;}
+ if(projectionKey!==v.projection){projectionKey=v.projection;map.state.zoom=v.projection==='globe'?1:flatZoom;}
  if(v.country!==countryKey){countryKey=v.country;const chosen=GeoCountries.find(p=>p.id===v.country);if(chosen)map.focus(...chosen.center,v.projection==='globe'?1.7:2.8);}
  if(['globe','coordinates'].includes(l.id)){
   const reg=G.regions.find(p=>p[0]===v.region)||G.regions[0],lon=l.id==='coordinates'?v.lon:reg[2],lat=l.id==='coordinates'?v.lat:reg[3],key=lon+','+lat;

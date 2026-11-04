@@ -38,23 +38,51 @@
   ];
   const STORAGE = 'wanwu-chemistry-v1';
   let storageAvailable = true;
+  let storageProtected = false;
   let saved = {};
-  try { saved = JSON.parse(localStorage.getItem(STORAGE) || '{}') || {}; } catch (_) { storageAvailable = false; }
+  try { const raw=localStorage.getItem(STORAGE);saved=raw?JSON.parse(raw):{};if(!saved||typeof saved!=='object'||Array.isArray(saved)||(saved.version!==undefined&&saved.version!==1))throw Error('无法读取本机记录版本'); } catch (_) { saved={};storageAvailable=false;storageProtected=true; }
   const state = { mode:saved.mode==='advanced'?'advanced':'kids', completed:Array.isArray(saved.completed)?saved.completed.filter(x=>x&&typeof x.id==='string').slice(0,200):[], notes:Array.isArray(saved.notes)?saved.notes.filter(x=>x&&typeof x.body==='string').slice(0,300):[], quiz:{}, route:'home', params:{} };
   let cleanup = null;
   let toastTimer;
-  function persist() { try { localStorage.setItem(STORAGE, JSON.stringify({mode:state.mode,completed:state.completed,notes:state.notes})); } catch (_) { storageAvailable=false; } }
+  function persist() { if(storageProtected)return;try { localStorage.setItem(STORAGE, JSON.stringify({mode:state.mode,completed:state.completed,notes:state.notes}));storageAvailable=true; } catch (_) { storageAvailable=false; } }
   function toast(message) { const el=$('#toast'); el.textContent=String(message); el.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(()=>el.classList.remove('show'),4200); }
   function complete(id,title,details) {
     if(!state.completed.some(x=>x.id===id)) { state.completed.push({id,title:title||id,at:new Date().toISOString()}); persist(); updateProgress(); toast(`新发现已点亮：${title||'探索完成'}`); }
     if(details) saveNote({title:title||'实验发现',body:typeof details==='string'?details:JSON.stringify(details,null,2),silent:true});
   }
-  function saveNote(entry) { const body=String(entry.body||entry.details||''); if(!body.trim())return; state.notes.unshift({id:`${Date.now()}-${Math.random().toString(36).slice(2,7)}`,title:String(entry.title||'我的发现').slice(0,100),body:body.slice(0,12000),at:new Date().toISOString(),kind:entry.kind||'discovery'}); state.notes=state.notes.slice(0,300);persist();if(!entry.silent)toast('已放进你的实验记录'); }
+  function saveNote(entry) { const body=String(entry.body||entry.details||''); if(!body.trim())return; state.notes.unshift({id:`${Date.now()}-${Math.random().toString(36).slice(2,7)}`,title:String(entry.title||'我的发现').slice(0,100),body:body.slice(0,12000),at:new Date().toISOString(),kind:entry.kind||'discovery'}); state.notes=state.notes.slice(0,300);persist();if(!entry.silent)toast(storageAvailable?'已放进你的实验记录':'已暂存这次发现，请导出备份；原有数据未被自动覆盖。'); }
   function updateProgress(){ const labs=state.completed.filter(x=>x.id.startsWith('lab-')).length; const total=(window.ChemLab&&ChemLab.experiments&&ChemLab.experiments.length)||12; const n=$('#progress-label');if(n)n.textContent=`${Math.min(labs,total)} / ${total}`;const bar=$('#progress-bar');if(bar)bar.style.width=`${Math.min(labs/total,1)*100}%`;const discoveries=$('#discovery-count');if(discoveries)discoveries.textContent=state.completed.length; }
   function navigate(route, params={}) { if(!routes.some(r=>r[0]===route))route='home';const q=new URLSearchParams(params).toString();const hash=`#${route}${q?'?'+q:''}`;if(location.hash===hash)render();else location.hash=hash;closeMenu(); }
   function closeMenu() { $('.sidebar')?.classList.remove('open');$('.mobile-overlay')?.classList.remove('open');$('.menu-toggle')?.setAttribute('aria-expanded','false'); }
   function heading(en,title,desc,tag){return `<div class="page-heading"><div><span class="eyebrow">${en}</span><h1>${title}</h1><p>${desc}</p></div>${tag?`<span class="chip green">${icon('spark',13)}${tag}</span>`:''}</div>`;}
   function download(name,text,type='text/plain;charset=utf-8') { const url=URL.createObjectURL(new Blob([text],{type}));const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),5000); }
+  // Validate the complete file before merging, so a bad entry cannot partially replace local work.
+  function validateBackup(raw) {
+    if(!raw || raw.app!=='wanwu-chemistry' || raw.version!==1 || !Array.isArray(raw.notes) || !Array.isArray(raw.completed) || raw.notes.length>300 || raw.completed.length>200)throw Error('备份格式、版本或记录数量无效');
+    function text(value,max,label){if(typeof value!=='string'||value.length>max)throw Error(label+'无效或过长');return value;}
+    function entries(items,notes){const ids=new Set();return items.map(item=>{
+      if(!item||typeof item!=='object')throw Error('记录格式无效');
+      const id=text(item.id,120,'记录编号');if(!id||ids.has(id))throw Error('记录编号为空或重复');ids.add(id);
+      const title=text(item.title,notes?100:200,'标题'),at=text(item.at,60,'日期');if(!Number.isFinite(Date.parse(at)))throw Error('记录日期无效');
+      return notes?{id,title,at,body:text(item.body,12000,'笔记内容'),kind:item.kind===undefined?'discovery':text(item.kind,40,'笔记类型')}:{id,title,at};
+    });}
+    return {notes:entries(raw.notes,true),completed:entries(raw.completed,false)};
+  }
+  function mergeBackup(existing,incoming) {
+    function merge(current,added,max){const entries=new Map(current.map(item=>[item.id,item]));for(const item of added)if(!entries.has(item.id))entries.set(item.id,item);if(entries.size>max)throw Error('合并后记录过多，请先导出并整理');return [...entries.values()];}
+    return {notes:merge(existing.notes,incoming.notes,300).sort((a,b)=>Date.parse(b.at)-Date.parse(a.at)),completed:merge(existing.completed,incoming.completed,200)};
+  }
+  async function importBackup(file) {
+    if(!file)return;
+    try {
+      if(file.size>16*1024*1024)throw Error('文件超过16 MB');
+      const incoming=validateBackup(JSON.parse(await file.text())),merged=mergeBackup(state,incoming);
+      const added=merged.notes.length-state.notes.length,completed=merged.completed.length-state.completed.length;
+      state.notes=merged.notes;state.completed=merged.completed;persist();updateProgress();
+      if(state.route==='notebook'){renderNotebook($('#main-content'));bindNav($('#main-content'));}
+      toast(`已合并备份：新增${added}条笔记、${completed}项足迹；相同编号保留本机记录。${storageAvailable?'':'本次仅暂存，请导出备份。'}`);
+    } catch(error){toast('未导入：'+error.message+'。原记录没有改变。');}
+  }
   function sub(formula){return escape(formula).replace(/(\d+)/g,'<sub>$1</sub>');}
   function num(n,d=3){return Number.isFinite(n)?Number(n.toPrecision(d)).toLocaleString('zh-CN',{maximumFractionDigits:7}):'—';}
   function bindNav(root=document){$$('[data-go]',root).forEach(el=>el.addEventListener('click',()=>navigate(el.dataset.go,el.dataset.experiment?{experiment:el.dataset.experiment}:{})));}
@@ -177,10 +205,13 @@
   }
   function renderNotebook(main){
     const labs=state.completed.filter(x=>x.id.startsWith('lab-')).length,quiz=state.completed.filter(x=>x.id.startsWith('quiz-')).length;
-    main.innerHTML=heading('MY DISCOVERY JOURNAL','我的实验记录','把“我看到了什么”和“我怎么解释”写下来。下次回来，沿着自己的发现继续走。','本机保存')+`<div class="grid-3" style="margin-bottom:22px"><div class="stat"><strong>${labs}</strong><span>已完成的虚拟实验</span></div><div class="stat"><strong>${quiz} / ${quizQuestions.length}</strong><span>已掌握的小课堂问题</span></div><div class="stat"><strong>${state.notes.length}</strong><span>记下的发现与计算</span></div></div>${!storageAvailable?'<div class="note warning" style="margin-bottom:20px">浏览器当前不允许保存本地数据。请及时导出记录；关闭页面后，本次记录可能丢失。</div>':''}<div class="grid-2"><section class="panel"><div class="panel-head"><h3>记下一个小发现</h3>${icon('book',22)}</div><form class="note-entry" id="note-form"><label for="note-title">标题</label><input id="note-title" placeholder="例如：原来气泡并不都是氧气" maxlength="100"><label for="note-body">我的观察和解释</label><textarea id="note-body" required maxlength="12000" placeholder="我改变了……\n我看见了……\n我猜是因为……\n下次我还想试试……"></textarea><button class="btn primary" type="submit">${icon('check',17)}保存这次发现</button></form><hr><div class="row"><button class="btn small" id="export-notes">${icon('download',15)}导出实验记录</button><button class="btn small ghost danger" id="clear-notes">清空本机记录</button></div><div id="reset-confirm" hidden class="note warning" style="margin-top:15px">清空后，当前浏览器的实验足迹、题目进度和笔记都会删除。<div class="row" style="margin-top:10px"><button class="btn small danger" id="confirm-clear">确认清空</button><button class="btn small" id="cancel-clear">保留记录</button></div></div><p class="muted tiny" style="margin-top:14px">记录保存在当前浏览器；换设备、清除浏览数据或使用隐私浏览不会自动同步。</p></section><section><div class="section-title" style="margin-top:0"><h2>发现档案</h2><small>最近的记录在前面</small></div>${state.notes.length?state.notes.map(n=>`<article class="notebook-card"><time>${escape(new Date(n.at).toLocaleString('zh-CN',{hour12:false}))}</time><h3>${escape(n.title)}</h3><p>${escape(n.body)}</p></article>`).join(''):`<div class="empty-state">${icon('book',37)}<h3>这里等着你的第一个发现</h3><p>完成实验后保存观察，或现在写下一句话。</p><button class="btn small" data-go="lab">去实验室${icon('arrow',15)}</button></div>`}</section></div>`;
+    main.innerHTML=heading('MY DISCOVERY JOURNAL','我的实验记录','把“我看到了什么”和“我怎么解释”写下来。下次回来，沿着自己的发现继续走。','本机保存')+`<div class="grid-3" style="margin-bottom:22px"><div class="stat"><strong>${labs}</strong><span>已完成的虚拟实验</span></div><div class="stat"><strong>${quiz} / ${quizQuestions.length}</strong><span>已掌握的小课堂问题</span></div><div class="stat"><strong>${state.notes.length}</strong><span>记下的发现与计算</span></div></div>${!storageAvailable?'<div class="note warning" style="margin-bottom:20px">本机数据暂时无法读取或保存，原有数据不会被自动覆盖。请及时导出本次记录；关闭页面后，本次记录可能丢失。</div>':''}<div class="grid-2"><section class="panel"><div class="panel-head"><h3>记下一个小发现</h3>${icon('book',22)}</div><form class="note-entry" id="note-form"><label for="note-title">标题</label><input id="note-title" placeholder="例如：原来气泡并不都是氧气" maxlength="100"><label for="note-body">我的观察和解释</label><textarea id="note-body" required maxlength="12000" placeholder="我改变了……\n我看见了……\n我猜是因为……\n下次我还想试试……"></textarea><button class="btn primary" type="submit">${icon('check',17)}保存这次发现</button></form><hr><div class="row"><button class="btn small" id="export-notes">${icon('download',15)}导出实验记录</button><button class="btn small" id="export-backup">导出JSON备份</button><button class="btn small" id="import-backup">导入JSON备份</button><input id="import-file" type="file" accept=".json,application/json" hidden><button class="btn small ghost danger" id="clear-notes">清空本机记录</button></div><div id="reset-confirm" hidden class="note warning" style="margin-top:15px">清空后，当前浏览器的实验足迹、题目进度和笔记都会删除。<div class="row" style="margin-top:10px"><button class="btn small danger" id="confirm-clear">确认清空</button><button class="btn small" id="cancel-clear">保留记录</button></div></div><p class="muted tiny" style="margin-top:14px">记录保存在当前浏览器；换设备、清除浏览数据或使用隐私浏览不会自动同步。Markdown供阅读，JSON备份可恢复足迹与笔记；导入时合并，相同编号保留本机记录。</p></section><section><div class="section-title" style="margin-top:0"><h2>发现档案</h2><small>最近的记录在前面</small></div>${state.notes.length?state.notes.map(n=>`<article class="notebook-card"><time>${escape(new Date(n.at).toLocaleString('zh-CN',{hour12:false}))}</time><h3>${escape(n.title)}</h3><p>${escape(n.body)}</p></article>`).join(''):`<div class="empty-state">${icon('book',37)}<h3>这里等着你的第一个发现</h3><p>完成实验后保存观察，或现在写下一句话。</p><button class="btn small" data-go="lab">去实验室${icon('arrow',15)}</button></div>`}</section></div>`;
     $('#note-form').addEventListener('submit',e=>{e.preventDefault();if(!$('#note-body').value.trim()){toast('先写下你的观察，再保存吧。');return;}saveNote({title:$('#note-title').value.trim()||'我的发现',body:$('#note-body').value.trim()});renderNotebook(main);bindNav(main);});
     $('#export-notes').addEventListener('click',()=>{const text=`# 万物化学 · 我的实验记录\n\n导出时间：${new Date().toLocaleString('zh-CN',{hour12:false})}\n\n## 探索足迹\n\n${state.completed.map(x=>'- '+x.title).join('\n')||'暂未完成探索'}\n\n## 观察笔记\n\n${state.notes.map(n=>`### ${n.title}\n\n${new Date(n.at).toLocaleString('zh-CN',{hour12:false})}\n\n${n.body}`).join('\n\n')||'暂无笔记'}\n`;download('chemistry-discoveries.md',text,'text/markdown;charset=utf-8');toast('实验记录已导出为 Markdown 文件。');});
-    $('#clear-notes').addEventListener('click',()=>$('#reset-confirm').hidden=false);$('#cancel-clear').addEventListener('click',()=>$('#reset-confirm').hidden=true);$('#confirm-clear').addEventListener('click',()=>{state.completed=[];state.notes=[];persist();updateProgress();renderNotebook(main);bindNav(main);toast('本机记录已清空，可以重新开始探索。');});
+    $('#export-backup').addEventListener('click',()=>{download('chemistry-backup.json',JSON.stringify({app:'wanwu-chemistry',version:1,exported:new Date().toISOString(),mode:state.mode,notes:state.notes,completed:state.completed},null,2),'application/json');toast('已请求下载JSON备份，请确认文件已保存。');});
+    $('#import-backup').addEventListener('click',()=>$('#import-file').click());
+    $('#import-file').addEventListener('change',async e=>{const input=e.target;await importBackup(input.files[0]);input.value='';});
+    $('#clear-notes').addEventListener('click',()=>$('#reset-confirm').hidden=false);$('#cancel-clear').addEventListener('click',()=>$('#reset-confirm').hidden=true);$('#confirm-clear').addEventListener('click',()=>{state.completed=[];state.notes=[];storageProtected=false;persist();updateProgress();renderNotebook(main);bindNav(main);toast(storageAvailable?'本机记录已清空，可以重新开始探索。':'本次记录已清空；浏览器仍无法保存，请勿依赖本机存储。');});
   }
   function renderSources(main){
     const fixed=[{title:'IUPAC · 元素周期表',url:'https://iupac.org/what-we-do/periodic-table-of-elements/',scope:'元素名称、原子序数与原子量的资料入口。'},{title:'RSC · 元素周期表',url:'https://www.rsc.org/periodic-table',scope:'元素性质、用途与背景知识。'},{title:'OpenStax · Chemistry 2e',url:'https://openstax.org/details/books/chemistry-2e',scope:'化学计量、原子结构、酸碱与化学平衡。'},{title:'PhET · Reactants, Products and Leftovers',url:'https://phet.colorado.edu/en/simulations/reactants-products-and-leftovers',scope:'以生活配料理解限量反应物的交互教学参考。'},{title:'PhET · Build an Atom',url:'https://phet.colorado.edu/en/simulations/build-an-atom',scope:'粒子搭建与元素身份、净电荷、质量数的教学参考。'},{title:'Toca Boca · Toca Boca Jr',url:'https://www.tocaboca.com/toca-boca-jr',scope:'选材料、用工具、观察反馈的儿童操作参考。未复制其代码或美术。'}];
@@ -188,6 +219,6 @@
     main.innerHTML=heading('SCIENCE, WITH CONTEXT','资料、来源与模型边界','让好奇心大胆一点，让结论严谨一点。这里说明知识从哪里来，也说明模型省略了什么。','来源可追溯')+`<div class="panel" style="margin-bottom:23px"><h3>这座探索馆，能帮助你理解什么？</h3><p class="muted">它把入门化学中的关键关系变成可操作模型，适合亲子启蒙和知识巩固。实验结果来自已建模的反应与条件，不是任意材料组合的真实化学预测器。</p><div class="model-list"><div><b>01 · 实验有边界</b>12 项虚拟场景分别校验材料、器材、连接和操作。未收录的混合物不推断成“不反应”；动画速度、颜色深浅和粒子数量通常为教学示意。</div><div><b>02 · 原子图是模型</b>电子环不是电子真实的固定轨迹；原子核与电子尺寸不按比例。质量数是某个核素的质子数加中子数，不等于周期表中的相对原子质量。</div><div><b>03 · 计算有前提</b>反应计算台按明确方程式、纯溶质投料、完全反应和理想气体模型计算。回收率表示反应之后收集到的比例；真实反应可能受平衡、副反应和传质影响。</div><div><b>04 · 衰变有随机性</b>半衰期公式给出大量原子核未衰变数量的期望值，不能确定单颗原子何时衰变。屏蔽射线的显示为定性比较，不能当作现实防护设计。</div><div><b>05 · 危险内容留在虚拟场景</b>白磷、放射性、电解和受热装置供屏幕内学习。白磷页面只展示封闭观察模型，不提供现实制取、剂量与点火操作。</div><div><b>06 · 离线与隐私</b>核心功能不依赖外部网络、CDN、登录或后台。进度只存在当前浏览器，参考来源链接需要联网。不同浏览器和设备之间不会自动同步。</div></div></div><div class="section-title"><h2>科学资料与交互参考</h2><small>整理与核验：2026-10-19</small></div><div class="source-list">${[...map.values()].map(s=>`<article class="source-card"><h3>${escape(s.title)}</h3><p>${escape(s.scope)}</p><a href="${escape(s.url)}" target="_blank" rel="noopener noreferrer">查看原始资料 ${icon('arrow',13)}</a></article>`).join('')}</div>`;
   }
   // Export deterministic learning helpers for the included Node test suite.
-  window.ChemAppTesting={pizzaCounts,quizQuestions,routes,escape};
+  window.ChemAppTesting={pizzaCounts,quizQuestions,routes,escape,validateBackup,mergeBackup};
   shell();window.addEventListener('hashchange',render);render();
 })();

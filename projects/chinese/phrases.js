@@ -9,7 +9,7 @@ const byId=new Map(all.map(e=>[e.id,e]));
 const $=id=>document.getElementById(id);
 const key='family-lab.chinese.phrases.v1';
 let kind='idiom',selected=D.idioms[0],shown=[],stage=1,visibleAnswer=false,onlyFaves=false;
-let state={favorites:[],notes:{}};
+let state={favorites:[],notes:{}},storageReadBlocked=false;
 // Drafts survive card changes and redraws; saving and exporting remain explicit actions.
 const drafts=Object.create(null);
 function hasDraft(id){return Object.prototype.hasOwnProperty.call(drafts,id);}
@@ -22,16 +22,21 @@ function safeBackup(raw){
   for(const [id,val] of Object.entries(raw.notes)){if(!byId.has(id)||typeof val!=='string'||val.length>200||id==='__proto__')throw Error('造句内容不符合要求');notes[id]=val;}
   return {favorites,notes};
 }
-try{const text=localStorage.getItem(key);if(text)state=safeBackup(JSON.parse(text));}catch(e){$('backup-info').textContent='本机旧记录无法读取；本页仍可浏览，保存前请检查存储权限。';}
-function persist(){try{localStorage.setItem(key,JSON.stringify({app:'family-lab-chinese-phrases',version:1,...state}));return true;}catch(e){say('当前浏览器禁止保存，请及时导出记录');return false;}}
+try{const text=localStorage.getItem(key);if(text)state=safeBackup(JSON.parse(text));}catch(e){storageReadBlocked=true;$('backup-info').textContent='本机旧记录无法读取，已停止自动覆盖；本页新记录请导出备份。';}
+function persist(){if(storageReadBlocked){say('旧记录未能读取，已停止覆盖；本页新记录请导出。');return false;}try{localStorage.setItem(key,JSON.stringify({app:'family-lab-chinese-phrases',version:1,...state}));return true;}catch(e){say('当前浏览器禁止保存，请及时导出记录');return false;}}
 function say(message){$('toast').textContent=message;clearTimeout(say.timeout);say.timeout=setTimeout(()=>$('toast').textContent='',3400);}
 function summary(e){return e.kind==='idiom'?e.title:e.front+'——'+e.back;}
 function searchable(e){const s=e.source,story=stories[e.id];return [summary(e),e.meaning,...(e.steps||[]),e.example,e.pitfall,s.work,s.era,...(story?story.paragraphs:[])].filter(Boolean).join('');}
 function sourceFor(e){return e.source;}
 function renderList(){
-  const keyword=$('search').value.trim();
+  const hadLessonFocus=$('study').contains(document.activeElement),keyword=$('search').value.trim();
   shown=all.filter(e=>e.kind===kind&&(!onlyFaves||state.favorites.includes(e.id))&&(!keyword||searchable(e).includes(keyword)));
   $('count').textContent='找到 '+shown.length+' 条 · 此类共 '+all.filter(x=>x.kind===kind).length+' 条';
+  $('study').hidden=!shown.length;$('empty').hidden=shown.length>0;
+  $('read-full-story').disabled=!shown.length;$('practice').disabled=shown.length<2;
+  $('practice-status').textContent=shown.length<2?'换一个需要至少两条匹配词语；可清除筛选再试。':'';
+  if(!shown.length&&hadLessonFocus)$('empty-clear').focus({preventScroll:true});
+  $('reading-term').textContent=shown.length?(selected.kind==='idiom'?selected.title:selected.front):'暂无匹配词语';
   $('entry-list').replaceChildren();
   if(!shown.length){const p=document.createElement('p');p.textContent='没有找到，试试清除筛选。';$('entry-list').append(p);}
   for(const e of shown){const button=document.createElement('button');button.type='button';button.className='item'+(e.id===selected.id?' selected':'');button.dataset.entry=e.id;button.setAttribute('aria-current',e.id===selected.id?'true':'false');const label=document.createElement('span');label.textContent=e.kind==='idiom'?e.title:e.front;const small=document.createElement('small');small.textContent=state.favorites.includes(e.id)?'★ 已收藏':'读完整故事';button.append(label,small);$('entry-list').append(button);}
@@ -83,6 +88,9 @@ function goTo(target,focus){
 }
 function openFullStory(){goTo('full-story','full-story-title');}
 function render(){
+  renderList();
+  if(!shown.length)return;
+  if(!shown.includes(selected)){pick(shown[0].id,false);return;}
   const e=selected, s=sourceFor(e);
   renderFullStory(e);
   $('kind-title').textContent=e.kind==='idiom'?'① 成语 · 读典故':'② 歇后语 · 故事讲解';
@@ -104,18 +112,18 @@ function render(){
   $('favorite').setAttribute('aria-pressed',String(state.favorites.includes(e.id)));$('favorite').textContent=state.favorites.includes(e.id)?'★ 已收藏':'☆ 收藏';
   $('my-sentence').value=hasDraft(e.id)?drafts[e.id]:(state.notes[e.id]||'');
   $('saved-msg').textContent=hasDraft(e.id)?'草稿暂留在本页；刷新或关闭前请保存或导出。':state.notes[e.id]?'已读取你此前保存的造句。':'';
-  renderList();
 }
 function pick(id,scroll){const e=byId.get(id);if(!e)return;selected=e;kind=e.kind;stage=1;visibleAnswer=false;
   for(const button of document.querySelectorAll('[data-kind]'))button.setAttribute('aria-pressed',String(button.dataset.kind===kind));
-  render();if(scroll&&matchMedia('(max-width:800px)').matches)openFullStory();}
+  render();if(scroll){if(matchMedia('(max-width:800px)').matches)openFullStory();else $('full-story-title').focus({preventScroll:true});}}
 function move(n){const i=shown.findIndex(x=>x.id===selected.id);if(i+n>=0&&i+n<shown.length)pick(shown[i+n].id,false);}
 function setKind(value){kind=value;onlyFaves=false;$('only-faves').checked=false;$('search').value='';pick((kind==='idiom'?D.idioms:D.sayings)[0].id,false);}
 $('entry-list').addEventListener('click',e=>{const b=e.target.closest('[data-entry]');if(b)pick(b.dataset.entry,true);});
 document.querySelectorAll('[data-kind]').forEach(b=>b.addEventListener('click',()=>setKind(b.dataset.kind)));
-$('search').addEventListener('input',()=>{renderList();if(shown.length&&!shown.includes(selected))pick(shown[0].id,false);});
-$('only-faves').addEventListener('change',e=>{onlyFaves=e.target.checked;renderList();if(shown.length&&!shown.includes(selected))pick(shown[0].id,false);});
-$('clear').addEventListener('click',()=>{$('search').value='';onlyFaves=false;$('only-faves').checked=false;renderList();});
+$('search').addEventListener('input',render);
+$('only-faves').addEventListener('change',e=>{onlyFaves=e.target.checked;render();});
+function clearFilters(){$('search').value='';onlyFaves=false;$('only-faves').checked=false;render();$('search').focus({preventScroll:true});}
+$('clear').addEventListener('click',clearFilters);$('empty-clear').onclick=clearFilters;
 $('previous').onclick=()=>move(-1);$('following').onclick=()=>move(1);
 $('reveal').onclick=()=>{visibleAnswer=!visibleAnswer;render();};
 $('story-prev').onclick=()=>{stage=Math.max(1,stage-1);renderStages(selected);};
@@ -127,7 +135,7 @@ $('story-to-source').onclick=()=>goTo('phrase-source');
 $('favorite').onclick=()=>{const id=selected.id;state.favorites=state.favorites.includes(id)?state.favorites.filter(x=>x!==id):[...state.favorites,id];persist();render();};
 $('my-sentence').addEventListener('input',()=>{drafts[selected.id]=$('my-sentence').value.slice(0,200);$('saved-msg').textContent='草稿暂留在本页；刷新或关闭前请保存或导出。';});
 $('save').onclick=()=>{const id=selected.id;state.notes[id]=$('my-sentence').value.trim().slice(0,200);if(persist()){delete drafts[id];$('saved-msg').textContent='已保存当前词语的造句。';}else{drafts[id]=$('my-sentence').value.slice(0,200);$('saved-msg').textContent='未能保存到浏览器，只暂留在本页；请导出记录。';}};
-$('practice').onclick=()=>{const list=all.filter(x=>x.kind===kind);const i=list.findIndex(x=>x.id===selected.id);pick(list[(i+1)%list.length].id,false);};
+$('practice').onclick=()=>{if(shown.length<2)return;const i=shown.findIndex(x=>x.id===selected.id);pick(shown[(i+1)%shown.length].id,false);};
 $('export').onclick=()=>{const blob=new Blob([JSON.stringify({app:'family-lab-chinese-phrases',version:1,favorites:state.favorites,notes:{...state.notes,...drafts}},null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='语文-成语歇后语-学习记录.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1200);};
 $('import').onchange=async e=>{const file=e.target.files[0];if(!file)return;try{if(file.size>200000)throw Error('文件过大');const incoming=safeBackup(JSON.parse(await file.text()));state.favorites=[...new Set([...state.favorites,...incoming.favorites])];state.notes=Object.assign(Object.create(null),incoming.notes,state.notes);const saved=persist();$('backup-info').textContent=saved?'导入成功。原有造句和本页草稿优先保留，没有被覆盖。':'记录仅合并到本页，未能写入浏览器；请导出备份。';render();}catch(error){$('backup-info').textContent='未导入：'+error.message;}finally{e.target.value='';}};
 const hash=location.hash.slice(1);if(byId.has(hash))pick(hash,false);else render();

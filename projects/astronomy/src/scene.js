@@ -151,7 +151,15 @@
       this.renderer.domElement.addEventListener('webglcontextlost',this.contextLost);
     }
     bindPointer(){
-      const canvas=this.renderer.domElement;canvas.style.touchAction='none';this.pointers=new Map();this.lastPinch=0;
+      const canvas=this.renderer.domElement;canvas.style.touchAction='none';canvas.tabIndex=0;canvas.setAttribute('aria-label','三维日月地场景：方向键旋转，加减键缩放，Home复位；也可展开转动视角按钮');this.pointers=new Map();this.lastPinch=0;
+      // Give dragging the same bounded rotation through keys and single clicks.
+      this.directionControls=document.createElement('details');this.directionControls.className='scene-direction-controls';
+      this.directionControls.innerHTML='<summary>转动视角</summary><div role="group" aria-label="单击转动此画面"><button type="button" data-turn="left" aria-label="视角向左转">←</button><button type="button" data-turn="right" aria-label="视角向右转">→</button><button type="button" data-turn="up" aria-label="视角向上转">↑</button><button type="button" data-turn="down" aria-label="视角向下转">↓</button></div>';
+      this.host.appendChild(this.directionControls);
+      this.directionControls.querySelectorAll('[data-turn]').forEach(b=>b.onclick=()=>this.rotate(b.dataset.turn));
+      this.directionControls.addEventListener('keydown',e=>{if(e.key==='Escape'){this.directionControls.open=false;this.directionControls.querySelector('summary').focus();}});
+      this.keyDown=e=>{const directions={ArrowLeft:'left',ArrowRight:'right',ArrowUp:'up',ArrowDown:'down'};if(!directions[e.key]&&!['+','=','-','Home'].includes(e.key))return;e.preventDefault();if(directions[e.key])this.rotate(directions[e.key]);else{if(e.key==='Home')this.reset();else this.zoom(e.key==='-'?1.22:.82);this.render();root.LabV2?.markDirty();}};
+      canvas.addEventListener('keydown',this.keyDown);
       canvas.addEventListener('touchmove',e=>{if(this.pointers.size&&e.cancelable)e.preventDefault();},{passive:false});
       this.pointerDown=e=>{if(e.pointerType==='mouse'&&e.button!==0)return;canvas.setPointerCapture(e.pointerId);this.pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});if(this.pointers.size===2){const [a,b]=[...this.pointers.values()];this.lastPinch=Math.hypot(a.x-b.x,a.y-b.y);}};
       this.pointerMove=e=>{
@@ -173,6 +181,7 @@
       this.renderer.setSize(width,height,false);this.camera.aspect=width/height;this.camera.updateProjectionMatrix();root.LabV2?.markDirty();}
     zoom(factor){if(this.mode==='ground'){this.camera.fov=A.clamp(this.camera.fov*factor,.7,100);this.camera.updateProjectionMatrix();}
       else this.distance=A.clamp(this.distance*factor,6,this.settings.realScale?800:180);}
+    rotate(direction){const turns={left:[.12,0],right:[-.12,0],up:[0,.12],down:[0,-.12]},d=turns[direction];if(!d)return;this.azimuth+=d[0];this.elevation=A.clamp(this.elevation+d[1],-1.47,1.47);this.cameraManual=true;this.render();root.LabV2?.markDirty();}
     reset(kind='default'){
       this.cameraManual=false;this.focus='earth';this.elevation=kind==='top'?1.46:.32;
       if(this.mode==='ground'){this.camera.fov=this.tracking==='horizon'?78:1.8;this.camera.updateProjectionMatrix();return;}
@@ -305,7 +314,7 @@
     }
     cameraState(){return {azimuth:this.azimuth,elevation:this.elevation,distance:this.distance,fov:this.camera.fov,tracking:this.tracking,focus:this.focus};}
     restoreCamera(c){if(!c)return;this.azimuth=c.azimuth;this.elevation=c.elevation;this.distance=c.distance;this.camera.fov=c.fov;this.tracking=c.tracking;this.focus=c.focus;this.cameraManual=true;this.camera.updateProjectionMatrix();}
-    dispose(){this.disposed=true;this.resizeObserver.disconnect();this.renderer.dispose();}
+    dispose(){this.disposed=true;this.resizeObserver.disconnect();this.renderer.domElement.removeEventListener('keydown',this.keyDown);this.directionControls?.remove();this.renderer.dispose();}
   }
   root.LabScene=LabScene;
 })(globalThis);

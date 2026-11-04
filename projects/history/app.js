@@ -12,8 +12,15 @@
   const rulerById = new Map(rulers.map(r => [r.id,r]));
   const eventById = new Map(events.map(r => [r.id,r]));
   const STORAGE_KEY = 'guanshi.history.v1';
-  let storageOK = true, saved;
-  try { saved = C.sanitizeSaved(JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}')); } catch (_) { saved = C.sanitizeSaved({}); storageOK = false; }
+  let storageOK = true, storageReadBlocked = false, saved;
+  try {
+    const text=localStorage.getItem(STORAGE_KEY),raw=text?JSON.parse(text):{};
+    // Tolerant legacy sanitizing still supports stale IDs, but unreadable formats
+    // must never be replaced by defaults when a learner later clicks a control.
+    if(!raw||typeof raw!=='object'||Array.isArray(raw)||raw.version!==undefined&&raw.version!==1||raw.app!==undefined&&raw.app!=='guanshi-history')storageReadBlocked=true;
+    else if(['bookmarks','visited','answered'].some(k=>raw[k]!==undefined&&(!Array.isArray(raw[k])||raw[k].some(id=>typeof id!=='string')))||raw.notes!==undefined&&(typeof raw.notes!=='string'||raw.notes.length>20000)||raw.mode!==undefined&&!['child','deep'].includes(raw.mode)||raw.year!==undefined&&C.parseYear(raw.year)===null||raw.journey!==undefined&&(!Number.isInteger(raw.journey)||raw.journey<0||raw.journey>=LEARN.journeys.length))storageReadBlocked=true;
+    saved=C.sanitizeSaved(raw);if(storageReadBlocked)storageOK=false;
+  } catch (_) { saved = C.sanitizeSaved({}); storageOK = false;storageReadBlocked=true; }
   const validKeys = new Set([...rulers.map(r=>'r:'+r.id), ...events.map(e=>'e:'+e.id)]);
   saved.bookmarks = saved.bookmarks.filter(x=>validKeys.has(x));
   saved.visited = saved.visited.filter(x=>rulerById.has(x));
@@ -23,7 +30,8 @@
   state.rulerFilter = state.dynasty;
   state.mapIndex = snapshots.indexOf(C.nearestSnapshot(snapshots,state.year));
   const main = document.getElementById('main'), dialog = document.getElementById('detail-dialog');
-  let toastTimer, playTimer, resizeTimer, timelineScroll = null, lastFocus = null;
+  let toastTimer, playTimer, resizeTimer, timelineScroll = null, lastFocus = null, backupStatus = '';
+  const backupIds = {bookmarks:[...validKeys],visited:[...rulerById.keys()],answered:LEARN.questions.map(q=>q.id),journeys:LEARN.journeys.length};
   const iconPaths = {
     overview:'M3 7h18M3 12h12M3 17h18M7 4v6m9-1v6m-6-1v6',
     rulers:'M7 20v-2a5 5 0 0 1 10 0v2M8 7a4 4 0 1 0 8 0a4 4 0 1 0-8 0M4 20h16',
@@ -42,6 +50,7 @@
   const dynastyName = id => dynastyById.get(id)?.name || id;
   const royalYears = r => r.reigns.map(x=>range(x.start,x.end)).join('；');
   function persist() {
+    if(storageReadBlocked){storageOK=false;return;}
     const output = {mode:state.mode,year:state.year,bookmarks:state.bookmarks,visited:state.visited,notes:state.notes,answered:state.answered,journey:state.journey};
     try { localStorage.setItem(STORAGE_KEY,JSON.stringify(output)); storageOK=true; } catch (_) { storageOK=false; }
   }
@@ -196,10 +205,10 @@
   function learningHTML() {
     const j=LEARN.journeys[state.journey],q=LEARN.questions[state.quizIndex];
     const answered=state.quizSelection!==null,correct=state.quizSelection===q.correct;
-    return pageIntro('CURIOSITY IS A COMPASS','小小史官，大大的问题。',child()?'不用一天记住几千年。今天发现一点，明天再多问一个为什么。':'把知识变成观察、对照和追问。和孩子共读，也让自己的判断接受证据的检验。',`<button class="btn" data-action="glossary">历史小辞典 ↗</button>`)+`<div class="learning-grid"><div><section class="panel journey-panel"><div class="tiny-caps">FAMILY JOURNEY · ${state.journey+1} / ${LEARN.journeys.length}</div><h2>${E(j.title)}</h2><div class="journey-steps">${LEARN.journeys.map((_,i)=>`<button class="${i===state.journey?'current':i<state.journey?'done':''}" data-action="journey" data-index="${i}" aria-label="亲子探索第${i+1}站"></button>`).join('')}</div><p>${E(child()?j.child:j.deep)}</p><div class="detail-note">一起聊聊：${E(j.prompt)}</div><div class="quiz-footer"><button class="btn primary" data-action="journey-go">出发去${E(dynastyName(j.dynasty))} ${icon('arrow')}</button><div class="controls"><button class="icon-button" data-action="journey" data-index="${state.journey-1}" aria-label="上一站" ${state.journey===0?'disabled':''}>‹</button><button class="icon-button" data-action="journey" data-index="${state.journey+1}" aria-label="下一站" ${state.journey===LEARN.journeys.length-1?'disabled':''}>›</button></div></div></section><section class="panel question-card"><div class="question-number">想一想 · 第 ${state.quizIndex+1} / ${LEARN.questions.length} 题</div><h3>${E(q.question)}</h3><div class="quiz-options">${q.options.map((o,i)=>`<button class="quiz-option ${answered&&i===q.correct?'correct':''} ${answered&&i===state.quizSelection&&!correct?'incorrect':''}" data-action="quiz-answer" data-index="${i}" ${answered?'disabled':''}><span>${String.fromCharCode(65+i)}</span>${E(o)}${answered&&i===q.correct?' ✓':''}</button>`).join('')}</div>${answered?`<div class="quiz-feedback" role="status"><strong>${correct?(child()?'发现啦，答对了！':'判断正确。'):(child()?'再看一眼，我们一起弄明白。':'这次判断还需要调整。')}</strong><br>${E(q.explanation)}<br><button class="text-button" data-action="dynasty-detail" data-id="${q.dynasty}">查看相关朝代与资料 ↗</button></div>`:''}<div class="quiz-footer"><span class="small muted">${state.answered.includes(q.id)?'✓ 这道题已正确回答过':'先想，再选；有疑问就回头查证。'}</span><div class="controls"><button class="btn small" data-action="quiz-step" data-delta="-1" ${state.quizIndex===0?'disabled':''}>上一题</button><button class="btn small" data-action="quiz-step" data-delta="1">${state.quizIndex===LEARN.questions.length-1?'回到第1题':'下一题'}</button></div></div></section></div><aside><section class="panel progress-card"><div class="tiny-caps">MY EXPLORATION</div><strong>${state.visited.length}</strong><span class="muted small"> 位人物，已经遇见</span><p>${state.answered.length} / ${LEARN.questions.length} 道思考题已答对 · ${state.bookmarks.length} 个收藏</p><div class="progress-line"><span style="width:${state.answered.length/LEARN.questions.length*100}%"></span></div></section><section class="panel notebook"><h3>我的发现手记</h3><p>${child()?'我原来以为……现在发现……<br>也可以记下想问爸爸的问题。':'记下事实、解释，以及尚未解决的问题。'}</p><textarea id="learning-notes" maxlength="20000" aria-label="我的历史学习笔记" placeholder="今天我发现……\n我还想知道……">${E(state.notes)}</textarea><div class="note-footer"><span id="note-status">${storageOK?'保存在当前浏览器':'当前浏览器限制保存，请导出备份'}</span><button class="text-button" data-action="export-notes">导出手记 ↗</button></div></section><section class="panel reflect-card"><h3>🪞 以史为镜，也以证据为镜</h3><p>看到一个厉害的人，别急着全盘模仿。问一问：哪些是他的本领，哪些来自时代，哪些是别人替他付出的代价？</p></section></aside></div>`;
+    return pageIntro('CURIOSITY IS A COMPASS','小小史官，大大的问题。',child()?'不用一天记住几千年。今天发现一点，明天再多问一个为什么。':'把知识变成观察、对照和追问。和孩子共读，也让自己的判断接受证据的检验。',`<button class="btn" data-action="glossary">历史小辞典 ↗</button>`)+`<div class="learning-grid"><div><section class="panel journey-panel"><div class="tiny-caps">FAMILY JOURNEY · ${state.journey+1} / ${LEARN.journeys.length}</div><h2>${E(j.title)}</h2><div class="journey-steps">${LEARN.journeys.map((_,i)=>`<button class="${i===state.journey?'current':i<state.journey?'done':''}" data-action="journey" data-index="${i}" aria-label="亲子探索第${i+1}站"></button>`).join('')}</div><p>${E(child()?j.child:j.deep)}</p><div class="detail-note">一起聊聊：${E(j.prompt)}</div><div class="quiz-footer"><button class="btn primary" data-action="journey-go">出发去${E(dynastyName(j.dynasty))} ${icon('arrow')}</button><div class="controls"><button class="icon-button" data-action="journey" data-index="${state.journey-1}" aria-label="上一站" ${state.journey===0?'disabled':''}>‹</button><button class="icon-button" data-action="journey" data-index="${state.journey+1}" aria-label="下一站" ${state.journey===LEARN.journeys.length-1?'disabled':''}>›</button></div></div></section><section class="panel question-card"><div class="question-number">想一想 · 第 ${state.quizIndex+1} / ${LEARN.questions.length} 题</div><h3 id="quiz-question" tabindex="-1">${E(q.question)}</h3><div class="quiz-options">${q.options.map((o,i)=>`<button class="quiz-option ${answered&&i===q.correct?'correct':''} ${answered&&i===state.quizSelection&&!correct?'incorrect':''}" data-action="quiz-answer" data-index="${i}" ${answered?'disabled':''}><span>${String.fromCharCode(65+i)}</span>${E(o)}${answered&&i===q.correct?' ✓':''}</button>`).join('')}</div>${answered?`<div class="quiz-feedback" role="status" tabindex="-1"><strong>${correct?(child()?'发现啦，答对了！':'判断正确。'):(child()?'再看一眼，我们一起弄明白。':'这次判断还需要调整。')}</strong><br>${E(q.explanation)}<br><button class="text-button" data-action="dynasty-detail" data-id="${q.dynasty}">查看相关朝代与资料 ↗</button></div>`:''}<div class="quiz-footer"><span class="small muted">${state.answered.includes(q.id)?'✓ 这道题已正确回答过':'先想，再选；有疑问就回头查证。'}</span><div class="controls"><button class="btn small" data-action="quiz-step" data-delta="-1" ${state.quizIndex===0?'disabled':''}>上一题</button><button class="btn small" data-action="quiz-step" data-delta="1">${state.quizIndex===LEARN.questions.length-1?'回到第1题':'下一题'}</button></div></div></section></div><aside><section class="panel progress-card"><div class="tiny-caps">MY EXPLORATION</div><strong>${state.visited.length}</strong><span class="muted small"> 位人物，已经遇见</span><p>${state.answered.length} / ${LEARN.questions.length} 道思考题已答对 · ${state.bookmarks.length} 个收藏</p><div class="progress-line"><span style="width:${state.answered.length/LEARN.questions.length*100}%"></span></div></section><section class="panel notebook"><h3>我的发现手记</h3><p>${child()?'我原来以为……现在发现……<br>也可以记下想问爸爸的问题。':'记下事实、解释，以及尚未解决的问题。'}</p><textarea id="learning-notes" maxlength="20000" aria-label="我的历史学习笔记" placeholder="今天我发现……\n我还想知道……">${E(state.notes)}</textarea><div class="note-footer"><span id="note-status">${storageOK?'保存在当前浏览器':storageReadBlocked?'旧记录未能读取，停止覆盖；请导出本页备份':'当前浏览器限制保存，请导出备份'}</span><button class="text-button" data-action="export-notes">导出手记 ↗</button></div><details class="record-backup"><summary>收藏与探索记录备份</summary><p class="small">导出JSON可在本馆恢复；导入只合并编号，原有手记优先保留，不同内容附在后面。请勿写入个人隐私。</p><div class="controls"><button class="btn small" data-action="export-backup">导出记录备份</button><label class="btn small" for="history-import">导入JSON备份</label><input id="history-import" class="backup-file" type="file" accept=".json,application/json" aria-label="导入历史记录备份"></div><p id="backup-status" role="status" class="small">${E(backupStatus)}</p></details></section><section class="panel reflect-card"><h3>🪞 以史为镜，也以证据为镜</h3><p>看到一个厉害的人，别急着全盘模仿。问一问：哪些是他的本领，哪些来自时代，哪些是别人替他付出的代价？</p></section></aside></div>`;
   }
   function bookmarksHTML() {
-    return pageIntro('MY LITTLE COLLECTION','把想再读的，留在这里。','人物和事件都可以收藏。学习记录保存在当前浏览器；换电脑前，可以在“小小史官”中导出手记。',`<span class="count-badge">${state.bookmarks.length} 个收藏</span>`)+(state.bookmarks.length?`<div class="bookmark-list">${state.bookmarks.map(key=>{
+    return pageIntro('MY LITTLE COLLECTION','把想再读的，留在这里。','人物和事件都可以收藏。学习记录保存在当前浏览器；换电脑前，可以在“小小史官”中导出JSON记录备份；Markdown手记方便阅读。',`<span class="count-badge">${state.bookmarks.length} 个收藏</span>`)+(state.bookmarks.length?`<div class="bookmark-list">${state.bookmarks.map(key=>{
       const type=key.slice(0,1),id=key.slice(2),item=type==='r'?rulerById.get(id):eventById.get(id);
       return `<div class="bookmark-item"><button data-action="${type==='r'?'ruler':'event'}" data-id="${id}">${E(item.name||item.title)}<small>${type==='r'?E(dynastyName(item.dynasty))+' · '+royalYears(item):label(item.year)+' · '+kindLabel(item.kind)}</small></button><button data-action="bookmark" data-key="${key}" aria-label="取消收藏${E(item.name||item.title)}">×</button></div>`;
     }).join('')}</div>`:'<div class="empty-state"><h3>第一枚书签，等你发现</h3><p>打开一份人物或事件档案，点一下“☆ 收藏”，下次就能从这里继续。</p><button class="btn primary" data-action="nav" data-view="rulers">去认识历史中的人</button></div>');
@@ -305,6 +314,23 @@
     const text=`# 观史 · 我的发现手记\n\n导出时间：${new Date().toLocaleString('zh-CN')}\n\n${state.notes||'还没有写下笔记。'}\n\n## 收藏\n\n${bookmarks.join('\n')||'暂无收藏'}\n\n## 探索记录\n\n读过 ${state.visited.length} 位人物，答对 ${state.answered.length} / ${LEARN.questions.length} 道题。\n`;
     const blob=new Blob(['\ufeff'+text],{type:'text/markdown;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='guanshi-history-notes.md';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);toast('手记已导出，请查看浏览器下载列表。');
   }
+  function exportBackup() {
+    const data = {app:'guanshi-history',version:1,...C.validateBackup({app:'guanshi-history',version:1,...state},backupIds)};
+    const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));
+    const a=document.createElement('a');a.href=url;a.download='guanshi-history-records.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+    backupStatus='已生成JSON备份；原Markdown手记仍可单独导出。';render();
+  }
+  async function importBackup(input) {
+    const file=input.files[0];if(!file)return;
+    try {
+      if(file.size>300000)throw Error('文件过大，未导入。');
+      const incoming=JSON.parse(await file.text());
+      const merged=C.mergeBackup(state,incoming,backupIds);
+      Object.assign(state,merged);persist();
+      backupStatus=storageOK?'已合并收藏、探索记录和手记；原有内容没有被覆盖。':'已合并到本页，但未能保存到浏览器，请导出备份。';
+    } catch(error) {backupStatus='未导入：'+error.message;}
+    finally {input.value='';render();document.getElementById('history-import')?.focus({preventScroll:true});}
+  }
   function searchGlobal(query) {
     const result=document.getElementById('search-results');const q=query.trim();if(!q){result.hidden=true;return;}
     const ds=dynasties.filter(x=>C.matches(x,q)).slice(0,4),rs=rulers.filter(x=>C.matches(x,q)).slice(0,7),es=events.filter(x=>C.matches(x,q)).slice(0,5);
@@ -314,10 +340,16 @@
     render();const input=document.getElementById(id);if(!input)return;input.focus({preventScroll:true});if(typeof caret==='number')try{input.setSelectionRange(caret,caret);}catch(_){}
   }
   function render() {
+    const active=document.activeElement, focusId=active?.id, focusData={...active?.dataset};
     renderNav();
     const renderers={overview:overviewHTML,rulers:rulersHTML,atlas:atlasHTML,events:eventsHTML,world:worldHTML,learn:learningHTML,bookmarks:bookmarksHTML,sources:sourcesPageHTML};
     main.innerHTML=renderers[state.view]();
     if(state.view==='overview')drawTimeline();if(state.view==='atlas')wireMap();
+    // Rebuilt controls should not throw keyboard users back to the page start.
+    if(active && active!==document.body && !active.isConnected && !dialog.open) {
+      const replacement=focusId?document.getElementById(focusId):[...document.querySelectorAll('[data-action]')].find(el=>el.tagName===active.tagName&&Object.entries(focusData).every(([key,value])=>el.dataset[key]===value));
+      (replacement&&!replacement.disabled?replacement:main).focus({preventScroll:true});
+    }
   }
   document.addEventListener('click',e=>{
     const target=e.target.closest('[data-action]');
@@ -354,13 +386,14 @@
       'world-all':()=>{state.worldAll=!state.worldAll;render();},
       journey:()=>{state.journey=Math.min(LEARN.journeys.length-1,Math.max(0,Number(target.dataset.index)));persist();render();},
       'journey-go':()=>{const j=LEARN.journeys[state.journey];setYear(j.year,false);state.dynasty=j.dynasty;state.rulerFilter=j.dynasty;state.zoom=1;timelineScroll=null;nav('overview');},
-      'quiz-answer':()=>{if(state.quizSelection!==null)return;const q=LEARN.questions[state.quizIndex];state.quizSelection=Number(target.dataset.index);if(state.quizSelection===q.correct&&!state.answered.includes(q.id)){state.answered.push(q.id);persist();}render();},
-      'quiz-step':()=>{state.quizIndex=(state.quizIndex+Number(target.dataset.delta)+LEARN.questions.length)%LEARN.questions.length;state.quizSelection=null;render();},
-      glossary:openGlossary,'export-notes':exportNotes
+      'quiz-answer':()=>{if(state.quizSelection!==null)return;const q=LEARN.questions[state.quizIndex];state.quizSelection=Number(target.dataset.index);if(state.quizSelection===q.correct&&!state.answered.includes(q.id)){state.answered.push(q.id);persist();}render();document.querySelector('.quiz-feedback')?.focus({preventScroll:true});},
+      'quiz-step':()=>{state.quizIndex=(state.quizIndex+Number(target.dataset.delta)+LEARN.questions.length)%LEARN.questions.length;state.quizSelection=null;render();document.getElementById('quiz-question')?.focus({preventScroll:true});},
+      glossary:openGlossary,'export-notes':exportNotes,'export-backup':exportBackup
     };
     if(actions[a]){if(target.closest('#search-results'))document.getElementById('search-results').hidden=true;actions[a]();}
   });
   document.addEventListener('change',e=>{
+    if(e.target.id==='history-import'){importBackup(e.target);return;}
     const value=e.target.value;
     const handlers={
       'ruler-dynasty':()=>{state.rulerFilter=value;state.rulerPage=1;render();},
@@ -391,7 +424,7 @@
       const canvas=document.getElementById('timeline-canvas'),cursor=document.getElementById('year-cursor');if(cursor)cursor.style.left=(Number(value)-C.ordinal(C.MIN_YEAR))/C.distance(C.MIN_YEAR,C.MAX_YEAR)*canvas.clientWidth+'px';
     }
     if(el.id==='world-year')document.getElementById('world-year-label').textContent=label(C.fromOrdinal(Number(value)));
-    if(el.id==='learning-notes'){state.notes=value.slice(0,20000);persist();document.getElementById('note-status').textContent=storageOK?'已保存到当前浏览器':'浏览器限制保存，请及时导出';}
+    if(el.id==='learning-notes'){state.notes=value.slice(0,20000);persist();document.getElementById('note-status').textContent=storageOK?'已保存到当前浏览器':storageReadBlocked?'旧记录未能读取，停止覆盖；请导出本页备份':'浏览器限制保存，请及时导出';}
   });
   document.addEventListener('submit',e=>{
     if(e.target.id!=='year-form')return;e.preventDefault();const input=document.getElementById('year-input'),year=C.parseYear(input.value);
@@ -413,4 +446,5 @@
   window.addEventListener('pagehide',()=>{persist();stopPlayback();});
   document.addEventListener('visibilitychange',()=>{if(document.hidden&&state.playing){stopPlayback();if(state.view==='atlas')render();}});
   nav(location.hash.slice(1)||'overview',false);
+  if(storageReadBlocked)toast('旧记录未能读取，已停止自动覆盖；本页新记录请导出JSON备份。');
 })();

@@ -36,7 +36,7 @@
   function twoBone(start,target,l1,l2){const d=V.sub(target,start),dist=C.clamp(V.len(d),Math.abs(l1-l2)+.002,l1+l2-.002),dir=V.norm(d),end=V.add(start,V.mul(dir,dist));let pole=[0,-1,-.2];pole=V.norm(V.sub(pole,V.mul(dir,V.dot(pole,dir))));const a=(l1*l1-l2*l2+dist*dist)/(2*dist),h=Math.sqrt(Math.max(0,l1*l1-a*a));return {elbow:V.add(V.add(start,V.mul(dir,a)),V.mul(pole,h)),end};}
   class SceneView {
     constructor(canvas,labelHost,onPart,onNotice){
-      this.canvas=canvas;this.labelHost=labelHost;this.onPart=onPart;this.onNotice=onNotice;this.focus='none';this.measures=true;this.playing=false;this.azimuth=-1.08;this.elevation=.29;this.radius=3.35;this.target=[0,.83,.18];this.matrix=null;this.anchors=[];this.bodyPoints={};this.frame=0;this.lastPoseBuild=0;this.renderCount=0;this.gl=null;this.vertices=null;this.data=null;
+      this.canvas=canvas;this.labelHost=labelHost;this.onPart=onPart;this.onNotice=onNotice;this.focus='none';this.measures=true;this.playing=false;this.azimuth=-1.08;this.elevation=.29;this.radius=3.35;this.target=[0,.83,.18];this.matrix=null;this.anchors=[];this.bodyPoints={};this.frame=0;this.lastPoseBuild=0;this.motionTime=0;this.lastFrameTime=null;this.renderCount=0;this.gl=null;this.vertices=null;this.data=null;
       try{this.gl=canvas.getContext('webgl',{antialias:true,alpha:false,preserveDrawingBuffer:true});if(this.gl)this.initGL();}catch(e){this.gl=null;const replacement=canvas.cloneNode();canvas.replaceWith(replacement);this.canvas=replacement;}
       if(!this.gl){this.ctx=this.canvas.getContext('2d');if(onNotice)onNotice('已启用兼容绘图模式：仍可拖动旋转，动态演示可能较慢。');}
       this.canvas.addEventListener('webglcontextlost',e=>{e.preventDefault();this.lost=true;if(onNotice)onNotice('图形显示暂时中断；内容与方案仍可使用。可尝试刷新页面。');});
@@ -63,8 +63,8 @@
     }
     resize(){const rect=this.canvas.parentElement.getBoundingClientRect();this.width=Math.max(100,rect.width);this.height=Math.max(100,rect.height);const dpr=Math.min(root.devicePixelRatio||1,1.7);this.canvas.width=Math.round(this.width*dpr);this.canvas.height=Math.round(this.height*dpr);this.canvas.style.width=this.width+'px';this.canvas.style.height=this.height+'px';if(this.gl)this.gl.viewport(0,0,this.canvas.width,this.canvas.height);this.invalidate();}
     camera(view){if(view==='home'){this.azimuth=this.posture?.category==='lie'?-1.0:-1.66;this.elevation=this.posture?.category==='lie'?.57:.29;this.radius=(this.posture?.category==='lie'?3.45:this.posture?.category==='sit'?2.9:3.35)*(this.profile?.height||170)/170;}if(view==='front'){this.azimuth=0;this.elevation=.15;}if(view==='side'){this.azimuth=-Math.PI/2;this.elevation=.12;}if(view==='top'){this.azimuth=0;this.elevation=1.43;}this.invalidate();}
-    update(posture,profile,params,focus='none',measures=true){const changed=this.posture?.id!==posture.id;this.posture=posture;this.profile=profile;this.params=params;this.focus=focus;this.measures=measures;this.target=posture.category==='lie'?[0,.55,0]:posture.scene==='seiza'||posture.scene==='cross'?[0,.63,.05]:posture.category==='sit'?[0,(params.seat+C.dimensions(profile).eyeSeat)*.006,.12]:[0,profile.height/210,0];if(changed){this.playing=false;this.camera('home');}this.build(0);this.invalidate();}
-    setPlaying(value){this.playing=value&&this.posture?.id==='walk';this.invalidate();}
+    update(posture,profile,params,focus='none',measures=true){const changed=this.posture?.id!==posture.id;this.posture=posture;this.profile=profile;this.params=params;this.focus=focus;this.measures=measures;this.target=posture.category==='lie'?[0,.55,0]:posture.scene==='seiza'||posture.scene==='cross'?[0,.63,.05]:posture.category==='sit'?[0,(params.seat+C.dimensions(profile).eyeSeat)*.006,.12]:[0,profile.height/210,0];if(changed){this.playing=false;this.motionTime=0;this.camera('home');}this.lastFrameTime=null;this.build(this.motionTime);this.invalidate();}
+    setPlaying(value){this.playing=!!value&&this.posture?.id==='walk';this.lastFrameTime=null;this.invalidate();}
     upload(){if(this.gl&&!this.lost&&this.vertices){this.gl.bindBuffer(this.gl.ARRAY_BUFFER,this.buffer);this.gl.bufferData(this.gl.ARRAY_BUFFER,this.vertices,this.gl.DYNAMIC_DRAW);}}
     build(time){
       if(!this.posture)return;const p=this.posture,s=this.params,h=this.profile.height/100,g=new Geometry(this.focus);this.anchors=[];this.bodyPoints={};
@@ -102,7 +102,7 @@
         this.measure(g,[-.47,.025,0],[-.47,pad+.025,0],`坐垫 ${s.pad} cm`,'pad');
       }else{
         hip=[0,h*.545,0];shoulderY=h*.818;shoulderZ=0;head=[0,h*.918,0];
-        const phase=time*s.cadence/60*Math.PI,stride=p.scene==='walk'?Math.sin(phase)*h*.15:0;
+        const phase=time*Math.PI,stride=p.scene==='walk'?Math.sin(phase)*h*.15:0;
         [-1,1].forEach(sign=>{const side=sign===1?'left':'right',z=sign*stride,lift=p.scene==='walk'?Math.max(0,Math.cos(phase+(sign===1?0:Math.PI)))*h*.045:0;points[side+'Knee']=[sign*.071*h,h*.287+lift*.45,z*.43];points[side+'Ankle']=[sign*.072*h,h*.039+lift,z];points[side+'Foot']=[sign*.072*h,h*.025+lift,z+.048*h];});
         if(p.scene==='walk'){for(let i=-4;i<=4;i++)g.box([0,-.007,i*.26],[.018,.005,.10],P.line,'decor');}
         this.measure(g,[-.52,0,0],[-.52,h,0],`身高 ${this.profile.height} cm`,'height');
@@ -113,7 +113,7 @@
         else if(isChair)target=[sign*h*.09,seat+.07*h,.29];
         else if(p.scene==='cross')target=V.add(points[side+'Knee'],[0,.055,-.02]);
         else if(p.scene==='seiza')target=[sign*h*.08,hip[1]-.015,.23];
-        else if(p.scene==='walk'){const swing=-sign*Math.sin(time*s.cadence/60*Math.PI)*h*.145;target=[sign*h*.135,h*.48,swing];}
+        else if(p.scene==='walk'){const swing=-sign*Math.sin(time*Math.PI)*h*.145;target=[sign*h*.135,h*.48,swing];}
         else target=[sign*h*.15,h*.492,.035];
         const solved=twoBone(shoulder,target,h*.18,h*.158);points[side+'Elbow']=solved.elbow;points[side+'Hand']=solved.end;
       });
@@ -182,7 +182,9 @@
     project(p){if(!this.matrix)return null;const q=applyMatrix(this.matrix,p);return {x:(q[0]/q[3]+1)*this.width/2,y:(1-q[1]/q[3])*this.height/2,depth:q[2]/q[3],visible:q[3]>0&&q[2]/q[3]<1};}
     pick(clientX,clientY){const rect=this.canvas.getBoundingClientRect(),x=clientX-rect.left,y=clientY-rect.top;let best=null,dist=30;Object.entries(this.bodyPoints).forEach(([part,point])=>{const q=this.project(point);if(q&&q.visible){const d=Math.hypot(q.x-x,q.y-y);if(d<dist){best=part;dist=d;}}});if(best&&this.onPart)this.onPart(best);}
     invalidate(){if(!this.frame)this.frame=requestAnimationFrame(t=>{this.frame=0;this.draw(t/1000);if(this.playing&&!document.hidden)this.invalidate();});}
-    draw(time=0){if(!this.vertices||this.lost)return;if(this.playing&&time-this.lastPoseBuild>.045)this.build(time);
+    draw(time=0){if(!this.vertices||this.lost)return;
+      // Accumulate visible half-steps: pause/resume and cadence edits must not seek the gait.
+      if(this.playing&&!document.hidden){if(this.lastFrameTime!==null)this.motionTime+=C.clamp(time-this.lastFrameTime,0,.08)*this.params.cadence/60;this.lastFrameTime=time;if(this.motionTime-this.lastPoseBuild>.045)this.build(this.motionTime);}else this.lastFrameTime=null;
       const eye=[this.target[0]+Math.sin(this.azimuth)*Math.cos(this.elevation)*this.radius,this.target[1]+Math.sin(this.elevation)*this.radius,this.target[2]+Math.cos(this.azimuth)*Math.cos(this.elevation)*this.radius];this.matrix=matMul(perspective(40*Math.PI/180,this.width/this.height,.05,30),lookAt(eye,this.target));
       if(this.gl){const gl=this.gl;gl.useProgram(this.program);gl.uniformMatrix4fv(this.uMatrix,false,this.matrix);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);gl.drawArrays(gl.TRIANGLES,0,this.vertexCount);}else this.drawFallback();
       this.anchors.forEach(a=>{if(!a.element)return;const q=this.project(a.pos);a.element.style.display=q&&q.visible?'block':'none';if(q){const x=C.clamp(q.x,8,this.width-160),y=C.clamp(q.y,12,this.height-45);a.element.style.transform=`translate(${x}px,${y}px)`;}});this.renderCount++;

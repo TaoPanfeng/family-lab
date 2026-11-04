@@ -8,7 +8,11 @@ const specimens=[
 {id:'sperm',name:'精子（合成示意）',title:'有头部与鞭毛的生殖细胞',size:55,detail:'模拟人类精子的头部约几微米、全长约50–60微米量级。染色、活体、光学条件影响可见度；本页不是样本视频、医学检查或采样教程。',focus:-.2,color:'#797ca0'}
 ];
 const objectives=[{power:4,na:.10},{power:10,na:.25},{power:40,na:.65}];
-function normalize(v={}){const finite=(x,d)=>Number.isFinite(Number(x))?Number(x):d,clamp=(x,a,b)=>Math.max(a,Math.min(b,x));return{specimen:specimens.some(s=>s.id===v.specimen)?v.specimen:'onion',objective:objectives.some(o=>o.power===Number(v.objective))?Number(v.objective):4,x:clamp(finite(v.x,0),-2400,2400),y:clamp(finite(v.y,0),-2400,2400),coarse:clamp(finite(v.coarse,0),-8,8),fine:clamp(finite(v.fine,0),-1,1),light:clamp(finite(v.light,65),10,100),aperture:clamp(finite(v.aperture,60),10,100),stain:!!v.stain,moving:v.moving!==false};}
+function normalize(v={}){const finite=(x,d)=>Number.isFinite(Number(x))?Number(x):d,clamp=(x,a,b)=>Math.max(a,Math.min(b,x));return{specimen:specimens.some(s=>s.id===v.specimen)?v.specimen:'onion',objective:objectives.some(o=>o.power===Number(v.objective))?Number(v.objective):4,x:clamp(finite(v.x,0),-2400,2400),y:clamp(finite(v.y,0),-2400,2400),coarse:clamp(finite(v.coarse,0),-8,8),fine:clamp(finite(v.fine,0),-1,1),light:clamp(finite(v.light,65),10,100),aperture:clamp(finite(v.aperture,60),10,100),stain:v.specimen!=='pollen'&&!!v.stain,moving:v.moving!==false};}
 function optics(input){const v=normalize(input),specimen=specimens.find(s=>s.id===v.specimen),o=objectives.find(o=>o.power===v.objective),field=18000/o.power,total=10*o.power,focus=v.coarse+v.fine,defocus=Math.abs(focus-specimen.focus),resolution=.61*.55/(o.na*(.5+v.aperture/200));return{...v,total,field,focus,defocus,resolution,pxPerUm:560/field,scale:field>1500?500:field>700?200:50,blur:Math.min(16,defocus*(v.objective/5)),specimenData:specimen};}
-r.MicroModel={specimens,objectives,normalize,optics};if(typeof module!=='undefined')module.exports=r.MicroModel;
+function observation(input){const o=optics(input),plant=['onion','leaf','petal'].includes(o.specimen);
+ const focus=o.blur>5?'现在明显失焦。回到低倍，先粗调再细调。':o.blur>1.3?'轮廓已找到；再转细调，看边界怎样变清。':'已经接近焦面。对照标尺看结构，不要把放大倍数当成分辨能力。';
+ const next=o.specimen==='pollen'?' 此花粉简图只比较轮廓与外壁，未模拟染色反应。':o.total<100?(plant?' 现在先找细胞壁；居中后换10×物镜，再比较染色前后的细胞核。':' 现在先找标本轮廓；居中后换10×或40×物镜，比较头部与鞭毛。'):o.stain?' 模拟固定染色已开启，示意运动暂停。':plant?' 试着开关模拟染色，比较细胞核的对比度。':' 可开关模拟固定染色，比较头部轮廓；这不是活力检测。';
+ return focus+(o.objective===40?' 高倍已锁粗调，使用细调。':'')+next;}
+r.MicroModel={specimens,objectives,normalize,optics,observation};if(typeof module!=='undefined')module.exports=r.MicroModel;
 })(typeof globalThis!=='undefined'?globalThis:this);

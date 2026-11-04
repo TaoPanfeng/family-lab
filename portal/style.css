@@ -28,3 +28,5 @@
 .card.psychology{--card-ink:#acd7c3;--accent:#acd7c3;--glow:#345f52}
 
 .card.social{--card-ink:#e3c99c;--accent:#e3c99c;--glow:#67583d}.social .art{background:#293c34}
+
+.home-search{flex-wrap:wrap}#search-clear{min-height:44px;white-space:nowrap;border:1px solid #58705f;border-radius:8px;background:#21372a;color:#edf4e9;padding:8px 14px;cursor:pointer}.home-search input{min-width:0}#search-clear[hidden]{display:none}@media(max-width:620px){#search-clear{width:auto}}

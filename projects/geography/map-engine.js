@@ -12,6 +12,12 @@
   function create(canvas,redraw,initial={}) {
     const state={projection:'flat',lon:0,lat:10,zoom:1,...initial};let hover=null;
     const rect={x:24,y:64,w:912,h:456},center=[480,300],hits=[];
+    const directionControls=document.createElement('details');directionControls.className='map-direction-controls';
+    directionControls.innerHTML='<summary>转动／平移</summary><div role="group" aria-label="单击移动地图视角"><button type="button" data-map-turn="left" aria-label="地图视角向西">←</button><button type="button" data-map-turn="right" aria-label="地图视角向东">→</button><button type="button" data-map-turn="up" aria-label="地图视角向北">↑</button><button type="button" data-map-turn="down" aria-label="地图视角向南">↓</button></div>';
+    canvas.parentElement.appendChild(directionControls);
+    function rotate(direction){const turns={left:[-6,0],right:[6,0],up:[0,6],down:[0,-6]},d=turns[direction];if(!d)return;state.lon=wrap(state.lon+d[0]/state.zoom);state.lat=clamp(state.lat+d[1]/state.zoom,-85,85);redraw();}
+    directionControls.querySelectorAll('[data-map-turn]').forEach(b=>b.onclick=()=>rotate(b.dataset.mapTurn));
+    directionControls.addEventListener('keydown',e=>{if(e.key==='Escape'){directionControls.open=false;directionControls.querySelector('summary').focus();}});
     function point(lon,lat){
       if(state.projection==='globe'){const v=globePoint(lon,lat,state.lon,state.lat),r=218*state.zoom;return [480+r*v[0],300-r*v[1],v[2]>=0];}
       return [480+wrap(lon-state.lon)*912/360*state.zoom,300-(lat-state.lat)*456/180*state.zoom,true];
@@ -80,14 +86,15 @@
       if(e.pointerType==='touch'||gesture.active())return;
       const hit=hitAt(e);if(hover?.id!==hit?.record.id){hover=hit?.record||null;api.onHover?.(hover);redraw();}canvas.style.cursor=hit?'pointer':'grab';
     };
-    const wheel=e=>{e.preventDefault();state.zoom=clamp(state.zoom*Math.exp(-e.deltaY*.001),.65,12);redraw();};
-    const keys=e=>{if(!['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','+','-','='].includes(e.key))return;e.preventDefault();if(e.key.startsWith('Arrow')){state.lon=wrap(state.lon+(e.key==='ArrowLeft'?-6:e.key==='ArrowRight'?6:0)/state.zoom);state.lat=clamp(state.lat+(e.key==='ArrowUp'?6:e.key==='ArrowDown'?-6:0)/state.zoom,-85,85);}else state.zoom=clamp(state.zoom*(e.key==='-'?.85:1.18),.65,12);redraw();};
+    const onLeave=()=>{if(hover){hover=null;api.onHover?.(null);redraw();}canvas.style.cursor='grab';};
+    const wheel=e=>{if(canvas.closest('[data-touch-mode="scroll"]'))return;e.preventDefault();state.zoom=clamp(state.zoom*Math.exp(-e.deltaY*.001),.65,12);redraw();};
+    const keys=e=>{const directions={ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right'};if(!directions[e.key]&&!['+','-','='].includes(e.key))return;e.preventDefault();if(directions[e.key])rotate(directions[e.key]);else{state.zoom=clamp(state.zoom*(e.key==='-'?.85:1.18),.65,12);redraw();}};
     canvas.tabIndex=0;canvas.style.touchAction='none';canvas.setAttribute('aria-label','可拖动地图：方向键平移或旋转，加减键缩放');
-    canvas.addEventListener('pointermove',onMove);canvas.addEventListener('wheel',wheel,{passive:false});canvas.addEventListener('keydown',keys);
-    const api={state,point,inside,base,path,parallel,meridian,marker,text,hover:()=>hover,
+    canvas.addEventListener('pointermove',onMove);canvas.addEventListener('pointerleave',onLeave);canvas.addEventListener('wheel',wheel,{passive:false});canvas.addEventListener('keydown',keys);
+    const api={state,point,inside,base,path,parallel,meridian,marker,text,rotate,hover:()=>hover,
       zoom:factor=>{state.zoom=clamp(state.zoom/factor,.65,12);redraw();},
       focus:(lon,lat,zoom)=>{state.lon=lon;state.lat=lat;if(zoom)state.zoom=zoom;},
-      dispose:()=>{gesture.dispose();canvas.removeEventListener('pointermove',onMove);canvas.removeEventListener('wheel',wheel);canvas.removeEventListener('keydown',keys);}};return api;
+      dispose:()=>{gesture.dispose();directionControls.remove();canvas.removeEventListener('pointermove',onMove);canvas.removeEventListener('pointerleave',onLeave);canvas.removeEventListener('wheel',wheel);canvas.removeEventListener('keydown',keys);}};return api;
   }
   const exported={create,globePoint,wrap};if(typeof window!=='undefined')window.LabMap=exported;if(typeof module!=='undefined')module.exports=exported;
 })();

@@ -262,7 +262,7 @@
   function showModal(title,html){$('modal-title').textContent=title;$('modal-body').innerHTML=html;state.playing=false;updateStats();if(!$('modal').open)$('modal').showModal();}
   function help(){showModal('把时间握在手里',`<p>这是一个可以离线运行的日地月实验室。年月日和时间驱动同一套天体状态；切换视角不会切换成另一段动画。</p>
     <h3>先试这三件事</h3><p>① 在底部设日期，点播放，再改变“时间流速”。<br>② 打开“天象”，进入一次日全食，点“回放过程”。<br>③ 打开“实验”，扶正地轴，再到“四季”比较日照曲线。</p>
-    <h3>镜头与快捷键</h3><p>拖动画面旋转，滚轮或双指缩放；双击地球或月球可靠近，重置按钮返回默认镜头。<kbd>空格</kbd> 播放 / 暂停；<kbd>[</kbd> 前一天；<kbd>]</kbd> 后一天；<kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> 切换视角；<kbd>R</kbd> 重置镜头。输入框编辑时快捷键不会抢走输入。</p>
+    <h3>镜头与快捷键</h3><p>拖动画面旋转，滚轮或双指缩放；也可展开画布右上“转动视角”单击方向按钮。用 Tab 选中三维画布后，方向键旋转、加减键缩放、Home 复位。双击地球或月球可靠近，重置按钮返回默认镜头。<kbd>空格</kbd> 播放 / 暂停；<kbd>[</kbd> 前一天；<kbd>]</kbd> 后一天；<kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> 切换视角；<kbd>R</kbd> 重置镜头。输入框编辑时快捷键不会抢走输入。</p>
     <h3>日期与地点</h3><p>支持 UTC 1900-01-01 至 2100-12-31。界面时区是<strong>固定 UTC 偏移</strong>，不自动套用城市夏令时。换时区只换时间显示，不移动天体。选择地点不会擅自更改时区。</p>
     <h3>两种比例，两种模式</h3><p>教学放大时，大小和距离都经过示意处理，但食影仍用真实公里坐标计算。真实地月比只对地球、月球及地月距离使用相同比例；太阳仍为方向示意。地面模式保持太阳和月球的真实视角大小。</p>
     <p>开启假设实验后，会修改日照几何和月球黄纬。实验不是引力积分、气候模型或真实天象预报，事件搜索在此模式中停用。</p>
@@ -347,7 +347,7 @@
     $('close-modal').onclick=()=>$('modal').close();$('modal').addEventListener('click',e=>{if(e.target===$('modal')){const r=$('modal').getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)$('modal').close();}});
     $('menu-btn').onclick=()=>{const open=$('sidebar').classList.toggle('open');$('mobile-shade').hidden=!open;};$('mobile-shade').onclick=closeSidebar;
     $('import-file').onchange=async()=>{const file=$('import-file').files[0];if(!file)return;try{if(file.size>100000)throw new Error('场景文件过大；应为小于 100 KB 的 JSON。');const s=JSON.parse(await file.text());restoreSnapshot(s);$('modal').close();}catch(e){toast('导入失败：'+e.message,6500);}finally{$('import-file').value='';}};
-    document.addEventListener('keydown',e=>{if(document.querySelector('dialog[open]')||['INPUT','SELECT','TEXTAREA','BUTTON'].includes(document.activeElement?.tagName))return;
+    document.addEventListener('keydown',e=>{if(e.defaultPrevented||document.querySelector('dialog[open]')||['INPUT','SELECT','TEXTAREA','BUTTON','SUMMARY'].includes(document.activeElement?.tagName))return;
       if(e.code==='Space'){e.preventDefault();togglePlay();}else if(e.key==='[')setTime(state.time-DAY);else if(e.key===']')setTime(state.time+DAY);else if(e.key==='1')setMode('overview');else if(e.key==='2')setMode('earthmoon');else if(e.key==='3')setMode('ground');else if(e.key.toLowerCase()==='r')scene.reset();else if(e.key==='?')help();});
     document.addEventListener('visibilitychange',()=>{lastTime=performance.now();if(document.hidden&&state.playing){state.playing=false;updateStats();toast('页面切到后台，已自动暂停，避免错过天象。');}});
   }

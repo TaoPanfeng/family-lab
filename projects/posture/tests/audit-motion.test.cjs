@@ -1,0 +1,38 @@
+'use strict';
+const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
+const C=require('../src/core.js'),D=require('../src/data.js');
+function scene(){const document={hidden:false},window={PostureCore:C};vm.runInNewContext(fs.readFileSync(require.resolve('../src/scene.js'),'utf8'),{window,document,requestAnimationFrame:()=>1});const view=Object.create(window.PostureScene.prototype),builds=[];Object.assign(view,{posture:D.postures.find(p=>p.id==='walk'),profile:{...C.DEFAULT_PROFILE},params:{cadence:80},motionTime:0,lastFrameTime:null,lastPoseBuild:0,playing:false,vertices:[1],target:[0,.8,0],azimuth:0,elevation:.2,radius:3,width:500,height:400,anchors:[],renderCount:0,invalidate(){},drawFallback(){},build(t){builds.push(t);this.lastPoseBuild=t;},camera(){}});return {view,document,builds};}
+test('walk advances only visible playback and resumes without seeking to wall time',()=>{const{view:v,document:d,builds}=scene();v.setPlaying(true);v.draw(100);assert.equal(v.motionTime,0);v.draw(100.05);assert(Math.abs(v.motionTime-1/15)<1e-10);assert.equal(builds.length,1);v.setPlaying(false);const paused=v.motionTime;v.draw(900);assert.equal(v.motionTime,paused);v.setPlaying(true);v.draw(1200);assert.equal(v.motionTime,paused);v.draw(1200.05);assert(Math.abs(v.motionTime-paused-1/15)<1e-10);d.hidden=true;const visible=v.motionTime;v.draw(2000);assert.equal(v.motionTime,visible);d.hidden=false;v.draw(3000);assert.equal(v.motionTime,visible);});
+test('editing cadence preserves gait phase and changes only subsequent speed',()=>{const{view:v}=scene();v.motionTime=.42;v.lastPoseBuild=.42;v.params.cadence=40;v.update(v.posture,v.profile,v.params);assert.equal(v.motionTime,.42);assert.equal(v.lastPoseBuild,.42);v.setPlaying(true);v.draw(10);v.draw(10.06);assert(Math.abs(v.motionTime-.46)<1e-10);v.update(D.postures.find(p=>p.id==='office'),v.profile,v.params);assert.equal(v.motionTime,0);assert.equal(v.playing,false);});
+
+// Real DOM event dispatch for storage errors; layout and the 3D renderer are outside this harness.
+function postureApp(t,{raw=null,readError=false}={}){
+ const {JSDOM}=require('../../history/node_modules/jsdom'),dom=new JSDOM(fs.readFileSync(require.resolve('../dev.html'),'utf8'),{url:'https://family-lab.test/projects/posture/dev.html',runScripts:'outside-only'}),w=dom.window,key='shenyodu.posture-lab.v1',values=new Map(raw===null?[]:[[key,raw]]),writes=[],downloads=[],blobs=new Map(),timers=new Map();let timerId=0,blobId=0;
+ Object.defineProperty(w,'localStorage',{configurable:true,value:{getItem(k){if(readError)throw Error('read blocked');return values.get(k)??null;},setItem(k,value){writes.push([k,String(value)]);values.set(k,String(value));}}});
+ w.setTimeout=(fn,delay)=>{timers.set(++timerId,{fn,delay});return timerId;};w.clearTimeout=id=>timers.delete(id);w.setInterval=()=>0;w.requestAnimationFrame=()=>0;w.scrollTo=()=>{};w.Blob=Blob;
+ w.URL.createObjectURL=blob=>{const url='blob:posture-audit/'+(++blobId);blobs.set(url,blob);return url;};w.URL.revokeObjectURL=()=>{};w.HTMLAnchorElement.prototype.click=function(){downloads.push({name:this.download,blob:blobs.get(this.href)});};
+ w.HTMLDialogElement.prototype.showModal=function(){this.setAttribute('open','');};w.HTMLDialogElement.prototype.close=function(){this.removeAttribute('open');};
+ w.PostureScene=class {update(){}resize(){}invalidate(){}setPlaying(value){this.playing=value;}};
+ for(const file of ['data.js','core.js','app.js'])w.eval(fs.readFileSync(require.resolve('../src/'+file),'utf8'));
+ t.after(()=>w.close());return{w,key,values,writes,downloads,doc:w.document,flushSave(){for(const[id,timer]of timers)if(timer.delay===250){timers.delete(id);timer.fn();}}};
+}
+function domInput(f,id,value,type='input'){const el=f.doc.getElementById(id);assert(el,id);el.value=value;el.dispatchEvent(new f.w.Event(type,{bubbles:true}));return el;}
+function savePlan(f,name){f.doc.getElementById('savePlanBtn').click();domInput(f,'planName',name);domInput(f,'planNote','本次参数观察');f.doc.getElementById('saveForm').dispatchEvent(new f.w.Event('submit',{bubbles:true,cancelable:true}));}
+async function exportPlans(f){f.doc.getElementById('exportBtn').click();const download=f.downloads.at(-1);assert(download?.blob,'current memory plans can be downloaded');return JSON.parse(await download.blob.text());}
+async function importPlans(f,backup){const text=JSON.stringify(backup),el=f.doc.getElementById('importFile');Object.defineProperty(el,'files',{configurable:true,value:[{size:Buffer.byteLength(text),text:async()=>text}]});el.dispatchEvent(new f.w.Event('change',{bubbles:true}));await new Promise(resolve=>setImmediate(resolve));}
+for(const[kind,raw,readError]of [['broken JSON','{"重要旧记录":',false],['unknown version','{"version":2,"important":"旧版本保留"}',false],['invalid plans','{"version":1,"plans":[{}]}',false],['empty record','',false],['blocked read','{"version":1,"important":"不可读原文"}',true]]){
+ test('posture protects '+kind+' through edits, favorite, save, import and exit',async t=>{
+  const f=postureApp(t,{raw,readError}),warning=f.doc.getElementById('storageWarning');assert.equal(warning.hidden,false);assert.match(warning.textContent,/原始记录已保留/);assert.match(warning.textContent,/本次页面/);
+  domInput(f,'heightRange','181');f.doc.getElementById('favoriteBtn').click();f.flushSave();assert.equal(f.values.get(f.key),raw);assert.equal(f.writes.length,0);
+  savePlan(f,'读取失败后的新方案');assert.match(f.doc.getElementById('toast').textContent,/本次会话/);assert.equal(warning.hidden,false);f.flushSave();
+  const current=await exportPlans(f);assert.equal(current.plans.length,1);assert.equal(current.plans[0].name,'读取失败后的新方案');assert.equal(current.plans[0].profile.height,181);assert.deepEqual(current.favorites,['office']);
+  const office=D.postures.find(p=>p.id==='office'),plan=C.makeSnapshot('导入的内存方案',office,C.DEFAULT_PROFILE,C.defaults(C.DEFAULT_PROFILE,office));await importPlans(f,{app:'shenyodu-posture-lab',version:1,plans:[plan],favorites:['bench']});f.flushSave();
+  assert.match(f.doc.getElementById('toast').textContent,/本地存储不可用/);const merged=await exportPlans(f);assert.equal(merged.plans.length,2);assert.deepEqual(merged.favorites,['office','bench']);
+  f.w.dispatchEvent(new f.w.Event('pagehide'));assert.equal(f.values.get(f.key),raw,'unread original text is unchanged');assert.equal(f.writes.length,0,'read failure never unlocks writing during this page');assert.equal(warning.hidden,false);
+ });
+}
+test('posture healthy version continues using the existing key and backup format',async t=>{
+ const office=D.postures.find(p=>p.id==='office'),original=C.makeSnapshot('已有方案',office,C.DEFAULT_PROFILE,C.defaults(C.DEFAULT_PROFILE,office)),f=postureApp(t,{raw:JSON.stringify({version:1,profile:C.DEFAULT_PROFILE,postureId:'office',configs:{},favorites:['bench'],plans:[original]})});assert.equal(f.doc.getElementById('storageWarning').hidden,true);
+ domInput(f,'heightRange','179');f.doc.getElementById('favoriteBtn').click();f.flushSave();assert.equal(f.writes.length,1);assert.equal(f.writes[0][0],f.key);const stored=JSON.parse(f.values.get(f.key));assert.equal(stored.version,1);assert.equal(stored.profile.height,179);assert.equal(stored.plans[0].name,'已有方案');assert.deepEqual(stored.favorites,['bench','office']);
+ savePlan(f,'正常保存的新方案');assert.match(f.doc.getElementById('toast').textContent,/方案已保存/);const backup=await exportPlans(f);assert.equal(backup.app,'shenyodu-posture-lab');assert.equal(backup.version,1);assert.equal(C.parseBackup(JSON.stringify(backup),D.postures).plans.length,2);assert.equal(f.values.size,1);
+});
