@@ -30,6 +30,8 @@ try:
   pg=load(ctx);lessons=pg.evaluate('EnglishPathModel.catalog().map(l=>({id:l.id,title:l.title,cases:l.cases,transfer:l.transfer,challenge:l.challenge}))')
   check('32 progressive lessons and three original experiments remain in one application',len(lessons)==32 and len(pg.evaluate('WorkshopTest.ids()'))==35 and state(pg)['lesson']=='meaning')
   check('route map and grammar explanations are initially collapsed',pg.locator('#path-directory').get_attribute('open') is None and pg.locator('#experiment details[open]').count()==0)
+  for term,id in [('现在完成时','perfect'),('倒装','focus'),('look forward to','ing')]:
+   pg.locator('#search').fill(term);check('search finds the actual lesson for '+term,pg.locator('[data-lesson="'+id+'"]').is_visible());pg.locator('#search').fill('')
   for lesson in lessons:
    id=lesson['id'];choose(pg,id);check(id+': real navigation loads its actual purpose and sentence',state(pg)['pathLesson']==id and pg.locator('#title').inner_text()==lesson['title'] and pg.locator('#path-example-scene .path-sentence-display p').inner_text()==lesson['cases'][0]['en'])
    pg.locator('[data-path-case="2"]').click();check(id+': third primary example changes the displayed expression',pg.locator('#path-example-scene .path-sentence-display p').inner_text()==lesson['cases'][2]['en'] and pg.locator('[data-path-case="2"]').evaluate('e=>e===document.activeElement'))

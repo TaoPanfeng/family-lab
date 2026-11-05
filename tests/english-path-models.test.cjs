@@ -9,6 +9,7 @@ test('eight ordered stages form one 32-lesson path alongside the preserved three
  all.forEach((l,i)=>{assert.equal(l.stage,Math.floor(i/4));for(const key of ['title','mission','intro','child','adult','home','work','trap','limits','nextUse'])assert(typeof l[key]==='string'&&l[key].length>=5,l.id+' '+key);assert.equal(l.steps.length,3);assert(l.sources.length);for(const [,url]of l.sources)assert.equal(new URL(url).protocol,'https:');});
  const c={window:{WorkshopModels:require('../shared/workshop/models.js'),EnglishPathModel:M}};vm.runInNewContext(fs.readFileSync(path.join(root,'projects/english/app.js'),'utf8'),c);
  assert.equal(c.window.Workshop.lessons.length,35);for(const id of ['where','sentence','number'])assert(c.window.Workshop.lessons.some(l=>l.id===id));
+ for(const [id,term]of [['perfect','现在完成时'],['focus','倒装'],['ing','look forward to']])assert(c.window.Workshop.searchText(M.lesson(id)).toLowerCase().includes(term.toLowerCase()),'meaning-based titles remain searchable by '+term);
 });
 test('every lesson has meaningful variants, role-aligned sentences, two nuanced contrasts and explicit boundaries',()=>{
  for(const l of all){assert(l.principle.question.length>5);assert(l.principle.reason.length>20);assert(l.principle.boundary.length>10);assert(l.principle.steps.length>=3);assert.equal(l.cases.length,3);assert.equal(l.transfer.variants.length,3);assert.equal(l.contrasts.length,2);
