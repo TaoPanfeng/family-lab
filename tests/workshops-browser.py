@@ -3,7 +3,7 @@
 from pathlib import Path
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urlsplit
-import argparse, functools, json, re, shutil, threading
+import argparse, functools, json, re, shutil, threading, subprocess, sys
 from playwright.sync_api import sync_playwright
 ROOT=Path(__file__).resolve().parents[1]
 def main():
@@ -121,11 +121,11 @@ def main():
             browser=pw.chromium.launch(executable_path=a.browser or shutil.which('chromium') or shutil.which('google-chrome'),headless=True,args=['--no-sandbox','--disable-dev-shm-usage'])
             for subject in ([a.subject] if a.subject else ['english','computing','music']):
                 ctx=browser.new_context(viewport={'width':1440,'height':1000},locale='zh-CN',accept_downloads=True);pg=load(ctx,subject)
-                check(subject+': exactly three distinct lessons',len(pg.evaluate('WorkshopTest.ids()'))==3)
-                for id in pg.evaluate('WorkshopTest.ids()'):
+                check(subject+': lesson catalogue and retained original tools',len(pg.evaluate('WorkshopTest.ids()'))==(35 if subject=='english' else 3))
+                for id in (['where','sentence','number'] if subject=='english' else pg.evaluate('WorkshopTest.ids()')):
                     choose(pg,id);check(subject+id+': distinct topic and complete rationale',state(pg)['lesson']==id and pg.locator('#steps li').count()==3 and len(pg.locator('#explain').inner_text())>30)
                     pg.locator('#mode').click();check(subject+id+': adult explanation',state(pg)['mode']=='adult');pg.locator('#mode').click()
-                choose(pg,pg.evaluate('WorkshopTest.ids()[0]'))
+                choose(pg,'where' if subject=='english' else pg.evaluate('WorkshopTest.ids()[0]'))
                 if subject=='english':english(pg)
                 if subject=='computing':computing(pg)
                 if subject=='music':music(pg)
@@ -142,7 +142,7 @@ def main():
                 pg.evaluate('scrollTo(0,0)');pg.screenshot(path=str(out/(subject+'-full.png')),full_page=True);ctx.close()
                 mobile=browser.new_context(viewport={'width':390,'height':844},device_scale_factor=1,is_mobile=True,has_touch=True,locale='zh-CN');mp=load(mobile,subject)
                 check(subject+': mobile collapsed navigation',not mp.locator('#lessons').is_visible())
-                mp.locator('#nav-toggle').tap();mp.locator('[data-lesson]').nth(1).tap();check(subject+': mobile selection closes directory',not mp.locator('#lessons').is_visible())
+                mp.locator('#nav-toggle').tap();mp.locator('[data-lesson="sentence"]').tap() if subject=='english' else mp.locator('[data-lesson]').nth(1).tap();check(subject+': mobile selection closes directory',not mp.locator('#lessons').is_visible())
                 check(subject+': no page horizontal overflow',mp.evaluate('document.documentElement.scrollWidth<=innerWidth+1'))
                 if subject=='english':
                     mp.locator('[data-word="0"]').tap();check('Phone can add a sentence word',state(mp)['selected']==['I'])
@@ -164,7 +164,14 @@ def main():
                 cdp.send('Input.dispatchTouchEvent',{'type':'touchEnd','touchPoints':[]});mp.wait_for_timeout(300)
                 check(subject+': scene allows ordinary vertical touch scrolling',mp.evaluate('scrollY')>before+20)
                 mobile.close()
-            check('No uncaught browser errors',not report['errors']);check('No runtime external requests',not report['externalRequests']);browser.close();report['status']='passed'
+            check('No uncaught browser errors',not report['errors']);check('No runtime external requests',not report['externalRequests']);browser.close()
+        if not a.inject and a.subject in (None,'english'):
+            command=[sys.executable,str(ROOT/'tests/english-path-browser.py'),'--out',str(out/'english-path')]
+            if a.file:command.append('--file')
+            else:command.extend(['--base',base])
+            if a.browser:command.extend(['--browser',a.browser])
+            subprocess.run(command,check=True)
+        report['status']='passed'
     except Exception as exc:
         report['fatal']=str(exc)
         raise

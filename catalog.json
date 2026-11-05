@@ -311,15 +311,15 @@
   {
     "id": "english",
     "name": "英语",
-    "subtitle": "把世界说出来",
-    "english": "LOOK · BUILD · SAY",
+    "subtitle": "从意思到句子，再到表达",
+    "english": "MEANING · STRUCTURE · TRANSFER",
     "entry": "projects/english/index.html",
-    "question": "一张图，能不能变成你说的一句话？",
-    "description": "移动小球、拼句子、数物品；让画面、词序和实际意思互相对应。",
+    "question": "为什么要这样说？换个条件，还能怎样说？",
+    "description": "8章32关：从句子骨架走到时态、从句、阅读与段落。对比例句、替换实验和迁移挑战，保留三个入门实验。",
     "tags": [
-      "场景英语",
-      "句子积木",
-      "单复数"
+      "32关学习路线",
+      "规则与边界",
+      "举一反三"
     ],
     "license": "MIT",
     "importedVersion": "current",
@@ -332,7 +332,18 @@
       "单词",
       "介词",
       "语法",
-      "名词"
+      "名词",
+      "时态",
+      "被动",
+      "完成时",
+      "非谓语",
+      "从句",
+      "长难句",
+      "翻译",
+      "改写",
+      "段落",
+      "语法",
+      "英语学习路线"
     ]
   },
   {

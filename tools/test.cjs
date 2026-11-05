@@ -8,6 +8,7 @@ const chemistryFiles = fs.readdirSync(path.join(root,'projects/chemistry/tests')
 const suites = [
   ['人情世故情境、来源、选择与记录','.', ['--test','tests/social.test.cjs']],
   ['心理学概念、来源与本地记录','.', ['--test','tests/psychology.test.cjs']],
+  ['英语路线内容与学习记录边界','.', ['--test','tests/english-path-models.test.cjs']],
   ['英语、编程与音乐教学模型','.', ['--test','tests/workshops-models.test.cjs']],
   ['语文字音、字形与备份边界','.', ['--test','tests/chinese-models.test.cjs']],
   ['成语歇后语年代、检索与本地记录','.', ['--test','tests/phrases.test.cjs']],

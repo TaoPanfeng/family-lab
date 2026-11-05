@@ -2,9 +2,9 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
 const root=path.resolve(__dirname,'..'),M=require('../shared/workshop/models.js');
 const catalogue=JSON.parse(fs.readFileSync(path.join(root,'catalog.json'),'utf8'));
-function definition(subject){const window={WorkshopModels:M};vm.runInNewContext(fs.readFileSync(path.join(root,'projects',subject,'app.js'),'utf8'),{window});return window.Workshop;}
-test('three new museums have nine distinct, complete, original topic definitions',()=>{
- for(const subject of ['english','computing','music']){const a=definition(subject);assert.equal(a.id,subject);assert.equal(a.lessons.length,3);assert.equal(new Set(a.lessons.map(l=>l.id)).size,3);assert(catalogue.some(x=>x.id===subject));
+function definition(subject){const window={WorkshopModels:M};if(subject==='english')for(const f of ['path-foundation.js','path-time.js','path-connections.js','path-expression.js','path-model.js'])vm.runInNewContext(fs.readFileSync(path.join(root,'projects/english',f),'utf8'),{window});vm.runInNewContext(fs.readFileSync(path.join(root,'projects',subject,'app.js'),'utf8'),{window});return window.Workshop;}
+test('workshops retain nine original tools and English adds a complete progressive route',()=>{
+ for(const subject of ['english','computing','music']){const a=definition(subject);assert.equal(a.id,subject);assert.equal(a.lessons.length,subject==='english'?35:3);assert.equal(new Set(a.lessons.map(l=>l.id)).size,subject==='english'?35:3);assert(catalogue.some(x=>x.id===subject));
   for(const l of a.lessons){for(const k of ['title','intro','child','adult','home','work','trap','limits'])assert(l[k].length>=5,subject+' '+l.id+' '+k);assert.equal(l.steps.length,3);assert(l.sources.length);for(const [,url] of l.sources)assert.equal(new URL(url).protocol,'https:');}
  }
 });
